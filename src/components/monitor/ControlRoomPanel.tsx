@@ -168,6 +168,8 @@ export function ControlRoomPanel() {
   const [satOn, setSatOn] = useState(true);
   const [radioOn, setRadioOn] = useState(true);
   const [simsExpanded, setSimsExpanded] = useState(true);
+  const [satExpanded, setSatExpanded] = useState(true);
+  const [radioExpanded, setRadioExpanded] = useState(true);
   const [sims, setSims] = useState([true, true, true]);
   const [mode, setMode] = useState<"tactical" | "logical">("tactical");
   const [showRate, setShowRate] = useState(true);
@@ -241,16 +243,21 @@ export function ControlRoomPanel() {
               statusTone={satOn ? "good" : "poor"}
               temp="52°C"
               cpu="24%"
+              expandable
+              expanded={satExpanded}
+              onExpandToggle={() => setSatExpanded((v) => !v)}
             />
-            <AssetBody>
-              <LinkRow
-                label="SATCOM"
-                quality={88}
-                rate="15.3 Mbps"
-                on={satOn}
-                onToggle={setSatOn}
-              />
-            </AssetBody>
+            {satExpanded && (
+              <AssetBody>
+                <LinkRow
+                  label="SATCOM"
+                  quality={88}
+                  rate="15.3 Mbps"
+                  on={satOn}
+                  onToggle={setSatOn}
+                />
+              </AssetBody>
+            )}
           </div>
 
           <div>
@@ -263,16 +270,21 @@ export function ControlRoomPanel() {
               statusTone={radioOn ? "good" : "poor"}
               temp="41°C"
               cpu="12%"
+              expandable
+              expanded={radioExpanded}
+              onExpandToggle={() => setRadioExpanded((v) => !v)}
             />
-            <AssetBody>
-              <LinkRow
-                label="RADIO"
-                quality={58}
-                rate="4.8 Mbps"
-                on={radioOn}
-                onToggle={setRadioOn}
-              />
-            </AssetBody>
+            {radioExpanded && (
+              <AssetBody>
+                <LinkRow
+                  label="RADIO"
+                  quality={58}
+                  rate="4.8 Mbps"
+                  on={radioOn}
+                  onToggle={setRadioOn}
+                />
+              </AssetBody>
+            )}
           </div>
         </div>
 
