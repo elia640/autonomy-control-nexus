@@ -273,26 +273,26 @@ export function ControlRoomPanel() {
                   }}
                 />
                 {showRate && (
-                  <>
-                    <Line
-                      type="monotone"
-                      isAnimationActive={false}
-                      dataKey="download"
-                      name="Download"
-                      stroke="var(--color-good)"
-                      dot={false}
-                      strokeWidth={1.6}
-                    />
-                    <Line
-                      type="monotone"
-                      isAnimationActive={false}
-                      dataKey="upload"
-                      name="Upload"
-                      stroke="var(--color-primary)"
-                      dot={false}
-                      strokeWidth={1.6}
-                    />
-                  </>
+                  <Line
+                    type="monotone"
+                    isAnimationActive={false}
+                    dataKey="download"
+                    name="Download"
+                    stroke="var(--color-good)"
+                    dot={false}
+                    strokeWidth={1.6}
+                  />
+                )}
+                {showRate && (
+                  <Line
+                    type="monotone"
+                    isAnimationActive={false}
+                    dataKey="upload"
+                    name="Upload"
+                    stroke="var(--color-primary)"
+                    dot={false}
+                    strokeWidth={1.6}
+                  />
                 )}
                 {showBandwidth && (
                   <Line
