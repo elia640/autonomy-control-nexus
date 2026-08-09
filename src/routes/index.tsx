@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, Layers, Link2 } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, Layers, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
-import { MapOverlay } from "@/components/monitor/MapOverlay";
+import { MapOverlay, radioLinks, statusColor, units } from "@/components/monitor/MapOverlay";
+import { QualityBar } from "@/components/monitor/QualityBar";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,69 +28,159 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const vehicles = [
-  { name: "APC-1", mbps: "47.9", lat: "9.7ms", color: "bg-primary" },
-  { name: "Utility A", mbps: "46.5", lat: "120ms", color: "bg-marginal" },
-  { name: "Utility B", mbps: "45.9", lat: "125ms", color: "bg-good" },
-  { name: "Command", mbps: "44.5", lat: "118ms", color: "bg-marginal" },
-  { name: "Tanker", mbps: "25.5", lat: "120ms", color: "bg-poor" },
+const satellites = [
+  { name: "TELS-1", down: "15.3", up: "4.2", tone: "text-good" },
+  { name: "TELS-2", down: "9.8", up: "2.6", tone: "text-marginal" },
 ];
 
-function Section({ title, children }: { title: string; children?: React.ReactNode }) {
+function SubHeader({ title }: { title: string }) {
   return (
-    <section>
-      <div className="flex items-center justify-between border-y border-border bg-panel-header px-3 py-2">
-        <span className="panel-title font-semibold text-foreground/80">{title}</span>
-        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-      </div>
-      <div className="px-3 py-2.5 text-[11px]">{children}</div>
-    </section>
+    <div className="border-y border-border bg-panel-header px-3 py-1.5">
+      <span className="panel-title font-semibold text-foreground/80">{title}</span>
+    </div>
   );
 }
 
-function Row({ label, value, tone }: { label: string; value: string; tone?: string }) {
+/** Link status between two platforms, derived from the radio mesh definition. */
+function matrixStatus(a: string, b: string) {
+  if (a === b) return null;
+  const l = radioLinks.find(
+    (r) => (r.from === a && r.to === b) || (r.from === b && r.to === a),
+  );
+  return l?.status ?? null;
+}
+
+function ConnectivityMatrix() {
   return (
-    <div className="flex items-center justify-between py-1">
-      <span className="text-muted-foreground">{label}</span>
-      <span className={tone ?? "text-foreground"}>{value}</span>
+    <div className="px-2 py-2">
+      <table className="w-full border-collapse text-[9px]">
+        <thead>
+          <tr>
+            <th className="w-8" />
+            {units.map((u) => (
+              <th
+                key={u.id}
+                className="pb-1 text-center font-normal tracking-wider text-muted-foreground"
+              >
+                P{u.label.split(" ")[1]}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {units.map((r) => (
+            <tr key={r.id}>
+              <td className="pr-1 text-right tracking-wider text-muted-foreground">
+                P{r.label.split(" ")[1]}
+              </td>
+              {units.map((c) => {
+                const s = matrixStatus(r.id, c.id);
+                return (
+                  <td key={c.id} className="p-[2px]">
+                    <div
+                      className="h-3.5 w-full rounded-[2px] border border-border/70"
+                      style={{
+                        background: s ? statusColor[s] : "transparent",
+                        opacity: s ? 0.8 : 1,
+                      }}
+                      title={`${r.label} ↔ ${c.label}: ${s ?? "no link"}`}
+                    />
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="mt-1.5 flex items-center gap-2 text-[9px] text-muted-foreground">
+        {(["good", "marginal", "poor"] as const).map((s) => (
+          <span key={s} className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-[2px]" style={{ background: statusColor[s] }} />
+            <span className="uppercase tracking-wider">{s}</span>
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
 
 function Index() {
   const [linksOn, setLinksOn] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <main className="flex h-screen w-full overflow-hidden bg-background">
-      <aside className="flex w-[220px] shrink-0 flex-col overflow-y-auto border-r border-border bg-panel">
-        <header className="border-b border-border bg-panel-header px-3 py-2.5">
-          <h2 className="text-[11px] font-bold tracking-[0.18em] text-foreground">
-            COMMS NETWORK MONITOR
-          </h2>
-        </header>
-        <Section title="General">
-          <Row label="Operation" value="ROAM-04 / Ridge West" />
-          <Row label="Mode" value="Auto-select carrier" />
-          <Row label="Encryption" value="AES-256 · active" />
-          <Row label="Uptime" value="04:12:38" />
-        </Section>
-        <Section title="Satellite Link">
-          <Row label="SINR" value="+18.5 dB" tone="text-primary" />
-          <Row label="RSRP" value="−28 dBm" tone="text-primary" />
-          <Row label="RSSI" value="−117 dBm" tone="text-primary" />
-          <Row label="Sat" value="TELS-1" />
-        </Section>
-        <Section title="Vehicles">
-          {vehicles.map((v) => (
-            <div key={v.name} className="flex items-center gap-2 py-1.5">
-              <span className={`h-1.5 w-1.5 rounded-full ${v.color}`} />
-              <span className="flex-1 text-foreground">{v.name}</span>
-              <span className="text-muted-foreground">{v.mbps}</span>
-              <span className="w-12 text-right text-muted-foreground">{v.lat}</span>
+      {sidebarOpen ? (
+        <aside className="flex w-[260px] shrink-0 flex-col overflow-y-auto border-r border-border bg-panel">
+          <header className="flex items-center gap-2 border-b-2 border-primary/50 bg-panel-header px-3 py-3">
+            <h1 className="flex-1 text-[13px] font-bold tracking-[0.2em] text-primary">
+              COMMS NETWORK MONITOR
+            </h1>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              aria-label="Collapse panel"
+              className="rounded-sm border border-border p-1 text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground"
+            >
+              <ChevronsLeft className="h-3.5 w-3.5" />
+            </button>
+          </header>
+
+          <SubHeader title="Networked Vehicles" />
+          <div className="px-3 py-2 text-[10px]">
+            <div className="flex items-center gap-2 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground">
+              <span className="w-[62px]">Platform</span>
+              <span className="w-[52px]">Range</span>
+              <span className="flex-1">Quality</span>
+              <span className="w-11 text-right">Down</span>
             </div>
-          ))}
-        </Section>
-      </aside>
+            {units.map((u) => (
+              <div key={u.id} className="flex items-center gap-2 py-1">
+                <span className="w-[62px] truncate text-foreground">{u.label}</span>
+                <span className="w-[52px] text-muted-foreground">{u.link}</span>
+                <span className="flex-1">
+                  <QualityBar value={u.quality} />
+                </span>
+                <span className="w-11 text-right text-muted-foreground">{u.mbps}</span>
+              </div>
+            ))}
+          </div>
+
+          <SubHeader title="Satellite Link" />
+          <div className="px-3 py-2 text-[10px]">
+            <div className="flex items-center gap-2 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground">
+              <span className="flex-1">Satellite</span>
+              <span className="w-14 text-right">Down</span>
+              <span className="w-14 text-right">Up</span>
+            </div>
+            {satellites.map((s) => (
+              <div key={s.name} className="flex items-center gap-2 py-1">
+                <span className={`flex-1 ${s.tone}`}>{s.name}</span>
+                <span className="w-14 text-right text-muted-foreground">{s.down} Mbps</span>
+                <span className="w-14 text-right text-muted-foreground">{s.up} Mbps</span>
+              </div>
+            ))}
+          </div>
+
+          <SubHeader title="Link Matrix" />
+          <ConnectivityMatrix />
+        </aside>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Expand panel"
+          className="flex w-8 shrink-0 flex-col items-center gap-2 border-r border-border bg-panel py-3 text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ChevronsRight className="h-4 w-4" />
+          <span
+            className="text-[9px] tracking-[0.2em] text-primary"
+            style={{ writingMode: "vertical-rl" }}
+          >
+            COMMS NETWORK MONITOR
+          </span>
+        </button>
+      )}
 
       <div className="relative min-w-0 flex-1">
         <img
@@ -101,7 +192,6 @@ function Index() {
         />
         <MapOverlay linksOn={linksOn} />
         <div className="absolute left-1/2 top-3 -translate-x-1/2 text-[11px] tracking-[0.2em] text-foreground/80">
-
           CIVIL NETWORK MONITORING SYSTEM
         </div>
         <div className="absolute right-3 top-3 flex gap-2 text-[10px]">

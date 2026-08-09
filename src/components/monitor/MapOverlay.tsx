@@ -13,10 +13,10 @@ import { QualityBar } from "./QualityBar";
 import { Toggle } from "./Toggle";
 import { cn } from "@/lib/utils";
 
-type Status = "good" | "marginal" | "poor";
-type LinkKind = "CELLULAR" | "SATCOM" | "RADIO";
+export type Status = "good" | "marginal" | "poor";
+export type LinkKind = "CELLULAR" | "SATCOM" | "RADIO";
 
-const statusColor: Record<Status, string> = {
+export const statusColor: Record<Status, string> = {
   good: "var(--good)",
   marginal: "var(--marginal)",
   poor: "var(--poor)",
@@ -32,7 +32,7 @@ const statusText: Record<Status, string> = {
 const base = { x: 50, y: 62 };
 const satellite = { x: 84, y: 12 };
 
-type Unit = {
+export type Unit = {
   id: string;
   label: string;
   x: number;
@@ -47,10 +47,10 @@ type Unit = {
   sat?: { locked: boolean; connected: boolean };
 };
 
-const units: Unit[] = [
+export const units: Unit[] = [
   {
     id: "apc1",
-    label: "APC-1",
+    label: "PLATFORM 1",
     x: 27,
     y: 33,
     status: "good",
@@ -67,7 +67,7 @@ const units: Unit[] = [
   },
   {
     id: "utilA",
-    label: "UTILITY A",
+    label: "PLATFORM 2",
     x: 68,
     y: 27,
     status: "marginal",
@@ -80,7 +80,7 @@ const units: Unit[] = [
   },
   {
     id: "utilB",
-    label: "UTILITY B",
+    label: "PLATFORM 3",
     x: 80,
     y: 56,
     status: "good",
@@ -91,7 +91,7 @@ const units: Unit[] = [
   },
   {
     id: "cmd",
-    label: "COMMAND",
+    label: "PLATFORM 4",
     x: 30,
     y: 76,
     status: "marginal",
@@ -102,7 +102,7 @@ const units: Unit[] = [
   },
   {
     id: "tanker",
-    label: "TANKER",
+    label: "PLATFORM 5",
     x: 62,
     y: 86,
     status: "poor",
@@ -114,7 +114,7 @@ const units: Unit[] = [
 ];
 
 /** Vehicle-to-vehicle radio mesh links. */
-const radioLinks: { from: string; to: string; status: Status }[] = [
+export const radioLinks: { from: string; to: string; status: Status }[] = [
   { from: "apc1", to: "utilA", status: "good" },
   { from: "utilA", to: "utilB", status: "marginal" },
   { from: "cmd", to: "tanker", status: "poor" },
