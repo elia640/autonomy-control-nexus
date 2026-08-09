@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ChevronDown, Layers, Link2, Settings2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
+import { MapOverlay } from "@/components/monitor/MapOverlay";
 
 export const Route = createFileRoute("/")({
   head: () => ({
