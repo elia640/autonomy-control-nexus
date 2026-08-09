@@ -236,6 +236,8 @@ export function ControlRoomPanel() {
                 <CartesianGrid stroke="var(--color-border)" strokeDasharray="2 3" />
                 <XAxis
                   dataKey="t"
+                  type="number"
+                  domain={[0, 60]}
                   tick={{ fontSize: 9, fill: "var(--color-muted-foreground)" }}
                   tickLine={{ stroke: "var(--color-border)" }}
                   axisLine={{ stroke: "var(--color-border)" }}
