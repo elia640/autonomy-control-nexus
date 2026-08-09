@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import {
   ChevronDown,
+  ChevronRight,
   Cpu,
   Play,
   Radio,
@@ -33,14 +34,13 @@ const data = Array.from({ length: 13 }, (_, i) => {
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <div className="flex items-center justify-between border-y border-border bg-panel-header px-3 py-2">
+    <div className="border-y border-border bg-panel-header px-3 py-2">
       <span className="panel-title font-semibold text-foreground/80">{title}</span>
-      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
     </div>
   );
 }
 
-function ModemHeader({
+function AssetHeader({
   name,
   icon,
   on,
@@ -49,6 +49,9 @@ function ModemHeader({
   statusTone = "good",
   temp,
   cpu,
+  expandable,
+  expanded,
+  onExpandToggle,
 }: {
   name: string;
   icon: React.ReactNode;
@@ -58,10 +61,28 @@ function ModemHeader({
   statusTone?: "good" | "marginal" | "poor";
   temp?: string;
   cpu?: string;
+  expandable?: boolean;
+  expanded?: boolean;
+  onExpandToggle?: () => void;
 }) {
   return (
-    <div className="mb-2 rounded-sm border border-border bg-card/70 px-2.5 py-2">
+    <div className="rounded-t-sm border border-border bg-card/70 px-2.5 py-2">
       <div className="flex items-center gap-2">
+        {expandable && (
+          <button
+            type="button"
+            onClick={onExpandToggle}
+            aria-expanded={expanded}
+            aria-label={`Toggle ${name} SIM list`}
+            className="text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {expanded ? (
+              <ChevronDown className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5" />
+            )}
+          </button>
+        )}
         <span className="text-primary">{icon}</span>
         <span className="text-[11px] font-semibold tracking-wider text-foreground">{name}</span>
         <span
@@ -117,7 +138,7 @@ function LinkRow({
 }) {
   return (
     <div className="flex items-center gap-2.5 py-1.5">
-      <span className="w-16 shrink-0 text-[11px] tracking-wider text-foreground/85">{label}</span>
+      <span className="w-14 shrink-0 text-[11px] tracking-wider text-foreground/85">{label}</span>
       <Toggle checked={on} onChange={onToggle} label={label} />
       <div className="flex-1">
         <QualityBar value={on ? quality : 0} disabled={!on} />
@@ -134,10 +155,19 @@ function LinkRow({
   );
 }
 
+function AssetBody({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-b-sm border border-t-0 border-border bg-card/30 px-2.5 py-1">
+      <div className="border-l-2 border-primary/40 pl-2.5">{children}</div>
+    </div>
+  );
+}
+
 export function ControlRoomPanel() {
   const [modemOn, setModemOn] = useState(true);
   const [satOn, setSatOn] = useState(true);
   const [radioOn, setRadioOn] = useState(true);
+  const [simsExpanded, setSimsExpanded] = useState(true);
   const [sims, setSims] = useState([true, true, true]);
   const [mode, setMode] = useState<"tactical" | "logical">("tactical");
   const [showRate, setShowRate] = useState(true);
@@ -145,14 +175,16 @@ export function ControlRoomPanel() {
 
   return (
     <aside className="flex h-full w-[300px] shrink-0 flex-col border-l border-border bg-panel">
-      <header className="border-b border-border bg-panel-header px-3 py-2.5">
-        <div className="flex items-center justify-between">
-          <h1 className="text-[15px] font-bold tracking-[0.2em] text-primary">CONTROL ROOM</h1>
-          <button className="flex items-center gap-1 rounded-sm bg-primary px-2 py-0.5 text-[10px] font-bold tracking-widest text-primary-foreground">
+      <header className="border-b border-border bg-panel-header">
+        <div className="px-3 py-3 text-center">
+          <h1 className="text-[15px] font-bold tracking-[0.24em] text-primary">CONTROL ROOM</h1>
+        </div>
+        <div className="flex items-center justify-between border-t-2 border-primary/50 bg-card/70 px-3 py-2">
+          <p className="text-[11px] font-semibold tracking-[0.24em] text-foreground/90">PRECHECK</p>
+          <button className="flex items-center gap-1 rounded-sm bg-primary px-2.5 py-1 text-[10px] font-bold tracking-widest text-primary-foreground transition-opacity hover:opacity-90">
             <Play className="h-2.5 w-2.5" /> RUN
           </button>
         </div>
-        <p className="mt-1 text-[10px] tracking-[0.24em] text-muted-foreground">PRECHECK</p>
       </header>
 
       <div className="flex-1 overflow-y-auto">
@@ -167,68 +199,84 @@ export function ControlRoomPanel() {
           </div>
         </div>
 
-        <SectionHeader title="Carrier Reception" />
-        <div className="px-3 py-2.5">
-          <ModemHeader
-            name="MODEM CM-4200"
-            icon={<Radio className="h-3.5 w-3.5" />}
-            on={modemOn}
-            onToggle={setModemOn}
-            status="תקין"
-            temp="47°C"
-            cpu="38%"
-          />
-          {["SIM 1", "SIM 2", "SIM 3"].map((label, i) => (
-            <LinkRow
-              key={label}
-              label={label}
-              quality={[72, 64, 81][i] ?? 0}
-              rate="12.5 Mbps"
-              on={modemOn && !!sims[i]}
-              onToggle={(v) => setSims((s) => s.map((x, j) => (j === i ? v : x)))}
+        <SectionHeader title="Communication Assets" />
+        <div className="space-y-3 px-3 py-2.5">
+          <div>
+            <AssetHeader
+              name="MODEM CM-4200"
+              icon={<Radio className="h-3.5 w-3.5" />}
+              on={modemOn}
+              onToggle={setModemOn}
+              status={modemOn ? "OPERATIONAL" : "OFF"}
+              statusTone={modemOn ? "good" : "poor"}
+              temp="47°C"
+              cpu="38%"
+              expandable
+              expanded={simsExpanded}
+              onExpandToggle={() => setSimsExpanded((v) => !v)}
             />
-          ))}
+            {simsExpanded && (
+              <AssetBody>
+                {["SIM 1", "SIM 2", "SIM 3"].map((label, i) => (
+                  <LinkRow
+                    key={label}
+                    label={label}
+                    quality={[72, 64, 81][i] ?? 0}
+                    rate="12.5 Mbps"
+                    on={modemOn && !!sims[i]}
+                    onToggle={(v) => setSims((s) => s.map((x, j) => (j === i ? v : x)))}
+                  />
+                ))}
+              </AssetBody>
+            )}
+          </div>
 
-          <div className="mt-3">
-            <ModemHeader
+          <div>
+            <AssetHeader
               name="SATCOM MDM-9"
               icon={<Satellite className="h-3.5 w-3.5" />}
               on={satOn}
               onToggle={setSatOn}
-              status={satOn ? "לוויין נעול" : "לא נעול"}
+              status={satOn ? "SAT LOCKED" : "NO LOCK"}
               statusTone={satOn ? "good" : "poor"}
+              temp="52°C"
+              cpu="24%"
             />
-            <LinkRow
-              label="SATCOM"
-              quality={88}
-              rate="15.3 Mbps"
-              on={satOn}
-              onToggle={setSatOn}
-            />
+            <AssetBody>
+              <LinkRow
+                label="SATCOM"
+                quality={88}
+                rate="15.3 Mbps"
+                on={satOn}
+                onToggle={setSatOn}
+              />
+            </AssetBody>
           </div>
 
-          <div className="mt-3">
-            <ModemHeader
+          <div>
+            <AssetHeader
               name="RADIO VHF-7"
               icon={<Radio className="h-3.5 w-3.5" />}
               on={radioOn}
               onToggle={setRadioOn}
-              status={radioOn ? "תקין" : "כבוי"}
+              status={radioOn ? "OPERATIONAL" : "OFF"}
               statusTone={radioOn ? "good" : "poor"}
               temp="41°C"
               cpu="12%"
             />
-            <LinkRow
-              label="RADIO"
-              quality={58}
-              rate="4.8 Mbps"
-              on={radioOn}
-              onToggle={setRadioOn}
-            />
+            <AssetBody>
+              <LinkRow
+                label="RADIO"
+                quality={58}
+                rate="4.8 Mbps"
+                on={radioOn}
+                onToggle={setRadioOn}
+              />
+            </AssetBody>
           </div>
         </div>
 
-        <SectionHeader title="Throughput (integrated)" />
+        <SectionHeader title="Performance Monitoring" />
         <div className="px-2 py-2.5">
           <div className="h-[150px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -243,7 +291,7 @@ export function ControlRoomPanel() {
                   axisLine={{ stroke: "var(--color-border)" }}
                   ticks={[0, 10, 20, 30, 40, 50, 60]}
                   label={{
-                    value: "שניות",
+                    value: "Seconds",
                     position: "insideBottom",
                     offset: -10,
                     fontSize: 9,
@@ -297,7 +345,7 @@ export function ControlRoomPanel() {
                 {showBandwidth && (
                   <Line
                     type="monotone"
-                      isAnimationActive={false}
+                    isAnimationActive={false}
                     dataKey="bandwidth"
                     name="Bandwidth"
                     stroke="var(--color-tactical)"
@@ -318,7 +366,7 @@ export function ControlRoomPanel() {
                 onChange={(e) => setShowRate(e.target.checked)}
                 className="h-3 w-3 accent-[var(--color-good)]"
               />
-              קצב בלבד
+              Rate only
             </label>
             <label className="flex cursor-pointer items-center gap-1.5">
               <input
@@ -327,40 +375,34 @@ export function ControlRoomPanel() {
                 onChange={(e) => setShowBandwidth(e.target.checked)}
                 className="h-3 w-3 accent-[var(--color-tactical)]"
               />
-              רוחב פס בלבד
+              Bandwidth only
             </label>
           </div>
         </div>
       </div>
 
-      <footer className="flex items-center justify-end gap-2 border-t border-border bg-panel-header px-3 py-2.5">
+      <footer className="flex items-center gap-2 border-t border-border bg-panel-header px-3 py-2.5">
+        <div className="flex flex-1 overflow-hidden rounded-sm border border-border">
+          {(["tactical", "logical"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={cn(
+                "flex-1 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors",
+                mode === m
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-transparent text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {m === "tactical" ? "Tactical" : "Logical"}
+            </button>
+          ))}
+        </div>
         <button
-          onClick={() => setMode("tactical")}
-          className={cn(
-            "rounded-sm px-3 py-1.5 text-[11px] font-semibold tracking-wider transition-colors",
-            mode === "tactical"
-              ? "bg-tactical text-tactical-foreground"
-              : "border border-tactical/50 text-tactical",
-          )}
+          className="flex items-center gap-1.5 rounded-sm border border-border px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+          aria-label="Settings"
         >
-          טקטי
-        </button>
-        <button
-          onClick={() => setMode("logical")}
-          className={cn(
-            "rounded-sm px-3 py-1.5 text-[11px] font-semibold tracking-wider transition-colors",
-            mode === "logical"
-              ? "bg-secondary text-secondary-foreground"
-              : "border border-border text-muted-foreground",
-          )}
-        >
-          לוגי
-        </button>
-        <button
-          className="flex items-center gap-1.5 rounded-sm border border-border px-2.5 py-1.5 text-[11px] tracking-wider text-muted-foreground transition-colors hover:text-foreground"
-          aria-label="הגדרות"
-        >
-          <Settings className="h-3.5 w-3.5" /> הגדרות
+          <Settings className="h-3.5 w-3.5" /> Settings
         </button>
       </footer>
     </aside>
