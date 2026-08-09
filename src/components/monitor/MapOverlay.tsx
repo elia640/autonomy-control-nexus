@@ -1,6 +1,20 @@
-import { Radio, Satellite, Truck, Crosshair } from "lucide-react";
+import { useState } from "react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Crosshair,
+  Lock,
+  LockOpen,
+  Radio,
+  Satellite,
+  Truck,
+} from "lucide-react";
+import { QualityBar } from "./QualityBar";
+import { Toggle } from "./Toggle";
+import { cn } from "@/lib/utils";
 
 type Status = "good" | "marginal" | "poor";
+type LinkKind = "CELLULAR" | "SATCOM" | "RADIO";
 
 const statusColor: Record<Status, string> = {
   good: "var(--good)",
@@ -18,70 +32,258 @@ const statusText: Record<Status, string> = {
 const base = { x: 50, y: 62 };
 const satellite = { x: 84, y: 12 };
 
-const units: {
+type Unit = {
   id: string;
   label: string;
   x: number;
   y: number;
   status: Status;
-  link: "LTE" | "SATCOM" | "RADIO";
+  link: LinkKind;
+  quality: number;
   mbps: string;
   lat: string;
-}[] = [
-  { id: "apc1", label: "APC-1", x: 27, y: 33, status: "good", link: "LTE", mbps: "47.9", lat: "9.7ms" },
-  { id: "utilA", label: "UTILITY A", x: 68, y: 27, status: "marginal", link: "SATCOM", mbps: "46.5", lat: "120ms" },
-  { id: "utilB", label: "UTILITY B", x: 78, y: 55, status: "good", link: "LTE", mbps: "45.9", lat: "125ms" },
-  { id: "cmd", label: "COMMAND", x: 36, y: 74, status: "marginal", link: "RADIO", mbps: "44.5", lat: "118ms" },
-  { id: "tanker", label: "TANKER", x: 62, y: 84, status: "poor", link: "RADIO", mbps: "25.5", lat: "120ms" },
+  defaultExpanded?: boolean;
+  sims?: { label: string; quality: number }[];
+  sat?: { locked: boolean; connected: boolean };
+};
+
+const units: Unit[] = [
+  {
+    id: "apc1",
+    label: "APC-1",
+    x: 27,
+    y: 33,
+    status: "good",
+    link: "CELLULAR",
+    quality: 82,
+    mbps: "47.9",
+    lat: "9.7ms",
+    defaultExpanded: true,
+    sims: [
+      { label: "SIM 1", quality: 84 },
+      { label: "SIM 2", quality: 61 },
+      { label: "SIM 3", quality: 34 },
+    ],
+  },
+  {
+    id: "utilA",
+    label: "UTILITY A",
+    x: 68,
+    y: 27,
+    status: "marginal",
+    link: "SATCOM",
+    quality: 58,
+    mbps: "46.5",
+    lat: "120ms",
+    defaultExpanded: true,
+    sat: { locked: true, connected: true },
+  },
+  {
+    id: "utilB",
+    label: "UTILITY B",
+    x: 80,
+    y: 56,
+    status: "good",
+    link: "CELLULAR",
+    quality: 76,
+    mbps: "45.9",
+    lat: "125ms",
+  },
+  {
+    id: "cmd",
+    label: "COMMAND",
+    x: 30,
+    y: 76,
+    status: "marginal",
+    link: "RADIO",
+    quality: 52,
+    mbps: "44.5",
+    lat: "118ms",
+  },
+  {
+    id: "tanker",
+    label: "TANKER",
+    x: 62,
+    y: 86,
+    status: "poor",
+    link: "RADIO",
+    quality: 21,
+    mbps: "25.5",
+    lat: "120ms",
+  },
 ];
 
-export function MapOverlay() {
+/** Vehicle-to-vehicle radio mesh links. */
+const radioLinks: { from: string; to: string; status: Status }[] = [
+  { from: "apc1", to: "utilA", status: "good" },
+  { from: "utilA", to: "utilB", status: "marginal" },
+  { from: "cmd", to: "tanker", status: "poor" },
+  { from: "apc1", to: "cmd", status: "good" },
+];
+
+const byId = (id: string) => units.find((u) => u.id === id)!;
+
+function UnitCard({ unit }: { unit: Unit }) {
+  const [expanded, setExpanded] = useState(!!unit.defaultExpanded);
+  const [sims, setSims] = useState([true, true, true]);
+  const [satOn, setSatOn] = useState(true);
+
+  return (
+    <div className="pointer-events-auto mt-1 w-[132px] rounded-sm border border-border bg-background/90 text-[9px] leading-tight backdrop-blur-sm">
+      <div className="flex items-center gap-1 border-b border-border/70 px-1.5 py-1">
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          aria-label={`Toggle ${unit.label} details`}
+          className="text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+        </button>
+        <span className="font-semibold tracking-[0.1em] text-foreground">{unit.label}</span>
+        <span className={cn("ml-auto tracking-[0.08em]", statusText[unit.status])}>
+          {unit.link}
+        </span>
+      </div>
+
+      <div className="px-1.5 py-1">
+        <QualityBar value={unit.quality} />
+      </div>
+
+      {expanded && (
+        <div className="space-y-1 border-t border-border/70 px-1.5 py-1">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span>{unit.mbps} Mbps</span>
+            <span>{unit.lat}</span>
+          </div>
+
+          {unit.link === "CELLULAR" && unit.sims && (
+            <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
+              {unit.sims.map((s, i) => (
+                <div key={s.label} className="flex items-center gap-1.5">
+                  <span className="w-8 shrink-0 text-foreground/80">{s.label}</span>
+                  <div className="flex-1">
+                    <QualityBar value={sims[i] ? s.quality : 0} disabled={!sims[i]} />
+                  </div>
+                  <Toggle
+                    checked={!!sims[i]}
+                    onChange={(v) => setSims((p) => p.map((x, j) => (j === i ? v : x)))}
+                    label={`${unit.label} ${s.label}`}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {unit.link === "SATCOM" && unit.sat && (
+            <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
+              <div className="flex items-center gap-1">
+                {unit.sat.locked ? (
+                  <Lock className="h-2.5 w-2.5 text-good" />
+                ) : (
+                  <LockOpen className="h-2.5 w-2.5 text-poor" />
+                )}
+                <span className={unit.sat.locked ? "text-good" : "text-poor"}>
+                  {unit.sat.locked ? "LOCKED" : "NO LOCK"}
+                </span>
+                <span className="ml-auto text-muted-foreground">
+                  {satOn && unit.sat.connected ? "CONNECTED" : "DISCONNECTED"}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-8 shrink-0 text-foreground/80">SAT</span>
+                <div className="flex-1">
+                  <QualityBar value={satOn ? unit.quality : 0} disabled={!satOn} />
+                </div>
+                <Toggle checked={satOn} onChange={setSatOn} label={`${unit.label} SATCOM`} />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function MapOverlay({ linksOn = true }: { linksOn?: boolean }) {
   return (
     <div className="pointer-events-none absolute inset-0">
       {/* link lines */}
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <svg
+        className="absolute inset-0 h-full w-full"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
         <defs>
           <pattern id="grid" width="6.25" height="6.25" patternUnits="userSpaceOnUse">
-            <path d="M 6.25 0 L 0 0 0 6.25" fill="none" stroke="var(--border)" strokeWidth="0.08" opacity="0.5" />
+            <path
+              d="M 6.25 0 L 0 0 0 6.25"
+              fill="none"
+              stroke="var(--border)"
+              strokeWidth="0.08"
+              opacity="0.5"
+            />
           </pattern>
         </defs>
         <rect width="100" height="100" fill="url(#grid)" />
 
-        {units.map((u) => (
-          <line
-            key={u.id}
-            x1={base.x}
-            y1={base.y}
-            x2={u.x}
-            y2={u.y}
-            stroke={statusColor[u.status]}
-            strokeWidth="0.22"
-            strokeDasharray={u.status === "poor" ? "1.2 1" : undefined}
-            opacity="0.85"
-          />
-        ))}
+        {linksOn && (
+          <g>
+            {units.map((u) => (
+              <line
+                key={u.id}
+                x1={base.x}
+                y1={base.y}
+                x2={u.x}
+                y2={u.y}
+                stroke={statusColor[u.status]}
+                strokeWidth="0.22"
+                strokeDasharray={u.status === "poor" ? "1.2 1" : undefined}
+                opacity="0.85"
+              />
+            ))}
 
-        {/* satellite uplink */}
-        <line
-          x1={base.x}
-          y1={base.y}
-          x2={satellite.x}
-          y2={satellite.y}
-          stroke="var(--primary)"
-          strokeWidth="0.22"
-          strokeDasharray="1.6 1.2"
-          opacity="0.9"
-        />
-        <line
-          x1={units[1]!.x}
-          y1={units[1]!.y}
-          x2={satellite.x}
-          y2={satellite.y}
-          stroke="var(--primary)"
-          strokeWidth="0.18"
-          strokeDasharray="1.6 1.2"
-          opacity="0.6"
-        />
+            {radioLinks.map((l) => {
+              const a = byId(l.from);
+              const b = byId(l.to);
+              return (
+                <line
+                  key={`${l.from}-${l.to}`}
+                  x1={a.x}
+                  y1={a.y}
+                  x2={b.x}
+                  y2={b.y}
+                  stroke={statusColor[l.status]}
+                  strokeWidth="0.16"
+                  strokeDasharray="0.8 0.8"
+                  opacity="0.7"
+                />
+              );
+            })}
+
+            {/* satellite uplink */}
+            <line
+              x1={base.x}
+              y1={base.y}
+              x2={satellite.x}
+              y2={satellite.y}
+              stroke="var(--primary)"
+              strokeWidth="0.22"
+              strokeDasharray="1.6 1.2"
+              opacity="0.9"
+            />
+            <line
+              x1={units[1]!.x}
+              y1={units[1]!.y}
+              x2={satellite.x}
+              y2={satellite.y}
+              stroke="var(--primary)"
+              strokeWidth="0.18"
+              strokeDasharray="1.6 1.2"
+              opacity="0.6"
+            />
+          </g>
+        )}
       </svg>
 
       {/* base station */}
@@ -125,16 +327,7 @@ export function MapOverlay() {
             >
               <Truck className="h-3.5 w-3.5" style={{ color: statusColor[u.status] }} />
             </div>
-            <div className="mt-1 min-w-[86px] rounded-sm border border-border bg-background/85 px-1.5 py-1 text-[9px] leading-tight">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-semibold tracking-[0.1em] text-foreground">{u.label}</span>
-                <span className={statusText[u.status]}>{u.link}</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 text-muted-foreground">
-                <span>{u.mbps} Mbps</span>
-                <span>{u.lat}</span>
-              </div>
-            </div>
+            <UnitCard unit={u} />
           </div>
         </div>
       ))}
@@ -152,6 +345,10 @@ export function MapOverlay() {
             <span className="uppercase tracking-[0.12em]">{s} link</span>
           </div>
         ))}
+        <div className="flex items-center gap-1.5">
+          <span className="h-0.5 w-4 border-t border-dashed border-muted-foreground" />
+          <span className="uppercase tracking-[0.12em]">radio mesh</span>
+        </div>
       </div>
 
       {/* scale bar */}

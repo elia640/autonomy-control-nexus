@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, Layers, Link2, Settings2 } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Layers, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
 import { MapOverlay } from "@/components/monitor/MapOverlay";
@@ -56,6 +57,8 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: stri
 }
 
 function Index() {
+  const [linksOn, setLinksOn] = useState(true);
+
   return (
     <main className="flex h-screen w-full overflow-hidden bg-background">
       <aside className="flex w-[220px] shrink-0 flex-col overflow-y-auto border-r border-border bg-panel">
@@ -96,20 +99,25 @@ function Index() {
           height={960}
           className="h-full w-full object-cover"
         />
-        <MapOverlay />
+        <MapOverlay linksOn={linksOn} />
         <div className="absolute left-1/2 top-3 -translate-x-1/2 text-[11px] tracking-[0.2em] text-foreground/80">
 
           CIVIL NETWORK MONITORING SYSTEM
         </div>
         <div className="absolute right-3 top-3 flex gap-2 text-[10px]">
-          <button className="flex items-center gap-1 rounded-sm bg-primary px-2 py-1 text-primary-foreground">
-            <Link2 className="h-3 w-3" /> LINKS ON
+          <button
+            onClick={() => setLinksOn((v) => !v)}
+            aria-pressed={linksOn}
+            className={`flex items-center gap-1 rounded-sm px-2 py-1 transition-colors ${
+              linksOn
+                ? "bg-primary text-primary-foreground"
+                : "border border-border bg-card/80 text-muted-foreground"
+            }`}
+          >
+            <Link2 className="h-3 w-3" /> LINKS {linksOn ? "ON" : "OFF"}
           </button>
           <button className="flex items-center gap-1 rounded-sm border border-border bg-card/80 px-2 py-1">
             <Layers className="h-3 w-3" /> LAYERS
-          </button>
-          <button className="flex items-center gap-1 rounded-sm border border-border bg-card/80 px-2 py-1">
-            <Settings2 className="h-3 w-3" /> SETTINGS
           </button>
         </div>
       </div>
