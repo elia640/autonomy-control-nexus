@@ -182,9 +182,9 @@ export function ControlRoomPanel() {
             <LinkRow
               key={label}
               label={label}
-              quality={[72, 64, 81][i]}
+              quality={[72, 64, 81][i] ?? 0}
               rate="12.5 Mbps"
-              on={modemOn && sims[i]}
+              on={modemOn && !!sims[i]}
               onToggle={(v) => setSims((s) => s.map((x, j) => (j === i ? v : x)))}
             />
           ))}
