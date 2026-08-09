@@ -270,16 +270,21 @@ export function ControlRoomPanel() {
               statusTone={radioOn ? "good" : "poor"}
               temp="41°C"
               cpu="12%"
+              expandable
+              expanded={radioExpanded}
+              onExpandToggle={() => setRadioExpanded((v) => !v)}
             />
-            <AssetBody>
-              <LinkRow
-                label="RADIO"
-                quality={58}
-                rate="4.8 Mbps"
-                on={radioOn}
-                onToggle={setRadioOn}
-              />
-            </AssetBody>
+            {radioExpanded && (
+              <AssetBody>
+                <LinkRow
+                  label="RADIO"
+                  quality={58}
+                  rate="4.8 Mbps"
+                  on={radioOn}
+                  onToggle={setRadioOn}
+                />
+              </AssetBody>
+            )}
           </div>
         </div>
 
