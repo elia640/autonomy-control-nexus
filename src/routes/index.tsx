@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ChevronDown, Layers, Link2, Settings2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
+import { MapOverlay } from "@/components/monitor/MapOverlay";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -95,7 +96,9 @@ function Index() {
           height={960}
           className="h-full w-full object-cover"
         />
+        <MapOverlay />
         <div className="absolute left-1/2 top-3 -translate-x-1/2 text-[11px] tracking-[0.2em] text-foreground/80">
+
           CIVIL NETWORK MONITORING SYSTEM
         </div>
         <div className="absolute right-3 top-3 flex gap-2 text-[10px]">
