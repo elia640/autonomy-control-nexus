@@ -276,6 +276,7 @@ export function ControlRoomPanel() {
                   <>
                     <Line
                       type="monotone"
+                      isAnimationActive={false}
                       dataKey="download"
                       name="Download"
                       stroke="var(--color-good)"
@@ -284,6 +285,7 @@ export function ControlRoomPanel() {
                     />
                     <Line
                       type="monotone"
+                      isAnimationActive={false}
                       dataKey="upload"
                       name="Upload"
                       stroke="var(--color-primary)"
@@ -295,6 +297,7 @@ export function ControlRoomPanel() {
                 {showBandwidth && (
                   <Line
                     type="monotone"
+                      isAnimationActive={false}
                     dataKey="bandwidth"
                     name="Bandwidth"
                     stroke="var(--color-tactical)"
