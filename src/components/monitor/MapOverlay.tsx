@@ -210,11 +210,13 @@ function UnitCard({ unit }: { unit: Unit }) {
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-8 shrink-0 text-foreground/80">SAT</span>
-                <div className="flex-1">
-                  <QualityBar value={satOn ? unit.quality : 0} disabled={!satOn} />
-                </div>
-                <Toggle checked={satOn} onChange={setSatOn} label={`${unit.label} SATCOM`} />
+                <span className="shrink-0 text-foreground/80">SAT MODEM</span>
+                <Toggle
+                  className="ml-auto"
+                  checked={satOn}
+                  onChange={setSatOn}
+                  label={`${unit.label} SATCOM`}
+                />
               </div>
             </div>
           )}
