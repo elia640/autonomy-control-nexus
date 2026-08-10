@@ -431,7 +431,7 @@ export function ControlRoomPanel({
           {(["tactical", "logical"] as const).map((m) => (
             <button
               key={m}
-              onClick={() => setMode(m)}
+              onClick={() => onModeChange(m)}
               className={cn(
                 "flex-1 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors",
                 mode === m
