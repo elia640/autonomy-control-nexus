@@ -7,6 +7,8 @@ import { LogicalView } from "@/components/monitor/LogicalView";
 import {
   MapOverlay,
   type Status,
+  nodeLabel,
+  radioLinksFor,
   statusColor,
   units,
 } from "@/components/monitor/MapOverlay";
