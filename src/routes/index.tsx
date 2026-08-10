@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronsLeft, ChevronsRight, Layers, Link2 } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
 import { LogicalView } from "@/components/monitor/LogicalView";
@@ -244,9 +244,6 @@ function Index() {
             }`}
           >
             <Link2 className="h-3 w-3" /> LINKS {linksOn ? "ON" : "OFF"}
-          </button>
-          <button className="flex items-center gap-1 rounded-sm border border-border bg-card/80 px-2 py-1">
-            <Layers className="h-3 w-3" /> LAYERS
           </button>
         </div>
       </div>
