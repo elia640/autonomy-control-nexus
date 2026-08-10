@@ -198,14 +198,10 @@ export function LogicalView({ linksOn = true }: { linksOn?: boolean }) {
                     }}
                   />
                   <span className="w-[70px] text-right text-foreground/85">{b.label}</span>
-                  <span className="w-[70px]">
-                    <QualityBar value={l.quality} />
-                  </span>
                   <span className={cn("w-[62px] text-right uppercase", statusText[l.status])}>
                     {l.status}
                   </span>
                 </div>
-
               );
             })}
           </div>
