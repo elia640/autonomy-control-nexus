@@ -88,6 +88,11 @@ export const units: Unit[] = [
     quality: 76,
     mbps: "45.9",
     lat: "125ms",
+    sims: [
+      { label: "SIM 1", quality: 79 },
+      { label: "SIM 2", quality: 68 },
+      { label: "SIM 3", quality: 41 },
+    ],
   },
   {
     id: "cmd",
@@ -113,15 +118,30 @@ export const units: Unit[] = [
   },
 ];
 
-/** Vehicle-to-vehicle radio mesh links. */
-export const radioLinks: { from: string; to: string; status: Status }[] = [
-  { from: "apc1", to: "utilA", status: "good" },
-  { from: "utilA", to: "utilB", status: "marginal" },
-  { from: "cmd", to: "tanker", status: "poor" },
-  { from: "apc1", to: "cmd", status: "good" },
-];
+/** Shared thresholds so every radio quality readout agrees. */
+export function statusFromQuality(q: number): Status {
+  return q >= 65 ? "good" : q >= 40 ? "marginal" : "poor";
+}
+
+export type RadioLink = { from: string; to: string; quality: number; status: Status };
+
+/** Vehicle-to-vehicle (and vehicle-to-command-post) radio mesh links. */
+export const radioLinks: RadioLink[] = [
+  { from: "apc1", to: "utilA", quality: 78 },
+  { from: "utilA", to: "utilB", quality: 55 },
+  { from: "cmd", to: "tanker", quality: 24 },
+  { from: "apc1", to: "cmd", quality: 71 },
+].map((l) => ({ ...l, status: statusFromQuality(l.quality) }));
+
+export const nodeLabel = (id: string) =>
+  id === "base" ? "COMMAND POST" : (units.find((u) => u.id === id)?.label ?? id);
+
+/** Radio links that involve a given node. */
+export const radioLinksFor = (id: string) =>
+  radioLinks.filter((l) => l.from === id || l.to === id);
 
 const byId = (id: string) => units.find((u) => u.id === id)!;
+
 
 /** Control point for a gentle arc between two points (bow = curvature factor). */
 function ctrl(x1: number, y1: number, x2: number, y2: number, bow: number) {
