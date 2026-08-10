@@ -156,7 +156,7 @@ export function LogicalView({ linksOn = true }: { linksOn?: boolean }) {
   ];
 
   return (
-    <div className="h-full w-full overflow-auto bg-background p-6">
+    <div className="h-full w-full overflow-auto bg-background px-4 pb-6 pt-12">
       <div className="mx-auto flex min-w-max flex-col items-center">
         {/* satellite tier */}
         <div className="flex items-center gap-2 rounded-sm border border-primary/70 bg-card/70 px-3 py-1.5 text-[10px] tracking-[0.18em] text-primary">
@@ -172,7 +172,7 @@ export function LogicalView({ linksOn = true }: { linksOn?: boolean }) {
         <div className="h-px w-[70%] bg-border" />
 
         {/* segment tiers */}
-        <div className="mt-4 flex items-start gap-10">
+        <div className="mt-4 flex flex-wrap items-start justify-center gap-x-8 gap-y-6">
           {groups.map((g) => (
             <GroupColumn key={g.title} {...g} linksOn={linksOn} />
           ))}
