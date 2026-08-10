@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronsLeft, ChevronsRight, Layers, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
+import { LogicalView } from "@/components/monitor/LogicalView";
 import {
   MapOverlay,
   type Status,
@@ -215,14 +216,20 @@ function Index() {
       )}
 
       <div className="relative min-w-0 flex-1">
-        <img
-          src={mapImage}
-          alt="Satellite map of the operating area with vehicle positions"
-          width={1280}
-          height={960}
-          className="h-full w-full object-cover"
-        />
-        <MapOverlay linksOn={linksOn} />
+        {mode === "tactical" ? (
+          <>
+            <img
+              src={mapImage}
+              alt="Satellite map of the operating area with vehicle positions"
+              width={1280}
+              height={960}
+              className="h-full w-full object-cover"
+            />
+            <MapOverlay linksOn={linksOn} />
+          </>
+        ) : (
+          <LogicalView linksOn={linksOn} />
+        )}
         <div className="absolute left-1/2 top-3 -translate-x-1/2 text-[11px] tracking-[0.2em] text-foreground/80">
           CIVIL NETWORK MONITORING SYSTEM
         </div>
@@ -244,7 +251,7 @@ function Index() {
         </div>
       </div>
 
-      <ControlRoomPanel />
+      <ControlRoomPanel mode={mode} onModeChange={setMode} />
     </main>
   );
 }
