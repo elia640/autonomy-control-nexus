@@ -245,9 +245,6 @@ function Index() {
           >
             <Link2 className="h-3 w-3" /> LINKS {linksOn ? "ON" : "OFF"}
           </button>
-          <button className="flex items-center gap-1 rounded-sm border border-border bg-card/80 px-2 py-1">
-            <Layers className="h-3 w-3" /> LAYERS
-          </button>
         </div>
       </div>
 
