@@ -166,7 +166,13 @@ function AssetBody({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ControlRoomPanel() {
+export function ControlRoomPanel({
+  mode,
+  onModeChange,
+}: {
+  mode: "tactical" | "logical";
+  onModeChange: (m: "tactical" | "logical") => void;
+}) {
   const [modemOn, setModemOn] = useState(true);
   const [satOn, setSatOn] = useState(true);
   const [radioOn, setRadioOn] = useState(true);
@@ -174,7 +180,6 @@ export function ControlRoomPanel() {
   const [satExpanded, setSatExpanded] = useState(true);
   const [radioExpanded, setRadioExpanded] = useState(true);
   const [sims, setSims] = useState([true, true, true]);
-  const [mode, setMode] = useState<"tactical" | "logical">("tactical");
   const [showUpload, setShowUpload] = useState(true);
   const [showDownload, setShowDownload] = useState(true);
   const [showBandwidth, setShowBandwidth] = useState(true);
@@ -426,7 +431,7 @@ export function ControlRoomPanel() {
           {(["tactical", "logical"] as const).map((m) => (
             <button
               key={m}
-              onClick={() => setMode(m)}
+              onClick={() => onModeChange(m)}
               className={cn(
                 "flex-1 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors",
                 mode === m
