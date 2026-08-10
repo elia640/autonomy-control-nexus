@@ -7,6 +7,8 @@ import { LogicalView } from "@/components/monitor/LogicalView";
 import {
   MapOverlay,
   type Status,
+  nodeLabel,
+  radioLinksFor,
   statusColor,
   units,
 } from "@/components/monitor/MapOverlay";
@@ -168,15 +170,35 @@ function Index() {
               <span className="w-11 text-right">Down</span>
             </div>
             {units.map((u) => (
-              <div key={u.id} className="flex items-center gap-2 py-1">
-                <span className="w-[62px] truncate text-foreground">{u.label}</span>
-                <span className="w-[52px] text-muted-foreground">{u.link}</span>
-                <span className="flex-1">
-                  <QualityBar value={u.quality} />
-                </span>
-                <span className="w-11 text-right text-muted-foreground">{u.mbps}</span>
+              <div key={u.id} className="py-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-[62px] truncate text-foreground">{u.label}</span>
+                  <span className="w-[52px] text-muted-foreground">{u.link}</span>
+                  <span className="flex-1">
+                    <QualityBar value={u.quality} />
+                  </span>
+                  <span className="w-11 text-right text-muted-foreground">{u.mbps}</span>
+                </div>
+                {radioLinksFor(u.id).map((l) => {
+                  const peer = l.from === u.id ? l.to : l.from;
+                  return (
+                    <div
+                      key={`${u.id}-${l.from}-${l.to}`}
+                      className="mt-0.5 flex items-center gap-2 border-l border-border pl-2 text-[9px]"
+                    >
+                      <span className="w-[56px] text-muted-foreground">RF LINK</span>
+                      <span className="w-[58px] truncate text-foreground/80" title={nodeLabel(peer)}>
+                        {nodeLabel(peer)}
+                      </span>
+                      <span className="flex-1">
+                        <QualityBar value={l.quality} />
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             ))}
+
           </div>
 
           <SubHeader title="Satellite Link" />

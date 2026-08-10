@@ -88,6 +88,11 @@ export const units: Unit[] = [
     quality: 76,
     mbps: "45.9",
     lat: "125ms",
+    sims: [
+      { label: "SIM 1", quality: 79 },
+      { label: "SIM 2", quality: 68 },
+      { label: "SIM 3", quality: 41 },
+    ],
   },
   {
     id: "cmd",
@@ -113,15 +118,30 @@ export const units: Unit[] = [
   },
 ];
 
-/** Vehicle-to-vehicle radio mesh links. */
-export const radioLinks: { from: string; to: string; status: Status }[] = [
-  { from: "apc1", to: "utilA", status: "good" },
-  { from: "utilA", to: "utilB", status: "marginal" },
-  { from: "cmd", to: "tanker", status: "poor" },
-  { from: "apc1", to: "cmd", status: "good" },
-];
+/** Shared thresholds so every radio quality readout agrees. */
+export function statusFromQuality(q: number): Status {
+  return q >= 65 ? "good" : q >= 40 ? "marginal" : "poor";
+}
+
+export type RadioLink = { from: string; to: string; quality: number; status: Status };
+
+/** Vehicle-to-vehicle (and vehicle-to-command-post) radio mesh links. */
+export const radioLinks: RadioLink[] = [
+  { from: "apc1", to: "utilA", quality: 78 },
+  { from: "utilA", to: "utilB", quality: 55 },
+  { from: "cmd", to: "tanker", quality: 24 },
+  { from: "apc1", to: "cmd", quality: 71 },
+].map((l) => ({ ...l, status: statusFromQuality(l.quality) }));
+
+export const nodeLabel = (id: string) =>
+  id === "base" ? "COMMAND POST" : (units.find((u) => u.id === id)?.label ?? id);
+
+/** Radio links that involve a given node. */
+export const radioLinksFor = (id: string) =>
+  radioLinks.filter((l) => l.from === id || l.to === id);
 
 const byId = (id: string) => units.find((u) => u.id === id)!;
+
 
 /** Control point for a gentle arc between two points (bow = curvature factor). */
 function ctrl(x1: number, y1: number, x2: number, y2: number, bow: number) {
@@ -146,9 +166,11 @@ function UnitCard({ unit }: { unit: Unit }) {
   const [expanded, setExpanded] = useState(!!unit.defaultExpanded);
   const [sims, setSims] = useState([true, true, true]);
   const [satOn, setSatOn] = useState(true);
+  const [radioOn, setRadioOn] = useState(true);
+  const links = radioLinksFor(unit.id);
 
   return (
-    <div className="pointer-events-auto mt-1 w-[132px] rounded-sm border border-border bg-background/90 text-[9px] leading-tight backdrop-blur-sm">
+    <div className="pointer-events-auto mt-1 w-[146px] rounded-sm border border-border bg-background/90 text-[9px] leading-tight backdrop-blur-sm">
       <div className="flex items-center gap-1 border-b border-border/70 px-1.5 py-1">
         <button
           type="button"
@@ -165,64 +187,91 @@ function UnitCard({ unit }: { unit: Unit }) {
         </span>
       </div>
 
-      <div className="px-1.5 py-1">
-        <QualityBar value={unit.quality} />
-      </div>
-
-      {expanded && (
-        <div className="space-y-1 border-t border-border/70 px-1.5 py-1">
+      <div className="space-y-1 px-1.5 py-1">
+        {expanded && (
           <div className="flex items-center justify-between text-muted-foreground">
             <span>{unit.mbps} Mbps</span>
             <span>{unit.lat}</span>
           </div>
+        )}
 
-          {unit.link === "CELLULAR" && unit.sims && (
-            <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
-              {unit.sims.map((s, i) => (
-                <div key={s.label} className="flex items-center gap-1.5">
-                  <span className="w-8 shrink-0 text-foreground/80">{s.label}</span>
-                  <div className="flex-1">
-                    <QualityBar value={sims[i] ? s.quality : 0} disabled={!sims[i]} />
-                  </div>
+        {unit.link === "CELLULAR" && unit.sims && (
+          <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
+            {unit.sims.map((s, i) => (
+              <div key={s.label} className="flex items-center gap-1.5">
+                <span className="w-8 shrink-0 text-foreground/80">{s.label}</span>
+                <div className="flex-1">
+                  <QualityBar value={sims[i] ? s.quality : 0} disabled={!sims[i]} />
+                </div>
+                {expanded && (
                   <Toggle
                     checked={!!sims[i]}
                     onChange={(v) => setSims((p) => p.map((x, j) => (j === i ? v : x)))}
                     label={`${unit.label} ${s.label}`}
                   />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {unit.link === "SATCOM" && unit.sat && (
-            <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
-              <div className="flex items-center gap-1">
-                {unit.sat.locked ? (
-                  <Lock className="h-2.5 w-2.5 text-good" />
-                ) : (
-                  <LockOpen className="h-2.5 w-2.5 text-poor" />
                 )}
-                <span className={unit.sat.locked ? "text-good" : "text-poor"}>
-                  {unit.sat.locked ? "LOCKED" : "NO LOCK"}
-                </span>
-                <span className="ml-auto text-muted-foreground">
-                  {satOn && unit.sat.connected ? "CONNECTED" : "DISCONNECTED"}
-                </span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-8 shrink-0 text-foreground/80">SAT</span>
-                <div className="flex-1">
-                  <QualityBar value={satOn ? unit.quality : 0} disabled={!satOn} />
-                </div>
-                <Toggle checked={satOn} onChange={setSatOn} label={`${unit.label} SATCOM`} />
-              </div>
+            ))}
+          </div>
+        )}
+
+        {unit.link === "SATCOM" && unit.sat && (
+          <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
+            <div className="flex items-center gap-1">
+              {unit.sat.locked ? (
+                <Lock className="h-2.5 w-2.5 text-good" />
+              ) : (
+                <LockOpen className="h-2.5 w-2.5 text-poor" />
+              )}
+              <span className={unit.sat.locked ? "text-good" : "text-poor"}>
+                {unit.sat.locked ? "LOCKED" : "NO LOCK"}
+              </span>
+              <span className="ml-auto text-muted-foreground">
+                {satOn && unit.sat.connected ? "CONNECTED" : "DISCONNECTED"}
+              </span>
             </div>
-          )}
-        </div>
-      )}
+            <div className="flex items-center gap-1.5">
+              <span className="w-8 shrink-0 text-foreground/80">SAT</span>
+              <div className="flex-1">
+                <QualityBar value={satOn ? unit.quality : 0} disabled={!satOn} />
+              </div>
+              {expanded && (
+                <Toggle checked={satOn} onChange={setSatOn} label={`${unit.label} SATCOM`} />
+              )}
+            </div>
+          </div>
+        )}
+
+        {unit.link === "RADIO" && (
+          <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
+            {links.length === 0 && <span className="text-muted-foreground">NO RF LINK</span>}
+            {links.map((l) => {
+              const peer = l.from === unit.id ? l.to : l.from;
+              return (
+                <div key={`${l.from}-${l.to}`} className="flex items-center gap-1.5">
+                  <span className="w-8 shrink-0 truncate text-foreground/80" title={nodeLabel(peer)}>
+                    {nodeLabel(peer).replace("PLATFORM ", "P")}
+                  </span>
+                  <div className="flex-1">
+                    <QualityBar value={radioOn ? l.quality : 0} disabled={!radioOn} />
+                  </div>
+                  {expanded && (
+                    <Toggle
+                      checked={radioOn}
+                      onChange={setRadioOn}
+                      label={`${unit.label} radio`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
 
 export function MapOverlay({ linksOn = true }: { linksOn?: boolean }) {
   return (
