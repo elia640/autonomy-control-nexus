@@ -3,6 +3,7 @@ import {
   CartesianGrid,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -21,6 +22,8 @@ import {
 import { Toggle } from "./Toggle";
 import { QualityBar } from "./QualityBar";
 import { cn } from "@/lib/utils";
+
+const MAX_BANDWIDTH = 22;
 
 const data = Array.from({ length: 13 }, (_, i) => {
   const t = i * 5;
