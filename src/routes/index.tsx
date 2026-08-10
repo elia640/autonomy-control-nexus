@@ -47,7 +47,7 @@ function SubHeader({ title }: { title: string }) {
   );
 }
 
-/** Mesh matrix cell values (link margin, dB) keyed by unordered platform pair. */
+/** Mesh matrix cell values (link margin, dB) keyed by unordered node pair. */
 const meshValues: Record<string, number> = {
   "apc1|utilA": 16,
   "apc1|utilB": 26,
@@ -59,7 +59,18 @@ const meshValues: Record<string, number> = {
   "utilB|cmd": 16,
   "utilB|tanker": 6,
   "cmd|tanker": 8,
+  "gs|apc1": 27,
+  "gs|utilA": 18,
+  "gs|utilB": 21,
+  "gs|cmd": 14,
+  "gs|tanker": 7,
 };
+
+/** Matrix nodes: ground station (CP) first, then platforms. */
+const matrixNodes = [
+  { id: "gs", short: "GS", label: "GROUND STATION" },
+  ...units.map((u) => ({ id: u.id, short: `P${u.label.split(" ")[1]}`, label: u.label })),
+];
 
 function meshCell(a: string, b: string) {
   if (a === b) return null;
@@ -76,23 +87,29 @@ function ConnectivityMatrix() {
           <thead>
             <tr>
               <th className="w-9 border border-border/80 bg-panel-header p-0" />
-              {units.map((u) => (
+              {matrixNodes.map((n) => (
                 <th
-                  key={u.id}
-                  className="border border-border/80 bg-panel-header px-1 py-1 text-center font-normal tracking-wider text-muted-foreground"
+                  key={n.id}
+                  className={`border border-border/80 bg-panel-header px-1 py-1 text-center font-normal tracking-wider ${
+                    n.id === "gs" ? "text-primary" : "text-muted-foreground"
+                  }`}
                 >
-                  P{u.label.split(" ")[1]}
+                  {n.short}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {units.map((r) => (
+            {matrixNodes.map((r) => (
               <tr key={r.id}>
-                <td className="border border-border/80 bg-panel-header px-1 py-1 text-left tracking-wider text-muted-foreground">
-                  P{r.label.split(" ")[1]}
+                <td
+                  className={`border border-border/80 bg-panel-header px-1 py-1 text-left tracking-wider ${
+                    r.id === "gs" ? "text-primary" : "text-muted-foreground"
+                  }`}
+                >
+                  {r.short}
                 </td>
-                {units.map((c) => {
+                {matrixNodes.map((c) => {
                   const cell = meshCell(r.id, c.id);
                   return (
                     <td
@@ -115,6 +132,7 @@ function ConnectivityMatrix() {
           </tbody>
         </table>
       </div>
+
 
       <div className="mt-1.5 flex items-center justify-between rounded-[3px] border border-border bg-panel-header px-1.5 py-1 text-[9px]">
         <span className="uppercase tracking-wider text-muted-foreground">Frequency</span>
