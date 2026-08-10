@@ -172,7 +172,8 @@ export function ControlRoomPanel() {
   const [radioExpanded, setRadioExpanded] = useState(true);
   const [sims, setSims] = useState([true, true, true]);
   const [mode, setMode] = useState<"tactical" | "logical">("tactical");
-  const [showRate, setShowRate] = useState(true);
+  const [showUpload, setShowUpload] = useState(true);
+  const [showDownload, setShowDownload] = useState(true);
   const [showBandwidth, setShowBandwidth] = useState(true);
 
   return (
@@ -332,24 +333,37 @@ export function ControlRoomPanel() {
                     fontSize: 10,
                   }}
                 />
-                {showRate && (
-                  <Line
-                    type="monotone"
-                    isAnimationActive={false}
-                    dataKey="download"
-                    name="Download"
-                    stroke="var(--color-good)"
-                    dot={false}
-                    strokeWidth={1.6}
-                  />
-                )}
-                {showRate && (
+                <ReferenceLine
+                  y={MAX_BANDWIDTH}
+                  stroke="var(--color-primary)"
+                  strokeDasharray="5 4"
+                  strokeWidth={1.4}
+                  ifOverflow="extendDomain"
+                  label={{
+                    value: "MAX BW",
+                    position: "insideTopRight",
+                    fontSize: 8,
+                    fill: "var(--color-primary)",
+                  }}
+                />
+                {showUpload && (
                   <Line
                     type="monotone"
                     isAnimationActive={false}
                     dataKey="upload"
                     name="Upload"
-                    stroke="var(--color-primary)"
+                    stroke="var(--color-good)"
+                    dot={false}
+                    strokeWidth={1.6}
+                  />
+                )}
+                {showDownload && (
+                  <Line
+                    type="monotone"
+                    isAnimationActive={false}
+                    dataKey="download"
+                    name="Download"
+                    stroke="var(--color-marginal)"
                     dot={false}
                     strokeWidth={1.6}
                   />
@@ -360,9 +374,8 @@ export function ControlRoomPanel() {
                     isAnimationActive={false}
                     dataKey="bandwidth"
                     name="Bandwidth"
-                    stroke="var(--color-tactical)"
+                    stroke="var(--color-primary)"
                     dot={false}
-                    strokeDasharray="4 3"
                     strokeWidth={1.6}
                   />
                 )}
@@ -370,24 +383,36 @@ export function ControlRoomPanel() {
             </ResponsiveContainer>
           </div>
 
-          <div className="mt-2 flex items-center gap-4 px-2 text-[10px] text-muted-foreground">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-2 text-[10px] text-muted-foreground">
             <label className="flex cursor-pointer items-center gap-1.5">
               <input
                 type="checkbox"
-                checked={showRate}
-                onChange={(e) => setShowRate(e.target.checked)}
+                checked={showUpload}
+                onChange={(e) => setShowUpload(e.target.checked)}
                 className="h-3 w-3 accent-[var(--color-good)]"
               />
-              Rate only
+              <span className="h-0.5 w-3 bg-[var(--color-good)]" />
+              Upload
+            </label>
+            <label className="flex cursor-pointer items-center gap-1.5">
+              <input
+                type="checkbox"
+                checked={showDownload}
+                onChange={(e) => setShowDownload(e.target.checked)}
+                className="h-3 w-3 accent-[var(--color-marginal)]"
+              />
+              <span className="h-0.5 w-3 bg-[var(--color-marginal)]" />
+              Download
             </label>
             <label className="flex cursor-pointer items-center gap-1.5">
               <input
                 type="checkbox"
                 checked={showBandwidth}
                 onChange={(e) => setShowBandwidth(e.target.checked)}
-                className="h-3 w-3 accent-[var(--color-tactical)]"
+                className="h-3 w-3 accent-[var(--color-primary)]"
               />
-              Bandwidth only
+              <span className="h-0.5 w-3 bg-[var(--color-primary)]" />
+              Bandwidth
             </label>
           </div>
         </div>
