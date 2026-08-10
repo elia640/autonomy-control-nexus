@@ -229,34 +229,59 @@ export function MapOverlay({ linksOn = true }: { linksOn?: boolean }) {
 
         {linksOn && (
           <g>
+            {/* ground station <-> platforms: gentle curves with animated flow */}
             {units.map((u) => (
-              <line
-                key={u.id}
-                x1={base.x}
-                y1={base.y}
-                x2={u.x}
-                y2={u.y}
-                stroke={statusColor[u.status]}
-                strokeWidth="0.22"
-                strokeDasharray={u.status === "poor" ? "1.2 1" : undefined}
-                opacity="0.85"
-              />
+              <g key={u.id}>
+                <path
+                  d={curve(base.x, base.y, u.x, u.y, 0.12)}
+                  fill="none"
+                  stroke={statusColor[u.status]}
+                  strokeWidth="0.5"
+                  opacity="0.12"
+                  strokeLinecap="round"
+                />
+                <path
+                  d={curve(base.x, base.y, u.x, u.y, 0.12)}
+                  fill="none"
+                  stroke={statusColor[u.status]}
+                  strokeWidth="0.18"
+                  opacity="0.9"
+                  strokeLinecap="round"
+                />
+                <path
+                  d={curve(base.x, base.y, u.x, u.y, 0.12)}
+                  fill="none"
+                  stroke={statusColor[u.status]}
+                  strokeWidth="0.32"
+                  strokeDasharray="0.6 3"
+                  strokeLinecap="round"
+                  opacity="0.95"
+                >
+                  <animate
+                    attributeName="stroke-dashoffset"
+                    from="7.2"
+                    to="0"
+                    dur="2.4s"
+                    repeatCount="indefinite"
+                  />
+                </path>
+              </g>
             ))}
 
+            {/* inter-platform radio mesh: arced dashed links */}
             {radioLinks.map((l) => {
               const a = byId(l.from);
               const b = byId(l.to);
               return (
-                <line
+                <path
                   key={`${l.from}-${l.to}`}
-                  x1={a.x}
-                  y1={a.y}
-                  x2={b.x}
-                  y2={b.y}
+                  d={curve(a.x, a.y, b.x, b.y, -0.22)}
+                  fill="none"
                   stroke={statusColor[l.status]}
-                  strokeWidth="0.16"
-                  strokeDasharray="0.8 0.8"
-                  opacity="0.7"
+                  strokeWidth="0.14"
+                  strokeDasharray="1 1.1"
+                  strokeLinecap="round"
+                  opacity="0.75"
                 />
               );
             })}
@@ -280,10 +305,32 @@ export function MapOverlay({ linksOn = true }: { linksOn?: boolean }) {
               strokeWidth="0.18"
               opacity="0.7"
             />
-
           </g>
         )}
       </svg>
+
+      {/* radio mesh midpoint chips */}
+      {linksOn &&
+        radioLinks.map((l) => {
+          const a = byId(l.from);
+          const b = byId(l.to);
+          const m = curveMid(a.x, a.y, b.x, b.y, -0.22);
+          return (
+            <div
+              key={`chip-${l.from}-${l.to}`}
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-sm border bg-background/85 px-1 py-[1px] text-[8px] tracking-[0.12em] backdrop-blur-sm"
+              style={{
+                left: `${m.x}%`,
+                top: `${m.y}%`,
+                borderColor: statusColor[l.status],
+                color: statusColor[l.status],
+              }}
+            >
+              RF
+            </div>
+          );
+        })}
+
 
       {/* base station */}
       <div
