@@ -269,7 +269,6 @@ export function MapOverlay({ linksOn = true }: { linksOn?: boolean }) {
               y2={satellite.y}
               stroke="var(--primary)"
               strokeWidth="0.22"
-              strokeDasharray="1.6 1.2"
               opacity="0.9"
             />
             <line
@@ -279,9 +278,9 @@ export function MapOverlay({ linksOn = true }: { linksOn?: boolean }) {
               y2={satellite.y}
               stroke="var(--primary)"
               strokeWidth="0.18"
-              strokeDasharray="1.6 1.2"
-              opacity="0.6"
+              opacity="0.7"
             />
+
           </g>
         )}
       </svg>

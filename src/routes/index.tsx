@@ -3,7 +3,12 @@ import { useState } from "react";
 import { ChevronsLeft, ChevronsRight, Layers, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
-import { MapOverlay, radioLinks, statusColor, units } from "@/components/monitor/MapOverlay";
+import {
+  MapOverlay,
+  type Status,
+  statusColor,
+  units,
+} from "@/components/monitor/MapOverlay";
 import { QualityBar } from "@/components/monitor/QualityBar";
 
 export const Route = createFileRoute("/")({
@@ -41,57 +46,80 @@ function SubHeader({ title }: { title: string }) {
   );
 }
 
-/** Link status between two platforms, derived from the radio mesh definition. */
-function matrixStatus(a: string, b: string) {
+/** Mesh matrix cell values (link margin, dB) keyed by unordered platform pair. */
+const meshValues: Record<string, number> = {
+  "apc1|utilA": 16,
+  "apc1|utilB": 26,
+  "apc1|cmd": 28,
+  "apc1|tanker": 13,
+  "utilA|utilB": 15,
+  "utilA|cmd": 15,
+  "utilA|tanker": 9,
+  "utilB|cmd": 16,
+  "utilB|tanker": 6,
+  "cmd|tanker": 8,
+};
+
+function meshCell(a: string, b: string) {
   if (a === b) return null;
-  const l = radioLinks.find(
-    (r) => (r.from === a && r.to === b) || (r.from === b && r.to === a),
-  );
-  return l?.status ?? null;
+  const v = meshValues[`${a}|${b}`] ?? meshValues[`${b}|${a}`] ?? 10;
+  const status: Status = v >= 16 ? "good" : v >= 10 ? "marginal" : "poor";
+  return { v, status };
 }
 
 function ConnectivityMatrix() {
   return (
     <div className="px-2 py-2">
-      <table className="w-full border-collapse text-[9px]">
-        <thead>
-          <tr>
-            <th className="w-8" />
-            {units.map((u) => (
-              <th
-                key={u.id}
-                className="pb-1 text-center font-normal tracking-wider text-muted-foreground"
-              >
-                P{u.label.split(" ")[1]}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {units.map((r) => (
-            <tr key={r.id}>
-              <td className="pr-1 text-right tracking-wider text-muted-foreground">
-                P{r.label.split(" ")[1]}
-              </td>
-              {units.map((c) => {
-                const s = matrixStatus(r.id, c.id);
-                return (
-                  <td key={c.id} className="p-[2px]">
-                    <div
-                      className="h-3.5 w-full rounded-[2px] border border-border/70"
-                      style={{
-                        background: s ? statusColor[s] : "transparent",
-                        opacity: s ? 0.8 : 1,
-                      }}
-                      title={`${r.label} ↔ ${c.label}: ${s ?? "no link"}`}
-                    />
-                  </td>
-                );
-              })}
+      <div className="overflow-hidden rounded-[3px] border border-border">
+        <table className="w-full border-collapse text-[9px]">
+          <thead>
+            <tr>
+              <th className="w-9 border border-border/80 bg-panel-header p-0" />
+              {units.map((u) => (
+                <th
+                  key={u.id}
+                  className="border border-border/80 bg-panel-header px-1 py-1 text-center font-normal tracking-wider text-muted-foreground"
+                >
+                  P{u.label.split(" ")[1]}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {units.map((r) => (
+              <tr key={r.id}>
+                <td className="border border-border/80 bg-panel-header px-1 py-1 text-left tracking-wider text-muted-foreground">
+                  P{r.label.split(" ")[1]}
+                </td>
+                {units.map((c) => {
+                  const cell = meshCell(r.id, c.id);
+                  return (
+                    <td
+                      key={c.id}
+                      className="border border-border/80 p-0 text-center font-semibold"
+                      style={{
+                        background: cell ? statusColor[cell.status] : "transparent",
+                        color: cell ? "hsl(0 0% 8%)" : "var(--muted-foreground)",
+                      }}
+                      title={`${r.label} ↔ ${c.label}: ${cell ? `${cell.v} dB` : "self"}`}
+                    >
+                      <div className="flex h-5 items-center justify-center">
+                        {cell ? cell.v : <span className="opacity-50">—</span>}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-1.5 flex items-center justify-between rounded-[3px] border border-border bg-panel-header px-1.5 py-1 text-[9px]">
+        <span className="uppercase tracking-wider text-muted-foreground">Frequency</span>
+        <span className="tracking-wider text-foreground">MESH-A · 2.412 GHz</span>
+      </div>
+
       <div className="mt-1.5 flex items-center gap-2 text-[9px] text-muted-foreground">
         {(["good", "marginal", "poor"] as const).map((s) => (
           <span key={s} className="flex items-center gap-1">
@@ -103,6 +131,8 @@ function ConnectivityMatrix() {
     </div>
   );
 }
+
+
 
 function Index() {
   const [linksOn, setLinksOn] = useState(true);
