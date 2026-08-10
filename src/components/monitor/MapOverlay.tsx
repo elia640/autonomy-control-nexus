@@ -211,12 +211,9 @@ function UnitCard({ unit }: { unit: Unit }) {
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="shrink-0 text-foreground/80">SAT MODEM</span>
-                <Toggle
-                  className="ml-auto"
-                  checked={satOn}
-                  onChange={setSatOn}
-                  label={`${unit.label} SATCOM`}
-                />
+                <span className="ml-auto">
+                  <Toggle checked={satOn} onChange={setSatOn} label={`${unit.label} SATCOM`} />
+                </span>
               </div>
             </div>
           )}
