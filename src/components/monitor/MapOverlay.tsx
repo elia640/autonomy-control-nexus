@@ -123,6 +123,25 @@ export const radioLinks: { from: string; to: string; status: Status }[] = [
 
 const byId = (id: string) => units.find((u) => u.id === id)!;
 
+/** Control point for a gentle arc between two points (bow = curvature factor). */
+function ctrl(x1: number, y1: number, x2: number, y2: number, bow: number) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return { cx: mx - dy * bow, cy: my + dx * bow };
+}
+
+function curve(x1: number, y1: number, x2: number, y2: number, bow: number) {
+  const { cx, cy } = ctrl(x1, y1, x2, y2, bow);
+  return `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+}
+
+function curveMid(x1: number, y1: number, x2: number, y2: number, bow: number) {
+  const { cx, cy } = ctrl(x1, y1, x2, y2, bow);
+  return { x: 0.25 * x1 + 0.5 * cx + 0.25 * x2, y: 0.25 * y1 + 0.5 * cy + 0.25 * y2 };
+}
+
 function UnitCard({ unit }: { unit: Unit }) {
   const [expanded, setExpanded] = useState(!!unit.defaultExpanded);
   const [sims, setSims] = useState([true, true, true]);
