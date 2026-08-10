@@ -3,7 +3,12 @@ import { useState } from "react";
 import { ChevronsLeft, ChevronsRight, Layers, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
-import { MapOverlay, radioLinks, statusColor, units } from "@/components/monitor/MapOverlay";
+import {
+  MapOverlay,
+  type Status,
+  statusColor,
+  units,
+} from "@/components/monitor/MapOverlay";
 import { QualityBar } from "@/components/monitor/QualityBar";
 
 export const Route = createFileRoute("/")({
