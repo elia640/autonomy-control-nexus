@@ -88,6 +88,11 @@ export const units: Unit[] = [
     quality: 76,
     mbps: "45.9",
     lat: "125ms",
+    sims: [
+      { label: "SIM 1", quality: 78 },
+      { label: "SIM 2", quality: 66 },
+      { label: "SIM 3", quality: 41 },
+    ],
   },
   {
     id: "cmd",
