@@ -76,28 +76,11 @@ function LogicalUnitCard({ unit }: { unit: Unit }) {
               <span className="ml-auto text-muted-foreground">
                 {satOn && unit.sat.connected ? "CONNECTED" : "DISCONNECTED"}
               </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-8 shrink-0 text-foreground/80">SAT</span>
-              <div className="flex-1">
-                <QualityBar value={satOn ? unit.quality : 0} disabled={!satOn} />
-              </div>
               <Toggle checked={satOn} onChange={setSatOn} label={`${unit.label} SATCOM`} />
             </div>
           </div>
         )}
 
-        {unit.link === "RADIO" && (
-          <div className="space-y-1 border-l-2 border-primary/40 pl-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="w-8 shrink-0 text-foreground/80">RF</span>
-              <div className="flex-1">
-                <QualityBar value={unit.quality} />
-              </div>
-              <span className={statusText[unit.status]}>{unit.status.toUpperCase()}</span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
