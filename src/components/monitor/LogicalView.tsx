@@ -157,7 +157,7 @@ export function LogicalView({ linksOn = true }: { linksOn?: boolean }) {
 
   return (
     <div className="h-full w-full overflow-auto bg-background px-4 pb-6 pt-12">
-      <div className="mx-auto flex min-w-max flex-col items-center">
+      <div className="mx-auto flex w-full flex-col items-center">
         {/* satellite tier */}
         <div className="flex items-center gap-2 rounded-sm border border-primary/70 bg-card/70 px-3 py-1.5 text-[10px] tracking-[0.18em] text-primary">
           <Satellite className="h-3.5 w-3.5" /> TELS-1 SATELLITE
