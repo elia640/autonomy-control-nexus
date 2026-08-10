@@ -137,6 +137,8 @@ function ConnectivityMatrix() {
 function Index() {
   const [linksOn, setLinksOn] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mode, setMode] = useState<"tactical" | "logical">("tactical");
+
 
   return (
     <main className="flex h-screen w-full overflow-hidden bg-background">
