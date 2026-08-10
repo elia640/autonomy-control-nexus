@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronsLeft, ChevronsRight, Layers, Link2 } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, Link2 } from "lucide-react";
 import mapImage from "@/assets/map-satellite.jpg";
 import { ControlRoomPanel } from "@/components/monitor/ControlRoomPanel";
 import { LogicalView } from "@/components/monitor/LogicalView";
