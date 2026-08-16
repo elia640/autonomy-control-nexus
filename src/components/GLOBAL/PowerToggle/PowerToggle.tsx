@@ -15,7 +15,7 @@ export function PowerToggle({ checked, onChange, label, disabled }: PowerToggleP
       role="switch"
       aria-checked={checked}
       aria-label={label}
-      disabled={disabled}
+      disabled={disabled ?? false}
       onClick={() => onChange(!checked)}
     >
       <ToggleThumb on={checked} />

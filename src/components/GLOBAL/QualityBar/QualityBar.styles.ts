@@ -2,7 +2,7 @@ import { styled } from "@mui/material/styles";
 
 export const QualityBarTrack = styled("div", {
   shouldForwardProp: (prop) => prop !== "muted",
-})<{ muted?: boolean }>(({ theme, muted }) => ({
+})<{ muted?: boolean | undefined }>(({ theme, muted }) => ({
   position: "relative",
   height: 7,
   width: "100%",
