@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 
-export const SidePanelRoot = styled(Box, {
+export const SidePanelRoot = styled("aside", {
   shouldForwardProp: (prop) => prop !== "side" && prop !== "width",
 })<{ side: "left" | "right"; width: number }>(({ theme, side, width }) => ({
   display: "flex",

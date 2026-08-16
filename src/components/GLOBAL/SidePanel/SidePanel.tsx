@@ -13,7 +13,7 @@ export interface SidePanelProps {
 
 export function SidePanel({ side, width = 300, header, footer, children }: SidePanelProps) {
   return (
-    <SidePanelRoot component="aside" side={side} width={width}>
+    <SidePanelRoot side={side} width={width}>
       {header}
       <SidePanelScroll>{children}</SidePanelScroll>
       {footer}

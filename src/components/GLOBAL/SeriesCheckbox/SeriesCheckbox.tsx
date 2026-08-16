@@ -19,7 +19,7 @@ export function SeriesCheckbox({ label, color, checked, onChange }: SeriesCheckb
           seriesColor={color}
           checked={checked}
           onChange={(event) => onChange(event.target.checked)}
-          inputProps={{ "aria-label": label }}
+          slotProps={{ input: { "aria-label": label } }}
         />
       }
       label={
