@@ -18,7 +18,10 @@ import {
   CardSection,
   CardTitle,
   ConnectionState,
+  ExtraItem,
   ExtraKind,
+  ExtraTopRow,
+
   ExtraModem,
   ExtraRate,
   LockRow,
@@ -121,24 +124,27 @@ export function PlatformCard({
           {unit.extraLinks && (
             <NestedList>
               {unit.extraLinks.map((link, index) => (
-                <NestedRow key={link.modem}>
-                  <ExtraKind>{link.kind}</ExtraKind>
-                  <ExtraModem>{link.modem}</ExtraModem>
-                  <NestedBar>
-                    <QualityBar
-                      value={extras.isOn(index) ? link.quality : 0}
-                      disabled={!extras.isOn(index)}
-                      ariaLabel={`${unit.label} ${link.modem} quality`}
+                <ExtraItem key={link.modem}>
+                  <ExtraTopRow>
+                    <ExtraKind>{link.kind}</ExtraKind>
+                    <ExtraRate>{link.mbps} Mbps</ExtraRate>
+                    <PowerToggle
+                      checked={extras.isOn(index)}
+                      onChange={(value) => extras.set(index, value)}
+                      label={`${unit.label} ${link.modem}`}
                     />
-                  </NestedBar>
-                  <ExtraRate>{link.mbps}</ExtraRate>
-                  <PowerToggle
-                    checked={extras.isOn(index)}
-                    onChange={(value) => extras.set(index, value)}
-                    label={`${unit.label} ${link.modem}`}
-                  />
-                </NestedRow>
+                  </ExtraTopRow>
+                  <ExtraTopRow>
+                    <ExtraModem>{link.modem}</ExtraModem>
+                    <QualityBar
+                    value={extras.isOn(index) ? link.quality : 0}
+                    disabled={!extras.isOn(index)}
+                    ariaLabel={`${unit.label} ${link.modem} quality`}
+                    />
+                  </ExtraTopRow>
+                </ExtraItem>
               ))}
+
             </NestedList>
           )}
 

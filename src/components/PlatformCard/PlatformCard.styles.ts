@@ -103,25 +103,41 @@ export const ConnectionState = styled("span")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+export const ExtraItem = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(0.5),
+  minWidth: 0,
+}));
+
+export const ExtraTopRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  minWidth: 0,
+}));
+
 export const ExtraKind = styled("span")(({ theme }) => ({
-  width: 46,
   flexShrink: 0,
   letterSpacing: "0.06em",
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.primary,
 }));
 
 export const ExtraModem = styled("span")(({ theme }) => ({
-  width: 46,
   flexShrink: 0,
+  fontSize: "0.45rem",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
   color: theme.palette.primary.main,
 }));
 
 export const ExtraRate = styled("span")(({ theme }) => ({
-  width: 30,
   flexShrink: 0,
   textAlign: "right",
   color: theme.palette.text.secondary,
 }));
+
 
 export const CameraButton = styled(ButtonBase)(({ theme }) => ({
   width: "100%",
