@@ -14,6 +14,14 @@ export interface SatcomState {
   connected: boolean;
 }
 
+/** A secondary communication range served by its own modem. */
+export interface ModemLink {
+  modem: string;
+  kind: LinkKind;
+  quality: number;
+  mbps: string;
+}
+
 export interface PlatformUnit {
   id: string;
   label: string;
@@ -28,7 +36,25 @@ export interface PlatformUnit {
   defaultExpanded?: boolean;
   sims?: SimCard[];
   sat?: SatcomState;
+  /** Additional communication ranges with their own modems. */
+  extraLinks?: ModemLink[];
 }
+
+/** A communication relay the operator can drag anywhere on the map. */
+export interface RelayUnit {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  status: LinkStatus;
+  link: LinkKind;
+  quality: number;
+  mbps: string;
+  lat: string;
+  /** Platform ids the relay serves. */
+  connectedTo: string[];
+}
+
 
 export interface MeshLink {
   from: string;
