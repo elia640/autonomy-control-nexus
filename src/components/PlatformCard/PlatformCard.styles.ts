@@ -57,6 +57,13 @@ export const CardDetails = styled("div")(({ theme }) => ({
   borderTop: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
 }));
 
+export const RateText = styled("span", {
+  shouldForwardProp: (prop) => prop !== "status",
+})<{ status: LinkStatus }>(({ theme, status }) => ({
+  color: status === "good" ? theme.palette.text.secondary : theme.palette.status[status],
+  fontWeight: status === "good" ? 400 : 600,
+}));
+
 export const CardMetaRow = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
@@ -121,14 +128,16 @@ export const AssetLabel = styled("span")(({ theme }) => ({
   color: theme.palette.text.primary,
 }));
 
-export const AssetValue = styled("span")(({ theme }) => ({
+export const AssetValue = styled("span", {
+  shouldForwardProp: (prop) => prop !== "status",
+})<{ status?: LinkStatus }>(({ theme, status }) => ({
   minWidth: 0,
   textAlign: "right",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   fontSize: "0.5rem",
-  color: theme.palette.text.secondary,
+  color: status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
 }));
 
 export const AssetToggleCell = styled("div")({

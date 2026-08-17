@@ -113,6 +113,7 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
                 <MeshLine
                   lineColor={linksOn ? color : theme.palette.divider}
                   dimmed={!linksOn}
+                  dashed={!(from.link === "RADIO" && to.link === "RADIO")}
                 />
                 <MeshNodeLabel align="right">{to.label}</MeshNodeLabel>
                 <MeshStatusLabel statusColor={color}>{link.status}</MeshStatusLabel>

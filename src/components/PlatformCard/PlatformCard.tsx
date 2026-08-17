@@ -6,6 +6,7 @@ import { CameraWindow } from "@/components/CameraWindow";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityBar } from "@/components/GLOBAL/QualityBar";
+import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { useToggleList } from "@/hooks/useToggleList";
 import type { PlatformUnit } from "@/types/network";
 import {
@@ -22,6 +23,7 @@ import {
   CardRoot,
   CardSection,
   CardTitle,
+  RateText,
   LockRow,
   LockState,
   NestedList,
@@ -71,7 +73,7 @@ export function PlatformCard({
       {expanded && (
         <CardDetails>
           <CardMetaRow>
-            <span>{unit.mbps} Mbps</span>
+            <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps</RateText>
             <span>{unit.lat}</span>
           </CardMetaRow>
 
@@ -132,7 +134,9 @@ export function PlatformCard({
                     disabled={!extras.isOn(index)}
                     ariaLabel={`${unit.label} ${link.modem} quality`}
                   />
-                  <AssetValue>{link.mbps} Mb</AssetValue>
+                  <AssetValue status={extras.isOn(index) ? rateStatus(parseRate(link.mbps)) : "good"}>
+                    {link.mbps} Mb
+                  </AssetValue>
                   <AssetToggleCell>
                     <PowerToggle
                       checked={extras.isOn(index)}

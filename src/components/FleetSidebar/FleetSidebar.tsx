@@ -3,6 +3,7 @@ import ChevronsRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
+import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { MeshMatrix } from "@/components/MeshMatrix";
 import { platforms, relays, satelliteLinks } from "@/data/network";
 import {
@@ -69,7 +70,7 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
             <GrowCell>
               <QualityBar value={unit.quality} ariaLabel={`${unit.label} quality`} />
             </GrowCell>
-            <RateCell>{unit.mbps}</RateCell>
+            <RateCell status={rateStatus(parseRate(unit.mbps))}>{unit.mbps}</RateCell>
           </ListRow>
         ))}
       </ListBody>
@@ -89,7 +90,7 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
             <GrowCell>
               <QualityBar value={relay.quality} ariaLabel={`${relay.label} quality`} />
             </GrowCell>
-            <RateCell>{relay.mbps}</RateCell>
+            <RateCell status={rateStatus(parseRate(relay.mbps))}>{relay.mbps}</RateCell>
           </ListRow>
         ))}
       </ListBody>

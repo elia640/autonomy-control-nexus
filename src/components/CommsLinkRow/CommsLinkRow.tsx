@@ -1,5 +1,6 @@
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityBar } from "@/components/GLOBAL/QualityBar";
+import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { LinkRowBar, LinkRowLabel, LinkRowRate, LinkRowRoot } from "./CommsLinkRow.styles";
 
 export interface CommsLinkRowProps {
@@ -26,7 +27,7 @@ export function CommsLinkRow({
       <LinkRowBar>
         <QualityBar value={enabled ? quality : 0} disabled={!enabled} ariaLabel={`${label} quality`} />
       </LinkRowBar>
-      {rate !== undefined && <LinkRowRate muted={!enabled}>{enabled ? rate : "—"}</LinkRowRate>}
+      {rate !== undefined && <LinkRowRate muted={!enabled} status={rateStatus(parseRate(rate))}>{enabled ? rate : "—"}</LinkRowRate>}
     </LinkRowRoot>
   );
 }
