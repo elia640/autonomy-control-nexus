@@ -124,8 +124,8 @@ export const ExtraKind = styled("span")(({ theme }) => ({
 }));
 
 export const ExtraModem = styled("span")(({ theme }) => ({
-  flex: 1,
-  minWidth: 0,
+  flexShrink: 0,
+  fontSize: "0.45rem",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",

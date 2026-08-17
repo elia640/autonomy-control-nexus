@@ -127,7 +127,6 @@ export function PlatformCard({
                 <ExtraItem key={link.modem}>
                   <ExtraTopRow>
                     <ExtraKind>{link.kind}</ExtraKind>
-                    <ExtraModem>{link.modem}</ExtraModem>
                     <ExtraRate>{link.mbps} Mbps</ExtraRate>
                     <PowerToggle
                       checked={extras.isOn(index)}
@@ -135,11 +134,14 @@ export function PlatformCard({
                       label={`${unit.label} ${link.modem}`}
                     />
                   </ExtraTopRow>
-                  <QualityBar
+                  <ExtraTopRow>
+                    <ExtraModem>{link.modem}</ExtraModem>
+                    <QualityBar
                     value={extras.isOn(index) ? link.quality : 0}
                     disabled={!extras.isOn(index)}
                     ariaLabel={`${unit.label} ${link.modem} quality`}
-                  />
+                    />
+                  </ExtraTopRow>
                 </ExtraItem>
               ))}
 
