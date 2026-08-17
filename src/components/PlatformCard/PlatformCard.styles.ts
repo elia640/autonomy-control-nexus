@@ -7,7 +7,7 @@ export type PlatformCardVariant = "overlay" | "topology";
 export const CardRoot = styled("div", {
   shouldForwardProp: (prop) => prop !== "variant" && prop !== "status",
 })<{ variant: PlatformCardVariant; status: LinkStatus }>(({ theme, variant, status }) => ({
-  width: variant === "overlay" ? 132 : 180,
+  width: variant === "overlay" ? 186 : 200,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${
     variant === "overlay" ? theme.palette.divider : theme.palette.status[status]
@@ -66,9 +66,9 @@ export const CardMetaRow = styled("div")(({ theme }) => ({
 export const NestedList = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(1),
+  gap: theme.spacing(0.75),
   borderLeft: `2px solid ${alpha(theme.palette.primary.main, 0.4)}`,
-  paddingLeft: theme.spacing(1.5),
+  paddingLeft: theme.spacing(1),
 }));
 
 export const NestedRow = styled("div")(({ theme }) => ({
@@ -103,40 +103,49 @@ export const ConnectionState = styled("span")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const ExtraItem = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(0.5),
-  minWidth: 0,
-}));
-
-export const ExtraTopRow = styled("div")(({ theme }) => ({
-  display: "flex",
+/** Shared 4-column grid so every asset row lines up: label | bar | value | toggle. */
+export const AssetRow = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "52px minmax(0, 1fr) 44px 26px",
   alignItems: "center",
-  gap: theme.spacing(1),
+  columnGap: theme.spacing(0.75),
   minWidth: 0,
 }));
 
-export const ExtraKind = styled("span")(({ theme }) => ({
-  flexShrink: 0,
-  letterSpacing: "0.06em",
+export const AssetLabel = styled("span")(({ theme }) => ({
+  minWidth: 0,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  letterSpacing: "0.04em",
   color: theme.palette.text.primary,
 }));
 
-export const ExtraModem = styled("span")(({ theme }) => ({
-  flexShrink: 0,
+export const AssetValue = styled("span")(({ theme }) => ({
+  minWidth: 0,
+  textAlign: "right",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  fontSize: "0.5rem",
+  color: theme.palette.text.secondary,
+}));
+
+export const AssetToggleCell = styled("div")({
+  display: "flex",
+  justifyContent: "flex-end",
+});
+
+export const AssetModem = styled("span")(({ theme }) => ({
+  gridColumn: "1 / -1",
   fontSize: "0.45rem",
+  letterSpacing: "0.06em",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   color: theme.palette.primary.main,
 }));
 
-export const ExtraRate = styled("span")(({ theme }) => ({
-  flexShrink: 0,
-  textAlign: "right",
-  color: theme.palette.text.secondary,
-}));
 
 
 export const CameraButton = styled(ButtonBase)(({ theme }) => ({

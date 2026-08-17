@@ -53,6 +53,9 @@ export interface RelayUnit {
   lat: string;
   /** Platform ids the relay serves. */
   connectedTo: string[];
+  defaultExpanded?: boolean;
+  /** Additional communication ranges with their own modems. */
+  extraLinks?: ModemLink[];
 }
 
 

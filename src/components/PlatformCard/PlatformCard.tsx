@@ -9,6 +9,11 @@ import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { useToggleList } from "@/hooks/useToggleList";
 import type { PlatformUnit } from "@/types/network";
 import {
+  AssetLabel,
+  AssetModem,
+  AssetRow,
+  AssetToggleCell,
+  AssetValue,
   CameraButton,
   CardDetails,
   CardHeader,
@@ -17,19 +22,9 @@ import {
   CardRoot,
   CardSection,
   CardTitle,
-  ConnectionState,
-  ExtraItem,
-  ExtraKind,
-  ExtraTopRow,
-
-  ExtraModem,
-  ExtraRate,
   LockRow,
   LockState,
-  NestedBar,
-  NestedLabel,
   NestedList,
-  NestedRow,
   type PlatformCardVariant,
 } from "./PlatformCard.styles";
 
@@ -83,68 +78,71 @@ export function PlatformCard({
           {unit.sims && (
             <NestedList>
               {unit.sims.map((sim, index) => (
-                <NestedRow key={sim.label}>
-                  <NestedLabel>{sim.label}</NestedLabel>
-                  <NestedBar>
-                    <QualityBar
-                      value={sims.isOn(index) ? sim.quality : 0}
-                      disabled={!sims.isOn(index)}
-                      ariaLabel={`${unit.label} ${sim.label} quality`}
-                    />
-                  </NestedBar>
-                  <PowerToggle
-                    checked={sims.isOn(index)}
-                    onChange={(value) => sims.set(index, value)}
-                    label={`${unit.label} ${sim.label}`}
+                <AssetRow key={sim.label}>
+                  <AssetLabel>{sim.label}</AssetLabel>
+                  <QualityBar
+                    value={sims.isOn(index) ? sim.quality : 0}
+                    disabled={!sims.isOn(index)}
+                    ariaLabel={`${unit.label} ${sim.label} quality`}
                   />
-                </NestedRow>
+                  <AssetValue>{sims.isOn(index) ? `${sim.quality}%` : "OFF"}</AssetValue>
+                  <AssetToggleCell>
+                    <PowerToggle
+                      checked={sims.isOn(index)}
+                      onChange={(value) => sims.set(index, value)}
+                      label={`${unit.label} ${sim.label}`}
+                    />
+                  </AssetToggleCell>
+                </AssetRow>
               ))}
             </NestedList>
           )}
 
           {unit.sat && (
             <NestedList>
-              <LockRow>
-                {unit.sat.locked ? <LockIcon color="success" /> : <LockOpenIcon color="error" />}
-                <LockState locked={unit.sat.locked}>
-                  {unit.sat.locked ? "LOCKED" : "NO LOCK"}
-                </LockState>
-                <ConnectionState>
-                  {satcomOn && unit.sat.connected ? "CONNECTED" : "DISCONNECTED"}
-                </ConnectionState>
-                <PowerToggle
-                  checked={satcomOn}
-                  onChange={setSatcomOn}
-                  label={`${unit.label} SATCOM`}
-                />
-              </LockRow>
+              <AssetRow>
+                <AssetLabel>SATCOM</AssetLabel>
+                <LockRow>
+                  {unit.sat.locked ? <LockIcon color="success" /> : <LockOpenIcon color="error" />}
+                  <LockState locked={unit.sat.locked}>
+                    {unit.sat.locked ? "LOCKED" : "NO LOCK"}
+                  </LockState>
+                </LockRow>
+                <AssetValue>
+                  {satcomOn && unit.sat.connected ? "CONN" : "DISC"}
+                </AssetValue>
+                <AssetToggleCell>
+                  <PowerToggle
+                    checked={satcomOn}
+                    onChange={setSatcomOn}
+                    label={`${unit.label} SATCOM`}
+                  />
+                </AssetToggleCell>
+              </AssetRow>
             </NestedList>
           )}
 
           {unit.extraLinks && (
             <NestedList>
               {unit.extraLinks.map((link, index) => (
-                <ExtraItem key={link.modem}>
-                  <ExtraTopRow>
-                    <ExtraKind>{link.kind}</ExtraKind>
-                    <ExtraRate>{link.mbps} Mbps</ExtraRate>
+                <AssetRow key={link.modem}>
+                  <AssetLabel>{link.kind}</AssetLabel>
+                  <QualityBar
+                    value={extras.isOn(index) ? link.quality : 0}
+                    disabled={!extras.isOn(index)}
+                    ariaLabel={`${unit.label} ${link.modem} quality`}
+                  />
+                  <AssetValue>{link.mbps} Mb</AssetValue>
+                  <AssetToggleCell>
                     <PowerToggle
                       checked={extras.isOn(index)}
                       onChange={(value) => extras.set(index, value)}
                       label={`${unit.label} ${link.modem}`}
                     />
-                  </ExtraTopRow>
-                  <ExtraTopRow>
-                    <ExtraModem>{link.modem}</ExtraModem>
-                    <QualityBar
-                    value={extras.isOn(index) ? link.quality : 0}
-                    disabled={!extras.isOn(index)}
-                    ariaLabel={`${unit.label} ${link.modem} quality`}
-                    />
-                  </ExtraTopRow>
-                </ExtraItem>
+                  </AssetToggleCell>
+                  <AssetModem>{link.modem}</AssetModem>
+                </AssetRow>
               ))}
-
             </NestedList>
           )}
 
