@@ -119,7 +119,6 @@ export const relays: RelayUnit[] = [
     defaultExpanded: true,
     extraLinks: [
       { modem: "RLY-M1", kind: "RADIO", quality: 71, mbps: "18.2" },
-      { modem: "RLY-M2", kind: "CELLULAR", quality: 54, mbps: "11.4" },
     ],
   },
 ];
