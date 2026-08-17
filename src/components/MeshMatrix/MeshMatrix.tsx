@@ -1,5 +1,5 @@
 import { useTheme } from "@mui/material/styles";
-import { MESH_FREQUENCY, meshMargins, platforms } from "@/data/network";
+import { MESH_FREQUENCY, meshMargins, platforms, relays } from "@/data/network";
 import type { LinkStatus } from "@/types/network";
 import {
   FrequencyLabel,
@@ -30,6 +30,7 @@ const nodes: MatrixNode[] = [
     short: `P${unit.label.split(" ")[1]}`,
     label: unit.label,
   })),
+  ...relays.map((relay) => ({ id: relay.id, short: "RLY", label: relay.label })),
 ];
 
 const marginStatus = (margin: number): LinkStatus =>
