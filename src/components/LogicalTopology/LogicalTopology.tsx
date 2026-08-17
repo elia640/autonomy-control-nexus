@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import { PlatformCard } from "@/components/PlatformCard";
-import { findPlatform, platforms, radioLinks } from "@/data/network";
+import { findPlatform, platforms, radioLinks, relays } from "@/data/network";
 import type { LinkKind, PlatformUnit } from "@/types/network";
 import {
   CommandNode,
