@@ -1,6 +1,7 @@
 import type {
   MeshLink,
   PlatformUnit,
+  RelayUnit,
   SatelliteLink,
   ThroughputSample,
 } from "@/types/network";
@@ -26,6 +27,10 @@ export const platforms: PlatformUnit[] = [
       { label: "SIM 2", quality: 61 },
       { label: "SIM 3", quality: 34 },
     ],
+    extraLinks: [
+      { modem: "MDM-R1", kind: "RADIO", quality: 64, mbps: "12.4" },
+      { modem: "MDM-S1", kind: "SATCOM", quality: 47, mbps: "8.1" },
+    ],
   },
   {
     id: "utilA",
@@ -39,6 +44,10 @@ export const platforms: PlatformUnit[] = [
     lat: "120ms",
     defaultExpanded: true,
     sat: { locked: true, connected: true },
+    extraLinks: [
+      { modem: "MDM-C2", kind: "CELLULAR", quality: 55, mbps: "18.7" },
+      { modem: "MDM-R2", kind: "RADIO", quality: 38, mbps: "9.3" },
+    ],
   },
   {
     id: "utilB",
@@ -55,6 +64,7 @@ export const platforms: PlatformUnit[] = [
       { label: "SIM 2", quality: 66 },
       { label: "SIM 3", quality: 41 },
     ],
+    extraLinks: [{ modem: "MDM-R3", kind: "RADIO", quality: 58, mbps: "10.8" }],
   },
   {
     id: "cmd",
@@ -66,6 +76,10 @@ export const platforms: PlatformUnit[] = [
     quality: 52,
     mbps: "44.5",
     lat: "118ms",
+    extraLinks: [
+      { modem: "MDM-C4", kind: "CELLULAR", quality: 44, mbps: "14.2" },
+      { modem: "MDM-S4", kind: "SATCOM", quality: 31, mbps: "6.5" },
+    ],
   },
   {
     id: "tanker",
@@ -77,6 +91,7 @@ export const platforms: PlatformUnit[] = [
     quality: 21,
     mbps: "25.5",
     lat: "120ms",
+    extraLinks: [{ modem: "MDM-C5", kind: "CELLULAR", quality: 27, mbps: "7.4" }],
   },
 ];
 
@@ -86,6 +101,22 @@ export const radioLinks: MeshLink[] = [
   { from: "utilA", to: "utilB", status: "marginal" },
   { from: "cmd", to: "tanker", status: "poor" },
   { from: "apc1", to: "cmd", status: "good" },
+];
+
+/** Communication relays; positions are draggable at runtime. */
+export const relays: RelayUnit[] = [
+  {
+    id: "relay1",
+    label: "RELAY",
+    x: 46,
+    y: 45,
+    status: "good",
+    link: "RADIO",
+    quality: 71,
+    mbps: "18.2",
+    lat: "14ms",
+    connectedTo: ["apc1", "utilB", "cmd", "tanker"],
+  },
 ];
 
 export const satelliteLinks: SatelliteLink[] = [
@@ -110,6 +141,12 @@ export const meshMargins: Record<string, number> = {
   "gs|utilB": 21,
   "gs|cmd": 14,
   "gs|tanker": 7,
+  "relay1|apc1": 22,
+  "relay1|utilA": 12,
+  "relay1|utilB": 19,
+  "relay1|cmd": 17,
+  "relay1|tanker": 11,
+  "relay1|gs": 24,
 };
 
 export const MESH_FREQUENCY = "MESH-A · 2.412 GHz";
@@ -125,4 +162,10 @@ export const findPlatform = (id: string): PlatformUnit => {
   const unit = platforms.find((p) => p.id === id);
   if (!unit) throw new Error(`Unknown platform: ${id}`);
   return unit;
+};
+
+export const findRelay = (id: string): RelayUnit => {
+  const relay = relays.find((r) => r.id === id);
+  if (!relay) throw new Error(`Unknown relay: ${id}`);
+  return relay;
 };

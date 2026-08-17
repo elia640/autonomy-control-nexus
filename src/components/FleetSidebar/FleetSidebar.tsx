@@ -4,7 +4,7 @@ import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
 import { MeshMatrix } from "@/components/MeshMatrix";
-import { platforms, satelliteLinks } from "@/data/network";
+import { platforms, relays, satelliteLinks } from "@/data/network";
 import {
   CollapseIconButton,
   CollapsedRail,
@@ -70,6 +70,26 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
               <QualityBar value={unit.quality} ariaLabel={`${unit.label} quality`} />
             </GrowCell>
             <RateCell>{unit.mbps}</RateCell>
+          </ListRow>
+        ))}
+      </ListBody>
+
+      <SectionHeader title="Relays" />
+      <ListBody>
+        <ListHeadRow>
+          <NameCell>Relay</NameCell>
+          <KindCell>Range</KindCell>
+          <GrowCell>Quality</GrowCell>
+          <RateCell>Down</RateCell>
+        </ListHeadRow>
+        {relays.map((relay) => (
+          <ListRow key={relay.id}>
+            <NameCell>{relay.label}</NameCell>
+            <KindCell>{relay.link}</KindCell>
+            <GrowCell>
+              <QualityBar value={relay.quality} ariaLabel={`${relay.label} quality`} />
+            </GrowCell>
+            <RateCell>{relay.mbps}</RateCell>
           </ListRow>
         ))}
       </ListBody>

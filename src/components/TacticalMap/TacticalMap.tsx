@@ -1,5 +1,7 @@
+import { useCallback, useRef, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import HubIcon from "@mui/icons-material/Hub";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import TruckIcon from "@mui/icons-material/LocalShipping";
@@ -11,6 +13,7 @@ import {
   findPlatform,
   platforms,
   radioLinks,
+  relays,
 } from "@/data/network";
 import type { LinkStatus } from "@/types/network";
 import { curveMidpoint, curvePath } from "./mapGeometry";
@@ -25,6 +28,7 @@ import {
   MarkerColumn,
   MeshChip,
   NodeBadge,
+  DraggableNode,
   NodeLabel,
   OverlayLayer,
   OverlaySvg,
@@ -49,10 +53,23 @@ export function TacticalMap({
   scaleLabel = "500 m",
 }: TacticalMapProps) {
   const theme = useTheme();
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const relay = relays[0]!;
+  const [relayPos, setRelayPos] = useState({ x: relay.x, y: relay.y });
+  const [dragging, setDragging] = useState(false);
+
+  const moveRelay = useCallback((clientX: number, clientY: number) => {
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = Math.max(2, Math.min(98, ((clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(2, Math.min(98, ((clientY - rect.top) / rect.height) * 100));
+    setRelayPos({ x, y });
+  }, []);
+
   const color = (status: LinkStatus) => theme.palette.status[status];
 
   return (
-    <MapRoot>
+    <MapRoot ref={rootRef}>
       <MapImage
         src={mapImage}
         alt="Satellite map of the operating area with vehicle positions"
@@ -131,6 +148,21 @@ export function TacticalMap({
                 />
               ))}
 
+              {relay.connectedTo.map((id) => (
+                <line
+                  key={`relay-${id}`}
+                  x1={relayPos.x}
+                  y1={relayPos.y}
+                  x2={findPlatform(id).x}
+                  y2={findPlatform(id).y}
+                  stroke={color(relay.status)}
+                  strokeWidth="0.16"
+                  strokeDasharray="1.4 1"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+              ))}
+
               <line
                 x1={GROUND_STATION_POSITION.x}
                 y1={GROUND_STATION_POSITION.y}
@@ -203,6 +235,30 @@ export function TacticalMap({
             </MarkerColumn>
           </AnchoredPoint>
         ))}
+
+        <AnchoredPoint style={{ left: `${relayPos.x}%`, top: `${relayPos.y}%` }}>
+          <DraggableNode
+            dragging={dragging}
+            role="button"
+            aria-label="Drag relay"
+            onPointerDown={(event) => {
+              event.currentTarget.setPointerCapture(event.pointerId);
+              setDragging(true);
+            }}
+            onPointerMove={(event) => {
+              if (dragging) moveRelay(event.clientX, event.clientY);
+            }}
+            onPointerUp={(event) => {
+              event.currentTarget.releasePointerCapture(event.pointerId);
+              setDragging(false);
+            }}
+          >
+            <NodeBadge shape="circle" borderColor={color(relay.status)}>
+              <HubIcon />
+            </NodeBadge>
+            <PlatformCard unit={relay} variant="overlay" camera={false} />
+          </DraggableNode>
+        </AnchoredPoint>
 
         <InfoChip sx={{ left: 12, top: 12 }}>
           <MyLocationIcon /> {coordinates}
