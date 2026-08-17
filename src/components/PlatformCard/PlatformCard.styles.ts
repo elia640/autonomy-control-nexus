@@ -7,7 +7,7 @@ export type PlatformCardVariant = "overlay" | "topology";
 export const CardRoot = styled("div", {
   shouldForwardProp: (prop) => prop !== "variant" && prop !== "status",
 })<{ variant: PlatformCardVariant; status: LinkStatus }>(({ theme, variant, status }) => ({
-  width: variant === "overlay" ? 178 : 196,
+  width: variant === "overlay" ? 186 : 200,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${
     variant === "overlay" ? theme.palette.divider : theme.palette.status[status]
@@ -106,7 +106,7 @@ export const ConnectionState = styled("span")(({ theme }) => ({
 /** Shared 4-column grid so every asset row lines up: label | bar | value | toggle. */
 export const AssetRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "44px minmax(0, 1fr) 46px 26px",
+  gridTemplateColumns: "52px minmax(0, 1fr) 44px 26px",
   alignItems: "center",
   columnGap: theme.spacing(0.75),
   minWidth: 0,
