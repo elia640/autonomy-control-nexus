@@ -1,4 +1,5 @@
 import { useState, type MouseEvent } from "react";
+import { createPortal } from "react-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -28,7 +29,7 @@ export function CameraWindow({ title, open, onClose }: CameraWindowProps) {
   const [quality, setQuality] = useState<FeedQuality>("H");
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
-  if (!open) return null;
+  if (!open || typeof document === "undefined") return null;
 
   const openMenu = (event: MouseEvent<HTMLElement>) => setAnchor(event.currentTarget);
   const pick = (value: FeedQuality) => {
@@ -36,7 +37,7 @@ export function CameraWindow({ title, open, onClose }: CameraWindowProps) {
     setAnchor(null);
   };
 
-  return (
+  return createPortal(
     <Backdrop onClick={onClose} role="presentation">
       <WindowFrame
         role="dialog"
@@ -69,6 +70,7 @@ export function CameraWindow({ title, open, onClose }: CameraWindowProps) {
           ))}
         </Menu>
       </WindowFrame>
-    </Backdrop>
+    </Backdrop>,
+    document.body,
   );
 }
