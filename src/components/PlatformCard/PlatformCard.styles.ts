@@ -103,40 +103,49 @@ export const ConnectionState = styled("span")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const ExtraItem = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing(0.5),
-  minWidth: 0,
-}));
-
-export const ExtraTopRow = styled("div")(({ theme }) => ({
-  display: "flex",
+/** Shared 4-column grid so every asset row lines up: label | bar | value | toggle. */
+export const AssetRow = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "44px minmax(0, 1fr) 46px 26px",
   alignItems: "center",
-  gap: theme.spacing(1),
+  columnGap: theme.spacing(0.75),
   minWidth: 0,
 }));
 
-export const ExtraKind = styled("span")(({ theme }) => ({
-  flexShrink: 0,
-  letterSpacing: "0.06em",
+export const AssetLabel = styled("span")(({ theme }) => ({
+  minWidth: 0,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  letterSpacing: "0.04em",
   color: theme.palette.text.primary,
 }));
 
-export const ExtraModem = styled("span")(({ theme }) => ({
-  flexShrink: 0,
+export const AssetValue = styled("span")(({ theme }) => ({
+  minWidth: 0,
+  textAlign: "right",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  fontSize: "0.5rem",
+  color: theme.palette.text.secondary,
+}));
+
+export const AssetToggleCell = styled("div")({
+  display: "flex",
+  justifyContent: "flex-end",
+});
+
+export const AssetModem = styled("span")(({ theme }) => ({
+  gridColumn: "1 / -1",
   fontSize: "0.45rem",
+  letterSpacing: "0.06em",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   color: theme.palette.primary.main,
 }));
 
-export const ExtraRate = styled("span")(({ theme }) => ({
-  flexShrink: 0,
-  textAlign: "right",
-  color: theme.palette.text.secondary,
-}));
 
 
 export const CameraButton = styled(ButtonBase)(({ theme }) => ({
