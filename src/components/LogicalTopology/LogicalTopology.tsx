@@ -79,6 +79,21 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
         <Connector length={24} />
         <HorizontalRule />
 
+        {relays.map((relay) => (
+          <MemberColumn key={relay.id}>
+            <SegmentTitle>
+              <RadioIcon /> {relay.label} · RADIO RELAY
+            </SegmentTitle>
+            <Connector
+              length={16}
+              lineColor={linksOn ? theme.palette.status[relay.status] : theme.palette.divider}
+            />
+            <PlatformCard unit={relay} variant="topology" camera={false} />
+          </MemberColumn>
+        ))}
+        <Connector length={24} />
+        <HorizontalRule />
+
         <SegmentGrid>
           {SEGMENTS.map((segment) => {
             const members = platforms.filter((unit) => unit.link === segment.kind);
