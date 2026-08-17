@@ -1,3 +1,4 @@
+import ButtonBase from "@mui/material/ButtonBase";
 import { alpha, styled } from "@mui/material/styles";
 import type { LinkStatus } from "@/types/network";
 
@@ -100,4 +101,38 @@ export const LockState = styled("span", {
 export const ConnectionState = styled("span")(({ theme }) => ({
   marginLeft: "auto",
   color: theme.palette.text.secondary,
+}));
+
+export const ExtraKind = styled("span")(({ theme }) => ({
+  width: 46,
+  flexShrink: 0,
+  letterSpacing: "0.06em",
+  color: theme.palette.text.secondary,
+}));
+
+export const ExtraModem = styled("span")(({ theme }) => ({
+  width: 46,
+  flexShrink: 0,
+  color: theme.palette.primary.main,
+}));
+
+export const ExtraRate = styled("span")(({ theme }) => ({
+  width: 30,
+  flexShrink: 0,
+  textAlign: "right",
+  color: theme.palette.text.secondary,
+}));
+
+export const CameraButton = styled(ButtonBase)(({ theme }) => ({
+  width: "100%",
+  gap: theme.spacing(1),
+  padding: theme.spacing(0.75, 1),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.6)}`,
+  backgroundColor: alpha(theme.palette.primary.main, 0.12),
+  color: theme.palette.primary.main,
+  fontSize: "0.5rem",
+  letterSpacing: "0.14em",
+  "& .MuiSvgIcon-root": { fontSize: "0.7rem" },
+  "&:hover": { backgroundColor: alpha(theme.palette.primary.main, 0.22) },
 }));
