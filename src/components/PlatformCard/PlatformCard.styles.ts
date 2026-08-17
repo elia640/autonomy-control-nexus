@@ -7,7 +7,7 @@ export type PlatformCardVariant = "overlay" | "topology";
 export const CardRoot = styled("div", {
   shouldForwardProp: (prop) => prop !== "variant" && prop !== "status",
 })<{ variant: PlatformCardVariant; status: LinkStatus }>(({ theme, variant, status }) => ({
-  width: variant === "overlay" ? 132 : 180,
+  width: variant === "overlay" ? 178 : 196,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${
     variant === "overlay" ? theme.palette.divider : theme.palette.status[status]
@@ -66,9 +66,9 @@ export const CardMetaRow = styled("div")(({ theme }) => ({
 export const NestedList = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(1),
+  gap: theme.spacing(0.75),
   borderLeft: `2px solid ${alpha(theme.palette.primary.main, 0.4)}`,
-  paddingLeft: theme.spacing(1.5),
+  paddingLeft: theme.spacing(1),
 }));
 
 export const NestedRow = styled("div")(({ theme }) => ({
