@@ -138,13 +138,21 @@ export const MeshNodeLabel = styled("span", {
 }));
 
 export const MeshLine = styled("span", {
-  shouldForwardProp: (prop) => prop !== "lineColor" && prop !== "dimmed",
-})<{ lineColor: string; dimmed?: boolean }>(({ lineColor, dimmed }) => ({
-  flex: 1,
-  height: 2,
-  backgroundColor: lineColor,
-  opacity: dimmed ? 0.4 : 1,
-}));
+  shouldForwardProp: (prop) =>
+    prop !== "lineColor" && prop !== "dimmed" && prop !== "dashed",
+})<{ lineColor: string; dimmed?: boolean; dashed?: boolean }>(
+  ({ lineColor, dimmed, dashed }) => ({
+    flex: 1,
+    height: 2,
+    ...(dashed
+      ? {
+          backgroundColor: "transparent",
+          backgroundImage: `repeating-linear-gradient(90deg, ${lineColor} 0 5px, transparent 5px 10px)`,
+        }
+      : { backgroundColor: lineColor }),
+    opacity: dimmed ? 0.4 : 1,
+  }),
+);
 
 export const MeshStatusLabel = styled("span", {
   shouldForwardProp: (prop) => prop !== "statusColor",

@@ -135,33 +135,41 @@ export function TacticalMap({
                 );
               })}
 
-              {radioLinks.map((link) => (
-                <path
-                  key={`${link.from}-${link.to}`}
-                  d={curvePath(findPlatform(link.from), findPlatform(link.to), MESH_BOW)}
-                  fill="none"
-                  stroke={color(link.status)}
-                  strokeWidth="0.14"
-                  strokeDasharray="1 1.1"
-                  strokeLinecap="round"
-                  opacity="0.75"
-                />
-              ))}
+              {radioLinks.map((link) => {
+                const active =
+                  findPlatform(link.from).link === "RADIO" &&
+                  findPlatform(link.to).link === "RADIO";
+                return (
+                  <path
+                    key={`${link.from}-${link.to}`}
+                    d={curvePath(findPlatform(link.from), findPlatform(link.to), MESH_BOW)}
+                    fill="none"
+                    stroke={color(link.status)}
+                    strokeWidth={active ? "0.2" : "0.14"}
+                    {...(active ? {} : { strokeDasharray: "1 1.1" })}
+                    strokeLinecap="round"
+                    opacity={active ? "0.95" : "0.6"}
+                  />
+                );
+              })}
 
-              {relay.connectedTo.map((id) => (
-                <line
-                  key={`relay-${id}`}
-                  x1={relayPos.x}
-                  y1={relayPos.y}
-                  x2={findPlatform(id).x}
-                  y2={findPlatform(id).y}
-                  stroke={color(relay.status)}
-                  strokeWidth="0.16"
-                  strokeDasharray="1.4 1"
-                  strokeLinecap="round"
-                  opacity="0.85"
-                />
-              ))}
+              {relay.connectedTo.map((id) => {
+                const active = findPlatform(id).link === "RADIO";
+                return (
+                  <line
+                    key={`relay-${id}`}
+                    x1={relayPos.x}
+                    y1={relayPos.y}
+                    x2={findPlatform(id).x}
+                    y2={findPlatform(id).y}
+                    stroke={color(relay.status)}
+                    strokeWidth={active ? "0.2" : "0.16"}
+                    {...(active ? {} : { strokeDasharray: "1.4 1" })}
+                    strokeLinecap="round"
+                    opacity={active ? "0.95" : "0.6"}
+                  />
+                );
+              })}
 
               <line
                 x1={GROUND_STATION_POSITION.x}
@@ -272,8 +280,12 @@ export function TacticalMap({
             </LegendRow>
           ))}
           <LegendRow>
+            <LegendSwatch swatchColor={theme.palette.text.secondary} />
+            <span>active radio link</span>
+          </LegendRow>
+          <LegendRow>
             <LegendSwatch swatchColor={theme.palette.text.secondary} dashed />
-            <span>radio mesh</span>
+            <span>radio available (other range in use)</span>
           </LegendRow>
         </LegendBox>
 
