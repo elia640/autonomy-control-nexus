@@ -1,12 +1,15 @@
 import { useState } from "react";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import { CameraWindow } from "@/components/CameraWindow";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { useToggleList } from "@/hooks/useToggleList";
 import type { PlatformUnit } from "@/types/network";
 import {
+  CameraButton,
   CardDetails,
   CardHeader,
   CardLinkKind,
@@ -15,6 +18,9 @@ import {
   CardSection,
   CardTitle,
   ConnectionState,
+  ExtraKind,
+  ExtraModem,
+  ExtraRate,
   LockRow,
   LockState,
   NestedBar,
@@ -30,12 +36,21 @@ export interface PlatformCardProps {
   variant?: PlatformCardVariant;
   /** Allows the operator to collapse the details section. */
   collapsible?: boolean;
+  /** Relays have no camera feed. */
+  camera?: boolean;
 }
 
-export function PlatformCard({ unit, variant = "overlay", collapsible = false }: PlatformCardProps) {
+export function PlatformCard({
+  unit,
+  variant = "overlay",
+  collapsible = false,
+  camera = true,
+}: PlatformCardProps) {
   const [expanded, setExpanded] = useState(collapsible ? !!unit.defaultExpanded : true);
   const sims = useToggleList(unit.sims?.length ?? 0);
+  const extras = useToggleList(unit.extraLinks?.length ?? 0);
   const [satcomOn, setSatcomOn] = useState(true);
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   return (
     <CardRoot variant={variant} status={unit.status}>
@@ -101,6 +116,43 @@ export function PlatformCard({ unit, variant = "overlay", collapsible = false }:
                 />
               </LockRow>
             </NestedList>
+          )}
+
+          {unit.extraLinks && (
+            <NestedList>
+              {unit.extraLinks.map((link, index) => (
+                <NestedRow key={link.modem}>
+                  <ExtraKind>{link.kind}</ExtraKind>
+                  <ExtraModem>{link.modem}</ExtraModem>
+                  <NestedBar>
+                    <QualityBar
+                      value={extras.isOn(index) ? link.quality : 0}
+                      disabled={!extras.isOn(index)}
+                      ariaLabel={`${unit.label} ${link.modem} quality`}
+                    />
+                  </NestedBar>
+                  <ExtraRate>{link.mbps}</ExtraRate>
+                  <PowerToggle
+                    checked={extras.isOn(index)}
+                    onChange={(value) => extras.set(index, value)}
+                    label={`${unit.label} ${link.modem}`}
+                  />
+                </NestedRow>
+              ))}
+            </NestedList>
+          )}
+
+          {camera && (
+            <>
+              <CameraButton onClick={() => setCameraOpen(true)} aria-label={`${unit.label} camera`}>
+                <VideocamIcon /> CAMERA
+              </CameraButton>
+              <CameraWindow
+                title={unit.label}
+                open={cameraOpen}
+                onClose={() => setCameraOpen(false)}
+              />
+            </>
           )}
         </CardDetails>
       )}
