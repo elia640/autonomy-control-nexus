@@ -93,12 +93,16 @@ export const KindCell = styled("span")(({ theme }) => ({
 export const GrowCell = styled("span")({ flex: 1, minWidth: 0 });
 
 export const RateCell = styled("span", {
-  shouldForwardProp: (prop) => prop !== "width",
-})<{ width?: number }>(({ theme, width = 44 }) => ({
-  width,
-  textAlign: "right",
-  color: theme.palette.text.secondary,
-}));
+  shouldForwardProp: (prop) => prop !== "width" && prop !== "status",
+})<{ width?: number; status?: "good" | "marginal" | "poor" }>(
+  ({ theme, width = 44, status }) => ({
+    width,
+    textAlign: "right",
+    fontWeight: status && status !== "good" ? 600 : 400,
+    color:
+      status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
+  }),
+);
 
 export const SatelliteName = styled("span", {
   shouldForwardProp: (prop) => prop !== "status",

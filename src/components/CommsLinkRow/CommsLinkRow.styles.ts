@@ -21,12 +21,16 @@ export const LinkRowBar = styled("div")({
 });
 
 export const LinkRowRate = styled("span", {
-  shouldForwardProp: (prop) => prop !== "muted",
-})<{ muted?: boolean | undefined }>(({ theme, muted }) => ({
+  shouldForwardProp: (prop) => prop !== "muted" && prop !== "status",
+})<{ muted?: boolean | undefined; status?: "good" | "marginal" | "poor" }>(
+  ({ theme, muted, status }) => ({
   width: 62,
   flexShrink: 0,
   textAlign: "right",
   fontSize: "0.625rem",
-  color: theme.palette.text.secondary,
+  color:
+    status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
+  fontWeight: status && status !== "good" ? 600 : 400,
   opacity: muted ? 0.4 : 1,
-}));
+}),
+);
