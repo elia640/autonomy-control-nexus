@@ -155,3 +155,14 @@ export const ScaleBar = styled("div")(({ theme }) => ({
   borderRight: `1px solid ${theme.palette.divider}`,
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
+
+export const DraggableNode = styled("div", {
+  shouldForwardProp: (prop) => prop !== "dragging",
+})<{ dragging: boolean }>(({ dragging }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  pointerEvents: "auto",
+  cursor: dragging ? "grabbing" : "grab",
+  touchAction: "none",
+}));
