@@ -94,7 +94,9 @@ export function TacticalMap({
 
           {linksOn && (
             <g>
-              {platforms.map((unit) => {
+              {platforms
+                .filter((unit) => unit.link === "RADIO")
+                .map((unit) => {
                 const path = curvePath(GROUND_STATION_POSITION, unit, UPLINK_BOW);
                 return (
                   <g key={unit.id}>
