@@ -89,16 +89,14 @@ export function PlatformCard({
           />
         )}
         {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
-        {/* Badges stay neutral grey; only the quality bar carries colour. */}
-        {(
-          <KindBadges>
-            {activeKinds.map((kind) => (
-              <KindBadge key={kind}>
-                {KIND_ICON[kind]} {kind}
-              </KindBadge>
-            ))}
-          </KindBadges>
-        )}
+        {/* Shown collapsed and expanded; neutral grey so only the bar carries colour. */}
+        <KindBadges>
+          {activeKinds.map((kind) => (
+            <KindBadge key={kind}>
+              {KIND_ICON[kind]} {kind}
+            </KindBadge>
+          ))}
+        </KindBadges>
       </CardHeader>
 
       <CardSection>
