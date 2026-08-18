@@ -50,14 +50,26 @@ export const CommandNode = styled("div")(({ theme }) => ({
 }));
 
 export const Connector = styled("div", {
-  shouldForwardProp: (prop) => prop !== "lineColor" && prop !== "length",
-})<{ lineColor?: string | undefined; length?: number | undefined }>(
-  ({ theme, lineColor, length = 24 }) => ({
+  shouldForwardProp: (prop) =>
+    prop !== "lineColor" && prop !== "length" && prop !== "dashed" && prop !== "thick",
+})<{
+  lineColor?: string | undefined;
+  length?: number | undefined;
+  dashed?: boolean | undefined;
+  thick?: boolean | undefined;
+}>(({ theme, lineColor, length = 24, dashed, thick }) => {
+  const color = lineColor ?? theme.palette.divider;
+  return {
     height: length,
-    width: 1,
-    backgroundColor: lineColor ?? theme.palette.divider,
-  }),
-);
+    width: thick ? 2 : 1,
+    ...(dashed
+      ? {
+          backgroundColor: "transparent",
+          backgroundImage: `repeating-linear-gradient(180deg, ${color} 0 4px, transparent 4px 8px)`,
+        }
+      : { backgroundColor: color }),
+  };
+});
 
 export const HorizontalRule = styled("div")(({ theme }) => ({
   height: 1,

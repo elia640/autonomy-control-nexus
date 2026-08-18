@@ -39,6 +39,9 @@ const SEGMENTS: Segment[] = [
   { kind: "RADIO", title: "RADIO SEGMENT", icon: <RadioIcon /> },
 ];
 
+const hasRadio = (unit: { activeLinks?: LinkKind[]; link: LinkKind }): boolean =>
+  (unit.activeLinks ?? [unit.link]).includes("RADIO");
+
 export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
   const theme = useTheme();
 
@@ -47,11 +50,12 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
       <SegmentMembers>
         {members.map((unit) => {
           const color = linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
+          const radio = hasRadio(unit);
           return (
             <MemberColumn key={unit.id}>
-              <Connector length={14} lineColor={color} />
-              <LinkLabel labelColor={color}>→ CP</LinkLabel>
-              <Connector length={14} lineColor={color} />
+              <Connector length={14} lineColor={color} dashed={!radio} thick={radio} />
+              <LinkLabel labelColor={color}>{radio ? "RADIO → CP" : "→ CP"}</LinkLabel>
+              <Connector length={14} lineColor={color} dashed={!radio} thick={radio} />
               <PlatformCard unit={unit} variant="topology" />
             </MemberColumn>
           );
@@ -84,9 +88,9 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
               <SegmentTitle>
                 <RadioIcon /> {relay.label}
               </SegmentTitle>
-              <Connector length={14} lineColor={color} />
-              <LinkLabel labelColor={color}>→ CP</LinkLabel>
-              <Connector length={14} lineColor={color} />
+              <Connector length={14} lineColor={color} thick={hasRadio(relay)} dashed={!hasRadio(relay)} />
+              <LinkLabel labelColor={color}>{hasRadio(relay) ? "RADIO → CP" : "→ CP"}</LinkLabel>
+              <Connector length={14} lineColor={color} thick={hasRadio(relay)} dashed={!hasRadio(relay)} />
               <PlatformCard unit={relay} variant="topology" camera={false} />
             </MemberColumn>
           );
