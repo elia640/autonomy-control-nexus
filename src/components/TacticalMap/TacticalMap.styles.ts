@@ -25,10 +25,16 @@ export const OverlaySvg = styled("svg")({
   width: "100%",
 });
 
-export const AnchoredPoint = styled("div")({
+/**
+ * `badgeSize` centres the node badge (not the whole column) on the coordinate,
+ * so connection lines terminate exactly on the icon.
+ */
+export const AnchoredPoint = styled("div", {
+  shouldForwardProp: (prop) => prop !== "badgeSize",
+})<{ badgeSize?: number }>(({ badgeSize }) => ({
   position: "absolute",
-  transform: "translate(-50%, -50%)",
-});
+  transform: badgeSize ? `translate(-50%, -${badgeSize / 2}px)` : "translate(-50%, -50%)",
+}));
 
 export const MeshChip = styled("div", {
   shouldForwardProp: (prop) => prop !== "chipColor",

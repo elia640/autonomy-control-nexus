@@ -155,6 +155,7 @@ export function TacticalMap({
         </OverlaySvg>
 
         <AnchoredPoint
+          badgeSize={36}
           style={{
             left: `${stationDrag.position.x}%`,
             top: `${stationDrag.position.y}%`,
@@ -188,7 +189,7 @@ export function TacticalMap({
         {platforms.map((unit) => {
           const kinds = kindsOf(unit);
           return (
-            <AnchoredPoint key={unit.id} style={{ left: `${unit.x}%`, top: `${unit.y}%` }}>
+            <AnchoredPoint key={unit.id} badgeSize={30} style={{ left: `${unit.x}%`, top: `${unit.y}%` }}>
               <MarkerColumn>
                 <NodeBadge shape="square" borderColor={color(unit.status)}>
                   <TruckIcon />
@@ -212,6 +213,7 @@ export function TacticalMap({
         })}
 
         <AnchoredPoint
+          badgeSize={36}
           style={{ left: `${relayDrag.position.x}%`, top: `${relayDrag.position.y}%` }}
         >
           <Tooltip title={formatCoordinates(relayDrag.position)} arrow placement="top">
@@ -224,7 +226,7 @@ export function TacticalMap({
               <NodeBadge shape="circle" borderColor={color(relay.status)}>
                 <HubIcon />
               </NodeBadge>
-              <PlatformCard unit={relay} variant="overlay" camera={false} collapsible />
+              <PlatformCard unit={relay} variant="overlay" camera={false} collapsible hideTitle />
             </DraggableNode>
           </Tooltip>
         </AnchoredPoint>

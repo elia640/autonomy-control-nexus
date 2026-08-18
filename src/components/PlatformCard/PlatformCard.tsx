@@ -51,6 +51,8 @@ export interface PlatformCardProps {
   collapsible?: boolean;
   /** Relays have no camera feed. */
   camera?: boolean;
+  /** Hides the card title (used where the map marker already names the unit). */
+  hideTitle?: boolean;
 }
 
 const KIND_ICON: Record<LinkKind, ReactElement> = {
@@ -64,6 +66,7 @@ export function PlatformCard({
   variant = "overlay",
   collapsible = false,
   camera = true,
+  hideTitle = false,
 }: PlatformCardProps) {
   const [expanded, setExpanded] = useState(collapsible ? !!unit.defaultExpanded : true);
   const sims = useToggleList(unit.sims?.length ?? 0);
@@ -85,12 +88,12 @@ export function PlatformCard({
             label={`${unit.label} details`}
           />
         )}
-        <CardTitle>{unit.label}</CardTitle>
+        {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
         {/* Collapsed cards stay neutral: only the quality bar carries colour. */}
         {expanded && (
           <KindBadges>
             {activeKinds.map((kind) => (
-              <KindBadge key={kind} status={unit.status}>
+              <KindBadge key={kind}>
                 {KIND_ICON[kind]} {kind}
               </KindBadge>
             ))}
