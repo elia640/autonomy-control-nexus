@@ -44,19 +44,13 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
 
   const renderSegment = (segment: Segment, members: PlatformUnit[]) => (
     <SegmentColumn key={segment.kind}>
-      <SegmentTitle>
-        {segment.icon} {segment.title}
-      </SegmentTitle>
-      <Connector length={16} />
       <SegmentMembers>
         {members.map((unit) => {
           const color = linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
           return (
             <MemberColumn key={unit.id}>
               <Connector length={14} lineColor={color} />
-              <LinkLabel labelColor={color}>
-                {(unit.activeLinks ?? [unit.link]).join(" + ")} → CP
-              </LinkLabel>
+              <LinkLabel labelColor={color}>→ CP</LinkLabel>
               <Connector length={14} lineColor={color} />
               <PlatformCard unit={unit} variant="topology" />
             </MemberColumn>
@@ -88,10 +82,10 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
           return (
             <MemberColumn key={relay.id}>
               <SegmentTitle>
-                <RadioIcon /> {relay.label} · RADIO RELAY
+                <RadioIcon /> {relay.label}
               </SegmentTitle>
               <Connector length={14} lineColor={color} />
-              <LinkLabel labelColor={color}>RADIO → CP</LinkLabel>
+              <LinkLabel labelColor={color}>→ CP</LinkLabel>
               <Connector length={14} lineColor={color} />
               <PlatformCard unit={relay} variant="topology" camera={false} />
             </MemberColumn>

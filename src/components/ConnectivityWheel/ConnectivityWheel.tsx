@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useTheme } from "@mui/material/styles";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
@@ -79,22 +79,58 @@ const edges: WheelEdge[] = [
 export interface ConnectivityWheelProps {
   title?: string;
   defaultExpanded?: boolean;
+  /** Initial offset from the top-left of the viewport, in pixels. */
+  initialPosition?: { x: number; y: number };
 }
 
 export function ConnectivityWheel({
   title = "CONNECTIVITY MAP",
   defaultExpanded = false,
+  initialPosition = { x: 24, y: 24 },
 }: ConnectivityWheelProps) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [focused, setFocused] = useState<string | null>(null);
+  const [position, setPosition] = useState(initialPosition);
+  const [dragging, setDragging] = useState(false);
+  const offsetRef = useRef({ x: 0, y: 0 });
+  const rootRef = useRef<HTMLElement | null>(null);
+
+  const startDrag = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    offsetRef.current = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    setDragging(true);
+  }, []);
+
+  useEffect(() => {
+    if (!dragging) return;
+    const onMove = (event: PointerEvent) => {
+      setPosition({
+        x: event.clientX - offsetRef.current.x,
+        y: event.clientY - offsetRef.current.y,
+      });
+    };
+    const onUp = () => setDragging(false);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+  }, [dragging]);
 
   const isDimmed = (edge: WheelEdge) =>
     focused !== null && edge.from !== focused && edge.to !== focused;
 
   return (
-    <WheelRoot expanded={expanded}>
-      <WheelHeader>
+    <WheelRoot
+      ref={rootRef}
+      expanded={expanded}
+      dragging={dragging}
+      style={{ left: position.x, top: position.y }}
+    >
+      <WheelHeader onPointerDown={startDrag}>
         {title}
         <WheelSpacer />
         <WheelToggle

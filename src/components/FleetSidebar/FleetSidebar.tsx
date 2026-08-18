@@ -65,7 +65,7 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
         {platforms.map((unit) => (
           <ListRow key={unit.id}>
             <NameCell>{unit.label}</NameCell>
-            <KindCell>{unit.link}</KindCell>
+            <KindCell>{(unit.activeLinks ?? [unit.link]).join(" + ")}</KindCell>
             <GrowCell>
               <QualityBar value={unit.quality} ariaLabel={`${unit.label} quality`} />
             </GrowCell>
