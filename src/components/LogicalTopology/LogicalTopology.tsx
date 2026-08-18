@@ -44,10 +44,6 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
 
   const renderSegment = (segment: Segment, members: PlatformUnit[]) => (
     <SegmentColumn key={segment.kind}>
-      <SegmentTitle>
-        {segment.icon} {segment.title}
-      </SegmentTitle>
-      <Connector length={16} />
       <SegmentMembers>
         {members.map((unit) => {
           const color = linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
