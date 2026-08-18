@@ -19,7 +19,7 @@ import {
   relays,
 } from "@/data/network";
 import type { LinkKind, LinkStatus, PlatformUnit, RelayUnit } from "@/types/network";
-import { curvePath, formatCoordinates } from "./mapGeometry";
+import { formatCoordinates } from "./mapGeometry";
 import {
   AnchoredPoint,
   DualLinkChip,
@@ -47,9 +47,6 @@ export interface TacticalMapProps {
   coordinates?: string;
   scaleLabel?: string;
 }
-
-const UPLINK_BOW = 0.12;
-const MESH_BOW = -0.22;
 
 const kindsOf = (unit: PlatformUnit | RelayUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 const hasRadio = (unit: PlatformUnit | RelayUnit): boolean => kindsOf(unit).includes("RADIO");
