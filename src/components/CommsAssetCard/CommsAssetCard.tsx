@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import Collapse from "@mui/material/Collapse";
-import CpuIcon from "@mui/icons-material/Memory";
-import ThermostatIcon from "@mui/icons-material/Thermostat";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
+import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { StatusIndicator } from "@/components/GLOBAL/StatusIndicator";
 import type { LinkStatus } from "@/types/network";
@@ -25,8 +24,12 @@ export interface CommsAssetCardProps {
   onEnabledChange: (enabled: boolean) => void;
   statusLabel: string;
   statusTone: LinkStatus;
-  temperature?: string;
-  cpuUsage?: string;
+  /** Celsius. */
+  temperature?: number;
+  /** CPU load percent; omit for modems that do not report it. */
+  cpuUsage?: number;
+  /** Supply voltage in volts. */
+  voltage?: number;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   /** Nested links (SIMs, channels) revealed when expanded. */
@@ -42,6 +45,7 @@ export function CommsAssetCard({
   statusTone,
   temperature,
   cpuUsage,
+  voltage,
   expanded,
   onExpandedChange,
   children,
@@ -67,20 +71,13 @@ export function CommsAssetCard({
           <PowerToggle checked={enabled} onChange={onEnabledChange} label={name} />
         </AssetHeaderRow>
 
-        {(temperature || cpuUsage) && (
-          <AssetMetrics>
-            {temperature && (
-              <span>
-                <ThermostatIcon /> {temperature}
-              </span>
-            )}
-            {cpuUsage && (
-              <span>
-                <CpuIcon /> CPU {cpuUsage}
-              </span>
-            )}
-          </AssetMetrics>
-        )}
+        <AssetMetrics>
+          <HealthMetrics
+            {...(temperature !== undefined ? { temperature } : {})}
+            {...(cpuUsage !== undefined ? { cpu: cpuUsage } : {})}
+            {...(voltage !== undefined ? { voltage } : {})}
+          />
+        </AssetMetrics>
       </AssetHeaderRoot>
 
       {children !== undefined && (

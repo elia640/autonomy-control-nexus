@@ -86,3 +86,12 @@ export const LegendSquare = styled("span", {
   borderRadius: 2,
   backgroundColor: swatchColor,
 }));
+
+/** Metric selector shown above the matrix. */
+export const MatrixModes = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: theme.spacing(2),
+  marginBottom: theme.spacing(1.5),
+}));

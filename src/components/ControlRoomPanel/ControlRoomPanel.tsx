@@ -52,7 +52,6 @@ export function ControlRoomPanel({
   const [satOn, setSatOn] = useState(true);
   const [radioOn, setRadioOn] = useState(true);
   const [simsExpanded, setSimsExpanded] = useState(true);
-  const [satExpanded, setSatExpanded] = useState(true);
   const [radioExpanded, setRadioExpanded] = useState(true);
   const sims = useToggleList(SIM_CARDS.length);
 
@@ -109,8 +108,9 @@ export function ControlRoomPanel({
           onEnabledChange={setModemOn}
           statusLabel={modemOn ? "OPERATIONAL" : "OFF"}
           statusTone={modemOn ? "good" : "poor"}
-          temperature="47°C"
-          cpuUsage="38%"
+          temperature={47}
+          cpuUsage={38}
+          voltage={12.4}
           expanded={simsExpanded}
           onExpandedChange={setSimsExpanded}
         >
@@ -133,19 +133,10 @@ export function ControlRoomPanel({
           onEnabledChange={setSatOn}
           statusLabel={satOn ? "SAT LOCKED" : "NO LOCK"}
           statusTone={satOn ? "good" : "poor"}
-          temperature="52°C"
-          cpuUsage="24%"
-          expanded={satExpanded}
-          onExpandedChange={setSatExpanded}
-        >
-          <CommsLinkRow
-            label="SATCOM"
-            quality={88}
-            rate="15.3 Mbps"
-            enabled={satOn}
-            onEnabledChange={setSatOn}
-          />
-        </CommsAssetCard>
+          temperature={52}
+          cpuUsage={24}
+          voltage={12.6}
+        />
 
         <CommsAssetCard
           name="RADIO VHF-7"
@@ -154,8 +145,8 @@ export function ControlRoomPanel({
           onEnabledChange={setRadioOn}
           statusLabel={radioOn ? "OPERATIONAL" : "OFF"}
           statusTone={radioOn ? "good" : "poor"}
-          temperature="41°C"
-          cpuUsage="12%"
+          temperature={41}
+          voltage={12.1}
           expanded={radioExpanded}
           onExpandedChange={setRadioExpanded}
         >

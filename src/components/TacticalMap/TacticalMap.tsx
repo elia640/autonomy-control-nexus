@@ -1,12 +1,15 @@
-import { useCallback, useRef, useState } from "react";
+import { useRef } from "react";
+import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import HubIcon from "@mui/icons-material/Hub";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
+import CellIcon from "@mui/icons-material/SignalCellularAlt";
 import TruckIcon from "@mui/icons-material/LocalShipping";
 import mapImage from "@/assets/map-satellite.jpg";
 import { PlatformCard } from "@/components/PlatformCard";
+import { useMapDrag } from "@/hooks/useMapDrag";
 import {
   GROUND_STATION_POSITION,
   SATELLITE_POSITION,
@@ -15,10 +18,12 @@ import {
   radioLinks,
   relays,
 } from "@/data/network";
-import type { LinkStatus } from "@/types/network";
-import { curveMidpoint, curvePath } from "./mapGeometry";
+import type { LinkKind, LinkStatus, PlatformUnit, RelayUnit } from "@/types/network";
+import { curvePath, formatCoordinates } from "./mapGeometry";
 import {
   AnchoredPoint,
+  DualLinkChip,
+  DualLinkRow,
   InfoChip,
   LegendBox,
   LegendRow,
@@ -26,7 +31,6 @@ import {
   MapImage,
   MapRoot,
   MarkerColumn,
-  MeshChip,
   NodeBadge,
   DraggableNode,
   NodeLabel,
@@ -44,8 +48,17 @@ export interface TacticalMapProps {
   scaleLabel?: string;
 }
 
-const MESH_BOW = -0.22;
 const UPLINK_BOW = 0.12;
+const MESH_BOW = -0.22;
+
+const kindsOf = (unit: PlatformUnit | RelayUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
+const hasRadio = (unit: PlatformUnit | RelayUnit): boolean => kindsOf(unit).includes("RADIO");
+
+const KIND_ICON: Record<LinkKind, typeof RadioIcon> = {
+  CELLULAR: CellIcon,
+  SATCOM: SatelliteIcon,
+  RADIO: RadioIcon,
+};
 
 export function TacticalMap({
   linksOn,
@@ -55,18 +68,11 @@ export function TacticalMap({
   const theme = useTheme();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const relay = relays[0]!;
-  const [relayPos, setRelayPos] = useState({ x: relay.x, y: relay.y });
-  const [dragging, setDragging] = useState(false);
-
-  const moveRelay = useCallback((clientX: number, clientY: number) => {
-    const rect = rootRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = Math.max(2, Math.min(98, ((clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(2, Math.min(98, ((clientY - rect.top) / rect.height) * 100));
-    setRelayPos({ x, y });
-  }, []);
+  const relayDrag = useMapDrag(rootRef, { x: relay.x, y: relay.y });
+  const stationDrag = useMapDrag(rootRef, GROUND_STATION_POSITION);
 
   const color = (status: LinkStatus) => theme.palette.status[status];
+  const radioPlatforms = platforms.filter(hasRadio);
 
   return (
     <MapRoot ref={rootRef}>
@@ -94,136 +100,79 @@ export function TacticalMap({
 
           {linksOn && (
             <g>
-              {platforms
-                .filter((unit) => unit.link === "RADIO")
-                .map((unit) => {
-                const path = curvePath(GROUND_STATION_POSITION, unit, UPLINK_BOW);
-                return (
-                  <g key={unit.id}>
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke={color(unit.status)}
-                      strokeWidth="0.5"
-                      opacity="0.12"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke={color(unit.status)}
-                      strokeWidth="0.18"
-                      opacity="0.9"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d={path}
-                      fill="none"
-                      stroke={color(unit.status)}
-                      strokeWidth="0.32"
-                      strokeDasharray="0.6 3"
-                      strokeLinecap="round"
-                      opacity="0.95"
-                    >
-                      <animate
-                        attributeName="stroke-dashoffset"
-                        from="7.2"
-                        to="0"
-                        dur="2.4s"
-                        repeatCount="indefinite"
-                      />
-                    </path>
-                  </g>
-                );
-              })}
+              {/* Radio-only connectivity: platform ↔ ground station */}
+              {radioPlatforms.map((unit) => (
+                <path
+                  key={`gs-${unit.id}`}
+                  d={curvePath(stationDrag.position, unit, UPLINK_BOW)}
+                  fill="none"
+                  stroke={color(unit.status)}
+                  strokeWidth="0.22"
+                  strokeDasharray="1.2 1.2"
+                  strokeLinecap="round"
+                  opacity="0.95"
+                />
+              ))}
 
-              {radioLinks.map((link) => {
-                const active =
-                  findPlatform(link.from).link === "RADIO" &&
-                  findPlatform(link.to).link === "RADIO";
-                return (
+              {/* Radio-only connectivity: platform ↔ platform */}
+              {radioLinks
+                .filter(
+                  (link) => hasRadio(findPlatform(link.from)) && hasRadio(findPlatform(link.to)),
+                )
+                .map((link) => (
                   <path
                     key={`${link.from}-${link.to}`}
                     d={curvePath(findPlatform(link.from), findPlatform(link.to), MESH_BOW)}
                     fill="none"
                     stroke={color(link.status)}
-                    strokeWidth={active ? "0.2" : "0.14"}
-                    {...(active ? {} : { strokeDasharray: "1 1.1" })}
+                    strokeWidth="0.2"
+                    strokeDasharray="1.2 1.2"
                     strokeLinecap="round"
-                    opacity={active ? "0.95" : "0.6"}
+                    opacity="0.9"
                   />
-                );
-              })}
+                ))}
 
-              {relay.connectedTo.map((id) => {
-                const active = findPlatform(id).link === "RADIO";
-                return (
+              {/* Radio-only connectivity: relay ↔ platform */}
+              {relay.connectedTo
+                .filter((id) => hasRadio(findPlatform(id)))
+                .map((id) => (
                   <line
                     key={`relay-${id}`}
-                    x1={relayPos.x}
-                    y1={relayPos.y}
+                    x1={relayDrag.position.x}
+                    y1={relayDrag.position.y}
                     x2={findPlatform(id).x}
                     y2={findPlatform(id).y}
                     stroke={color(relay.status)}
-                    strokeWidth={active ? "0.2" : "0.16"}
-                    {...(active ? {} : { strokeDasharray: "1.4 1" })}
+                    strokeWidth="0.2"
+                    strokeDasharray="1.2 1.2"
                     strokeLinecap="round"
-                    opacity={active ? "0.95" : "0.6"}
+                    opacity="0.9"
                   />
-                );
-              })}
-
-              <line
-                x1={GROUND_STATION_POSITION.x}
-                y1={GROUND_STATION_POSITION.y}
-                x2={SATELLITE_POSITION.x}
-                y2={SATELLITE_POSITION.y}
-                stroke={theme.palette.primary.main}
-                strokeWidth="0.22"
-                opacity="0.9"
-              />
-              <line
-                x1={platforms[1]!.x}
-                y1={platforms[1]!.y}
-                x2={SATELLITE_POSITION.x}
-                y2={SATELLITE_POSITION.y}
-                stroke={theme.palette.primary.main}
-                strokeWidth="0.18"
-                opacity="0.7"
-              />
+                ))}
             </g>
           )}
         </OverlaySvg>
 
-        {linksOn &&
-          radioLinks.map((link) => {
-            const midpoint = curveMidpoint(
-              findPlatform(link.from),
-              findPlatform(link.to),
-              MESH_BOW,
-            );
-            return (
-              <MeshChip
-                key={`chip-${link.from}-${link.to}`}
-                chipColor={color(link.status)}
-                style={{ left: `${midpoint.x}%`, top: `${midpoint.y}%` }}
-              >
-                RF
-              </MeshChip>
-            );
-          })}
-
         <AnchoredPoint
           style={{
-            left: `${GROUND_STATION_POSITION.x}%`,
-            top: `${GROUND_STATION_POSITION.y}%`,
+            left: `${stationDrag.position.x}%`,
+            top: `${stationDrag.position.y}%`,
           }}
         >
-          <NodeBadge shape="circle" borderColor={theme.palette.primary.main}>
-            <PingRing />
-            <RadioIcon />
-          </NodeBadge>
-          <NodeLabel>GROUND STATION</NodeLabel>
+          <Tooltip title={formatCoordinates(stationDrag.position)} arrow placement="top">
+            <DraggableNode
+              dragging={stationDrag.dragging}
+              role="button"
+              aria-label="Drag ground station"
+              {...stationDrag.handlers}
+            >
+              <NodeBadge shape="circle" borderColor={theme.palette.primary.main}>
+                <PingRing />
+                <RadioIcon />
+              </NodeBadge>
+              <NodeLabel>GROUND STATION</NodeLabel>
+            </DraggableNode>
+          </Tooltip>
         </AnchoredPoint>
 
         <AnchoredPoint
@@ -235,39 +184,48 @@ export function TacticalMap({
           <NodeLabel>TELS-1</NodeLabel>
         </AnchoredPoint>
 
-        {platforms.map((unit) => (
-          <AnchoredPoint key={unit.id} style={{ left: `${unit.x}%`, top: `${unit.y}%` }}>
-            <MarkerColumn>
-              <NodeBadge shape="square" borderColor={color(unit.status)}>
-                <TruckIcon />
-              </NodeBadge>
-              <PlatformCard unit={unit} variant="overlay" collapsible />
-            </MarkerColumn>
-          </AnchoredPoint>
-        ))}
+        {platforms.map((unit) => {
+          const kinds = kindsOf(unit);
+          return (
+            <AnchoredPoint key={unit.id} style={{ left: `${unit.x}%`, top: `${unit.y}%` }}>
+              <MarkerColumn>
+                <NodeBadge shape="square" borderColor={color(unit.status)}>
+                  <TruckIcon />
+                </NodeBadge>
+                {kinds.length > 1 && (
+                  <DualLinkRow aria-label={`${unit.label} simultaneous links`}>
+                    {kinds.map((kind) => {
+                      const Icon = KIND_ICON[kind];
+                      return (
+                        <DualLinkChip key={kind} chipColor={color(unit.status)}>
+                          <Icon /> {kind.slice(0, 3)}
+                        </DualLinkChip>
+                      );
+                    })}
+                  </DualLinkRow>
+                )}
+                <PlatformCard unit={unit} variant="overlay" collapsible />
+              </MarkerColumn>
+            </AnchoredPoint>
+          );
+        })}
 
-        <AnchoredPoint style={{ left: `${relayPos.x}%`, top: `${relayPos.y}%` }}>
-          <DraggableNode
-            dragging={dragging}
-            role="button"
-            aria-label="Drag relay"
-            onPointerDown={(event) => {
-              event.currentTarget.setPointerCapture(event.pointerId);
-              setDragging(true);
-            }}
-            onPointerMove={(event) => {
-              if (dragging) moveRelay(event.clientX, event.clientY);
-            }}
-            onPointerUp={(event) => {
-              event.currentTarget.releasePointerCapture(event.pointerId);
-              setDragging(false);
-            }}
-          >
-            <NodeBadge shape="circle" borderColor={color(relay.status)}>
-              <HubIcon />
-            </NodeBadge>
-            <PlatformCard unit={relay} variant="overlay" camera={false} collapsible />
-          </DraggableNode>
+        <AnchoredPoint
+          style={{ left: `${relayDrag.position.x}%`, top: `${relayDrag.position.y}%` }}
+        >
+          <Tooltip title={formatCoordinates(relayDrag.position)} arrow placement="top">
+            <DraggableNode
+              dragging={relayDrag.dragging}
+              role="button"
+              aria-label="Drag relay"
+              {...relayDrag.handlers}
+            >
+              <NodeBadge shape="circle" borderColor={color(relay.status)}>
+                <HubIcon />
+              </NodeBadge>
+              <PlatformCard unit={relay} variant="overlay" camera={false} collapsible />
+            </DraggableNode>
+          </Tooltip>
         </AnchoredPoint>
 
         <InfoChip sx={{ left: 12, top: 12 }}>
@@ -277,17 +235,12 @@ export function TacticalMap({
         <LegendBox>
           {(["good", "marginal", "poor"] as LinkStatus[]).map((status) => (
             <LegendRow key={status}>
-              <LegendSwatch swatchColor={color(status)} />
-              <span>{status} link</span>
+              <LegendSwatch swatchColor={color(status)} dashed />
+              <span>{status} radio link</span>
             </LegendRow>
           ))}
           <LegendRow>
-            <LegendSwatch swatchColor={theme.palette.text.secondary} />
-            <span>active radio link</span>
-          </LegendRow>
-          <LegendRow>
-            <LegendSwatch swatchColor={theme.palette.text.secondary} dashed />
-            <span>radio available (other range in use)</span>
+            <span>radio connectivity only</span>
           </LegendRow>
         </LegendBox>
 

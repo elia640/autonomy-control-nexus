@@ -1,4 +1,5 @@
 import LinkIcon from "@mui/icons-material/Link";
+import { ConnectivityWheel } from "@/components/ConnectivityWheel";
 import { LogicalTopology } from "@/components/LogicalTopology";
 import { TacticalMap } from "@/components/TacticalMap";
 import type { ViewMode } from "@/types/network";
@@ -31,6 +32,8 @@ export function MonitorViewport({ mode, linksOn, onLinksOnChange, title }: Monit
       >
         Links {linksOn ? "On" : "Off"}
       </LinksButton>
+
+      <ConnectivityWheel />
     </ViewportRoot>
   );
 }

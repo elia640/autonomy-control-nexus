@@ -5,7 +5,7 @@ import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
 import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { MeshMatrix } from "@/components/MeshMatrix";
-import { platforms, relays, satelliteLinks } from "@/data/network";
+import { platforms, relays } from "@/data/network";
 import {
   CollapseIconButton,
   CollapsedRail,
@@ -17,7 +17,6 @@ import {
   NameCell,
   RailLabel,
   RateCell,
-  SatelliteName,
   SidebarHeader,
   SidebarTitle,
 } from "./FleetSidebar.styles";
@@ -91,22 +90,6 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
               <QualityBar value={relay.quality} ariaLabel={`${relay.label} quality`} />
             </GrowCell>
             <RateCell status={rateStatus(parseRate(relay.mbps))}>{relay.mbps}</RateCell>
-          </ListRow>
-        ))}
-      </ListBody>
-
-      <SectionHeader title="Satellite Link" />
-      <ListBody>
-        <ListHeadRow>
-          <GrowCell>Satellite</GrowCell>
-          <RateCell width={56}>Down</RateCell>
-          <RateCell width={56}>Up</RateCell>
-        </ListHeadRow>
-        {satelliteLinks.map((satellite) => (
-          <ListRow key={satellite.name}>
-            <SatelliteName status={satellite.status}>{satellite.name}</SatelliteName>
-            <RateCell width={56}>{satellite.down} Mbps</RateCell>
-            <RateCell width={56}>{satellite.up} Mbps</RateCell>
           </ListRow>
         ))}
       </ListBody>
