@@ -95,22 +95,6 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
         ))}
       </ListBody>
 
-      <SectionHeader title="Satellite Link" />
-      <ListBody>
-        <ListHeadRow>
-          <GrowCell>Satellite</GrowCell>
-          <RateCell width={56}>Down</RateCell>
-          <RateCell width={56}>Up</RateCell>
-        </ListHeadRow>
-        {satelliteLinks.map((satellite) => (
-          <ListRow key={satellite.name}>
-            <SatelliteName status={satellite.status}>{satellite.name}</SatelliteName>
-            <RateCell width={56}>{satellite.down} Mbps</RateCell>
-            <RateCell width={56}>{satellite.up} Mbps</RateCell>
-          </ListRow>
-        ))}
-      </ListBody>
-
       <SectionHeader title="Link Matrix" />
       <MeshMatrix />
     </SidePanel>
