@@ -44,21 +44,22 @@ export const KindBadges = styled("div")(({ theme }) => ({
   gap: theme.spacing(0.75),
 }));
 
-/** One badge per active communication range; several = simultaneous operation. */
-export const KindBadge = styled("span", {
-  shouldForwardProp: (prop) => prop !== "status" && prop !== "muted",
-})<{ status: LinkStatus; muted?: boolean }>(({ theme, status, muted }) => ({
+/**
+ * One badge per active communication range; several = simultaneous operation.
+ * Kept neutral grey so only the quality bar carries status colour.
+ */
+export const KindBadge = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: 2,
   borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${alpha(theme.palette.status[status], muted ? 0.35 : 0.9)}`,
-  backgroundColor: alpha(theme.palette.status[status], muted ? 0.06 : 0.16),
+  border: `1px solid ${alpha(theme.palette.divider, 0.9)}`,
+  backgroundColor: alpha(theme.palette.text.secondary, 0.08),
   padding: "0 3px",
   fontSize: "0.45rem",
   letterSpacing: "0.08em",
-  color: muted ? theme.palette.text.secondary : theme.palette.status[status],
-  "& .MuiSvgIcon-root": { fontSize: "0.6rem" },
+  color: theme.palette.text.secondary,
+  "& .MuiSvgIcon-root": { fontSize: "0.6rem", color: theme.palette.text.secondary },
 }));
 
 export const CardSection = styled("div")(({ theme }) => ({
