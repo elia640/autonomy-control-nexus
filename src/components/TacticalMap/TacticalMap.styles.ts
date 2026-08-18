@@ -166,3 +166,26 @@ export const DraggableNode = styled("div", {
   cursor: dragging ? "grabbing" : "grab",
   touchAction: "none",
 }));
+
+/** Badges shown when a platform transmits on several ranges at once. */
+export const DualLinkRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  gap: theme.spacing(0.5),
+  marginTop: theme.spacing(0.5),
+}));
+
+export const DualLinkChip = styled("span", {
+  shouldForwardProp: (prop) => prop !== "chipColor",
+})<{ chipColor: string }>(({ theme, chipColor }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 2,
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${chipColor}`,
+  backgroundColor: alpha(theme.palette.background.default, 0.85),
+  padding: "0 3px",
+  fontSize: "0.45rem",
+  letterSpacing: "0.08em",
+  color: chipColor,
+  "& .MuiSvgIcon-root": { fontSize: "0.6rem" },
+}));
