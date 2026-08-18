@@ -22,15 +22,20 @@ export const platforms: PlatformUnit[] = [
     mbps: "47.9",
     lat: "9.7ms",
     defaultExpanded: true,
+    cellularModem: { name: "MDM-C1", temperature: 47, cpu: 38, voltage: 12.4 },
     sims: [
       { label: "SIM 1", quality: 84 },
       { label: "SIM 2", quality: 61 },
       { label: "SIM 3", quality: 34 },
     ],
-    extraLinks: [
-      { modem: "MDM-R1", kind: "RADIO", quality: 64, mbps: "12.4" },
-      { modem: "MDM-S1", kind: "SATCOM", quality: 47, mbps: "8.1" },
-    ],
+    radioModem: { name: "MDM-R1", temperature: 41, voltage: 12.1 },
+    radio: { quality: 64, mbps: "12.4" },
+    satModem: { name: "MDM-S1", temperature: 52, cpu: 24, voltage: 12.6 },
+    sat: {
+      locked: true,
+      connected: true,
+      metrics: { sinr: 12.4, rsrp: -102, rssi: -71 },
+    },
   },
   {
     id: "utilA",
@@ -39,15 +44,25 @@ export const platforms: PlatformUnit[] = [
     y: 27,
     status: "marginal",
     link: "SATCOM",
+    activeLinks: ["SATCOM", "CELLULAR"],
     quality: 58,
     mbps: "46.5",
     lat: "120ms",
     defaultExpanded: true,
-    sat: { locked: true, connected: true },
-    extraLinks: [
-      { modem: "MDM-C2", kind: "CELLULAR", quality: 55, mbps: "18.7" },
-      { modem: "MDM-R2", kind: "RADIO", quality: 38, mbps: "9.3" },
+    cellularModem: { name: "MDM-C2", temperature: 63, cpu: 74, voltage: 11.6 },
+    sims: [
+      { label: "SIM 1", quality: 55 },
+      { label: "SIM 2", quality: 48 },
+      { label: "SIM 3", quality: 30 },
     ],
+    satModem: { name: "MDM-S2", temperature: 58, cpu: 41, voltage: 12.2 },
+    sat: {
+      locked: true,
+      connected: true,
+      metrics: { sinr: 8.1, rsrp: -114, rssi: -83 },
+    },
+    radioModem: { name: "MDM-R2", temperature: 44, voltage: 12.0 },
+    radio: { quality: 38, mbps: "9.3" },
   },
   {
     id: "utilB",
@@ -59,12 +74,14 @@ export const platforms: PlatformUnit[] = [
     quality: 76,
     mbps: "45.9",
     lat: "125ms",
+    cellularModem: { name: "MDM-C3", temperature: 49, cpu: 33, voltage: 12.5 },
     sims: [
       { label: "SIM 1", quality: 78 },
       { label: "SIM 2", quality: 66 },
       { label: "SIM 3", quality: 41 },
     ],
-    extraLinks: [{ modem: "MDM-R3", kind: "RADIO", quality: 58, mbps: "10.8" }],
+    radioModem: { name: "MDM-R3", temperature: 39, voltage: 12.3 },
+    radio: { quality: 58, mbps: "10.8" },
   },
   {
     id: "cmd",
@@ -76,10 +93,19 @@ export const platforms: PlatformUnit[] = [
     quality: 52,
     mbps: "44.5",
     lat: "118ms",
-    extraLinks: [
-      { modem: "MDM-C4", kind: "CELLULAR", quality: 44, mbps: "14.2" },
-      { modem: "MDM-S4", kind: "SATCOM", quality: 31, mbps: "6.5" },
+    cellularModem: { name: "MDM-C4", temperature: 55, cpu: 62, voltage: 12.0 },
+    sims: [
+      { label: "SIM 1", quality: 44 },
+      { label: "SIM 2", quality: 37 },
     ],
+    satModem: { name: "MDM-S4", temperature: 72, cpu: 88, voltage: 11.2 },
+    sat: {
+      locked: false,
+      connected: false,
+      metrics: { sinr: 3.2, rsrp: -126, rssi: -95 },
+    },
+    radioModem: { name: "MDM-R4", temperature: 43, voltage: 12.2 },
+    radio: { quality: 52, mbps: "8.4" },
   },
   {
     id: "tanker",
@@ -91,7 +117,10 @@ export const platforms: PlatformUnit[] = [
     quality: 21,
     mbps: "25.5",
     lat: "120ms",
-    extraLinks: [{ modem: "MDM-C5", kind: "CELLULAR", quality: 27, mbps: "7.4" }],
+    cellularModem: { name: "MDM-C5", temperature: 68, cpu: 79, voltage: 11.4 },
+    sims: [{ label: "SIM 1", quality: 27 }],
+    radioModem: { name: "MDM-R5", temperature: 46, voltage: 11.9 },
+    radio: { quality: 21, mbps: "5.1" },
   },
 ];
 
@@ -117,9 +146,8 @@ export const relays: RelayUnit[] = [
     lat: "14ms",
     connectedTo: ["apc1", "utilB", "cmd", "tanker"],
     defaultExpanded: true,
-    extraLinks: [
-      { modem: "RLY-M1", kind: "RADIO", quality: 71, mbps: "18.2" },
-    ],
+    radioModem: { name: "RLY-M1", temperature: 38, voltage: 12.7 },
+    radio: { quality: 71, mbps: "18.2" },
   },
 ];
 
@@ -152,6 +180,12 @@ export const meshMargins: Record<string, number> = {
   "relay1|tanker": 11,
   "relay1|gs": 24,
 };
+
+/** SNR (dB) derived from the link margin of the same pair. */
+export const meshSnr = (margin: number): number => Math.round(margin * 0.9 + 3);
+
+/** RSSI (dBm) derived from the link margin of the same pair. */
+export const meshRssi = (margin: number): number => Math.round(-100 + margin * 1.4);
 
 export const MESH_FREQUENCY = "MESH-A · 2.412 GHz";
 
