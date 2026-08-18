@@ -5,7 +5,7 @@ import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
 import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { MeshMatrix } from "@/components/MeshMatrix";
-import { platforms, relays, satelliteLinks } from "@/data/network";
+import { platforms, relays } from "@/data/network";
 import {
   CollapseIconButton,
   CollapsedRail,
@@ -17,7 +17,6 @@ import {
   NameCell,
   RailLabel,
   RateCell,
-  SatelliteName,
   SidebarHeader,
   SidebarTitle,
 } from "./FleetSidebar.styles";
