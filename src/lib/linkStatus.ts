@@ -13,3 +13,15 @@ export const rateStatus = (
 
 export const parseRate = (value: string | number): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
+
+/** Modem temperature (°C): hot hardware is a fault, warm is a warning. */
+export const temperatureStatus = (celsius: number): LinkStatus =>
+  celsius >= 65 ? "poor" : celsius >= 55 ? "marginal" : "good";
+
+/** Modem CPU load (%). */
+export const cpuStatus = (percent: number): LinkStatus =>
+  percent >= 85 ? "poor" : percent >= 70 ? "marginal" : "good";
+
+/** Modem supply voltage (V) against the nominal 12 V rail. */
+export const voltageStatus = (volts: number): LinkStatus =>
+  volts < 11.5 || volts > 14 ? "poor" : volts < 11.9 || volts > 13.5 ? "marginal" : "good";
