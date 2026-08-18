@@ -22,7 +22,9 @@ export const MetricChip = styled("span", {
   border: `1px solid ${
     tone === "good" ? theme.palette.divider : alpha(theme.palette.status[tone], 0.8)
   }`,
-  backgroundColor: tone === "good" ? "transparent" : alpha(theme.palette.status[tone], 0.15),
+  // Outline-only styling: colour the text and border, never fill the chip.
+  backgroundColor: "transparent",
+  fontWeight: tone === "good" ? 400 : 600,
   padding: "0 3px",
   letterSpacing: "0.04em",
   whiteSpace: "nowrap",
