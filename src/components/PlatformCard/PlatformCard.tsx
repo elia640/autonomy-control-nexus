@@ -89,8 +89,8 @@ export function PlatformCard({
           />
         )}
         {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
-        {/* Collapsed cards stay neutral: only the quality bar carries colour. */}
-        {expanded && (
+        {/* Badges stay neutral grey; only the quality bar carries colour. */}
+        {(
           <KindBadges>
             {activeKinds.map((kind) => (
               <KindBadge key={kind}>
