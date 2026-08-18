@@ -2,22 +2,24 @@ import { alpha, styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 
 export const WheelRoot = styled("section", {
-  shouldForwardProp: (prop) => prop !== "expanded",
-})<{ expanded: boolean }>(({ theme, expanded }) => ({
+  shouldForwardProp: (prop) => prop !== "expanded" && prop !== "dragging",
+})<{ expanded: boolean; dragging: boolean }>(({ theme, expanded, dragging }) => ({
   position: "absolute",
-  right: theme.spacing(3),
-  bottom: theme.spacing(3),
   width: expanded ? 420 : 190,
+  boxShadow: dragging ? theme.shadows[8] : "none",
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: alpha(theme.palette.background.default, 0.92),
   backdropFilter: "blur(4px)",
   pointerEvents: "auto",
   transition: theme.transitions.create("width"),
+  userSelect: "none",
   zIndex: 3,
 }));
 
 export const WheelHeader = styled("header")(({ theme }) => ({
+  cursor: "move",
+  touchAction: "none",
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(2),
