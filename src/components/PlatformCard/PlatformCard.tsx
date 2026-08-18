@@ -86,13 +86,16 @@ export function PlatformCard({
           />
         )}
         <CardTitle>{unit.label}</CardTitle>
-        <KindBadges>
-          {activeKinds.map((kind) => (
-            <KindBadge key={kind} status={unit.status}>
-              {KIND_ICON[kind]} {kind}
-            </KindBadge>
-          ))}
-        </KindBadges>
+        {/* Collapsed cards stay neutral: only the quality bar carries colour. */}
+        {expanded && (
+          <KindBadges>
+            {activeKinds.map((kind) => (
+              <KindBadge key={kind} status={unit.status}>
+                {KIND_ICON[kind]} {kind}
+              </KindBadge>
+            ))}
+          </KindBadges>
+        )}
       </CardHeader>
 
       <CardSection>
