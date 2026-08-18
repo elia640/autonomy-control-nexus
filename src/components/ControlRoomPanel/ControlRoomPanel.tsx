@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
+import CellIcon from "@mui/icons-material/SignalCellularAlt";
+import RadioIcon from "@mui/icons-material/Radio";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { CommsAssetCard } from "@/components/CommsAssetCard";
@@ -103,7 +104,7 @@ export function ControlRoomPanel({
       <AssetStack>
         <CommsAssetCard
           name="MODEM CM-4200"
-          icon={<RadioIcon />}
+          icon={<CellIcon />}
           enabled={modemOn}
           onEnabledChange={setModemOn}
           statusLabel={modemOn ? "OPERATIONAL" : "OFF"}
