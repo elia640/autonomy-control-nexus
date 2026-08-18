@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -53,7 +53,7 @@ export interface PlatformCardProps {
   camera?: boolean;
 }
 
-const KIND_ICON: Record<LinkKind, JSX.Element> = {
+const KIND_ICON: Record<LinkKind, ReactElement> = {
   CELLULAR: <CellIcon />,
   SATCOM: <SatelliteIcon />,
   RADIO: <RadioIcon />,
