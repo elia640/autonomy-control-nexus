@@ -102,10 +102,12 @@ export function TacticalMap({
             <g>
               {/* Radio-only connectivity: platform ↔ ground station */}
               {radioPlatforms.map((unit) => (
-                <path
+                <line
                   key={`gs-${unit.id}`}
-                  d={curvePath(stationDrag.position, unit, UPLINK_BOW)}
-                  fill="none"
+                  x1={stationDrag.position.x}
+                  y1={stationDrag.position.y}
+                  x2={unit.x}
+                  y2={unit.y}
                   stroke={color(unit.status)}
                   strokeWidth="0.22"
                   strokeDasharray="1.2 1.2"
@@ -120,10 +122,12 @@ export function TacticalMap({
                   (link) => hasRadio(findPlatform(link.from)) && hasRadio(findPlatform(link.to)),
                 )
                 .map((link) => (
-                  <path
+                  <line
                     key={`${link.from}-${link.to}`}
-                    d={curvePath(findPlatform(link.from), findPlatform(link.to), MESH_BOW)}
-                    fill="none"
+                    x1={findPlatform(link.from).x}
+                    y1={findPlatform(link.from).y}
+                    x2={findPlatform(link.to).x}
+                    y2={findPlatform(link.to).y}
                     stroke={color(link.status)}
                     strokeWidth="0.2"
                     strokeDasharray="1.2 1.2"
