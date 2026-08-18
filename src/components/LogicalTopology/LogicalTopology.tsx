@@ -50,9 +50,7 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
           return (
             <MemberColumn key={unit.id}>
               <Connector length={14} lineColor={color} />
-              <LinkLabel labelColor={color}>
-                {(unit.activeLinks ?? [unit.link]).join(" + ")} → CP
-              </LinkLabel>
+              <LinkLabel labelColor={color}>→ CP</LinkLabel>
               <Connector length={14} lineColor={color} />
               <PlatformCard unit={unit} variant="topology" />
             </MemberColumn>
@@ -84,10 +82,10 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
           return (
             <MemberColumn key={relay.id}>
               <SegmentTitle>
-                <RadioIcon /> {relay.label} · RADIO RELAY
+                <RadioIcon /> {relay.label}
               </SegmentTitle>
               <Connector length={14} lineColor={color} />
-              <LinkLabel labelColor={color}>RADIO → CP</LinkLabel>
+              <LinkLabel labelColor={color}>→ CP</LinkLabel>
               <Connector length={14} lineColor={color} />
               <PlatformCard unit={relay} variant="topology" camera={false} />
             </MemberColumn>
