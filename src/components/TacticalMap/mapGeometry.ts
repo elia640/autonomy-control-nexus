@@ -22,3 +22,15 @@ export const curveMidpoint = (from: Point, to: Point, bow: number): Point => {
     y: 0.25 * from.y + 0.5 * control.y + 0.25 * to.y,
   };
 };
+
+/** Map-relative percentage position rendered as a tactical grid reference. */
+export const formatCoordinates = ({ x, y }: Point): string => {
+  const lat = 31.75 + (50 - y) * 0.004;
+  const lon = 35.22 + (x - 50) * 0.005;
+  const dm = (value: number): string => {
+    const deg = Math.floor(Math.abs(value));
+    const minutes = (Math.abs(value) - deg) * 60;
+    return `${deg}°${minutes.toFixed(1)}'`;
+  };
+  return `N ${dm(lat)} E ${dm(lon)}`;
+};
