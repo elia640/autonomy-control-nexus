@@ -29,14 +29,19 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
   "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
 }));
 
+/** Command post frame — deliberately heavier than the platform cards. */
 export const CommandNode = styled("div")(({ theme }) => ({
   display: "flex",
+  flexDirection: "column",
   alignItems: "center",
-  gap: theme.spacing(2),
+  gap: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
   border: `2px solid ${theme.palette.primary.main}`,
+  outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
+  outlineOffset: 3,
+  boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
   backgroundColor: theme.palette.panel.header,
-  padding: theme.spacing(2, 4),
+  padding: theme.spacing(3, 6),
   fontSize: "0.6875rem",
   fontWeight: 700,
   letterSpacing: "0.2em",
@@ -161,4 +166,30 @@ export const MeshStatusLabel = styled("span", {
   textAlign: "right",
   textTransform: "uppercase",
   color: statusColor,
+}));
+
+export const CommandRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+export const CommandCaption = styled("span")(({ theme }) => ({
+  fontSize: "0.5rem",
+  fontWeight: 400,
+  letterSpacing: "0.16em",
+  color: theme.palette.text.secondary,
+}));
+
+/** Labelled link between a platform and the command post. */
+export const LinkLabel = styled("span", {
+  shouldForwardProp: (prop) => prop !== "labelColor",
+})<{ labelColor: string }>(({ theme, labelColor }) => ({
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(labelColor, 0.7)}`,
+  backgroundColor: alpha(labelColor, 0.12),
+  padding: "0 4px",
+  fontSize: "0.45rem",
+  letterSpacing: "0.1em",
+  color: labelColor,
 }));
