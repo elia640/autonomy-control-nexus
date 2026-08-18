@@ -52,7 +52,6 @@ export function ControlRoomPanel({
   const [satOn, setSatOn] = useState(true);
   const [radioOn, setRadioOn] = useState(true);
   const [simsExpanded, setSimsExpanded] = useState(true);
-  const [satExpanded, setSatExpanded] = useState(true);
   const [radioExpanded, setRadioExpanded] = useState(true);
   const sims = useToggleList(SIM_CARDS.length);
 
