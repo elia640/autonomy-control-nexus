@@ -224,7 +224,7 @@ export function TacticalMap({
               <NodeBadge shape="circle" borderColor={color(relay.status)}>
                 <HubIcon />
               </NodeBadge>
-              <PlatformCard unit={relay} variant="overlay" camera={false} collapsible />
+              <PlatformCard unit={relay} variant="overlay" camera={false} collapsible hideTitle />
             </DraggableNode>
           </Tooltip>
         </AnchoredPoint>
