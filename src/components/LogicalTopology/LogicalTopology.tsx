@@ -3,19 +3,16 @@ import { useTheme } from "@mui/material/styles";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import { PlatformCard } from "@/components/PlatformCard";
-import { findPlatform, platforms, radioLinks, relays } from "@/data/network";
+import { platforms, relays } from "@/data/network";
 import type { LinkKind, PlatformUnit } from "@/types/network";
 import {
+  CommandCaption,
   CommandNode,
+  CommandRow,
   Connector,
   HorizontalRule,
+  LinkLabel,
   MemberColumn,
-  MeshLine,
-  MeshNodeLabel,
-  MeshPanel,
-  MeshPanelRow,
-  MeshPanelTitle,
-  MeshStatusLabel,
   SatelliteNode,
   SegmentColumn,
   SegmentGrid,
@@ -52,15 +49,19 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
       </SegmentTitle>
       <Connector length={16} />
       <SegmentMembers>
-        {members.map((unit) => (
-          <MemberColumn key={unit.id}>
-            <Connector
-              length={16}
-              lineColor={linksOn ? theme.palette.status[unit.status] : theme.palette.divider}
-            />
-            <PlatformCard unit={unit} variant="topology" />
-          </MemberColumn>
-        ))}
+        {members.map((unit) => {
+          const color = linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
+          return (
+            <MemberColumn key={unit.id}>
+              <Connector length={14} lineColor={color} />
+              <LinkLabel labelColor={color}>
+                {(unit.activeLinks ?? [unit.link]).join(" + ")} → CP
+              </LinkLabel>
+              <Connector length={14} lineColor={color} />
+              <PlatformCard unit={unit} variant="topology" />
+            </MemberColumn>
+          );
+        })}
       </SegmentMembers>
     </SegmentColumn>
   );
@@ -74,23 +75,28 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
         <Connector length={24} lineColor={theme.palette.primary.main} />
 
         <CommandNode>
-          <RadioIcon /> COMMAND POST · GROUND STATION
+          <CommandRow>
+            <RadioIcon /> COMMAND POST · GROUND STATION
+          </CommandRow>
+          <CommandCaption>NETWORK ROOT · ALL PLATFORM LINKS TERMINATE HERE</CommandCaption>
         </CommandNode>
         <Connector length={24} />
         <HorizontalRule />
 
-        {relays.map((relay) => (
-          <MemberColumn key={relay.id}>
-            <SegmentTitle>
-              <RadioIcon /> {relay.label} · RADIO RELAY
-            </SegmentTitle>
-            <Connector
-              length={16}
-              lineColor={linksOn ? theme.palette.status[relay.status] : theme.palette.divider}
-            />
-            <PlatformCard unit={relay} variant="topology" camera={false} />
-          </MemberColumn>
-        ))}
+        {relays.map((relay) => {
+          const color = linksOn ? theme.palette.status[relay.status] : theme.palette.divider;
+          return (
+            <MemberColumn key={relay.id}>
+              <SegmentTitle>
+                <RadioIcon /> {relay.label} · RADIO RELAY
+              </SegmentTitle>
+              <Connector length={14} lineColor={color} />
+              <LinkLabel labelColor={color}>RADIO → CP</LinkLabel>
+              <Connector length={14} lineColor={color} />
+              <PlatformCard unit={relay} variant="topology" camera={false} />
+            </MemberColumn>
+          );
+        })}
         <Connector length={24} />
         <HorizontalRule />
 
@@ -100,27 +106,6 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
             return members.length > 0 ? renderSegment(segment, members) : null;
           })}
         </SegmentGrid>
-
-        <MeshPanel>
-          <MeshPanelTitle>Inter-platform radio mesh</MeshPanelTitle>
-          {radioLinks.map((link) => {
-            const from = findPlatform(link.from);
-            const to = findPlatform(link.to);
-            const color = theme.palette.status[link.status];
-            return (
-              <MeshPanelRow key={`${link.from}-${link.to}`}>
-                <MeshNodeLabel>{from.label}</MeshNodeLabel>
-                <MeshLine
-                  lineColor={linksOn ? color : theme.palette.divider}
-                  dimmed={!linksOn}
-                  dashed={!(from.link === "RADIO" && to.link === "RADIO")}
-                />
-                <MeshNodeLabel align="right">{to.label}</MeshNodeLabel>
-                <MeshStatusLabel statusColor={color}>{link.status}</MeshStatusLabel>
-              </MeshPanelRow>
-            );
-          })}
-        </MeshPanel>
       </TopologyColumnStack>
     </TopologyRoot>
   );
