@@ -33,7 +33,8 @@ export function MonitorViewport({ mode, linksOn, onLinksOnChange, title }: Monit
         Links {linksOn ? "On" : "Off"}
       </LinksButton>
 
-      <ConnectivityWheel />
+      {/* The connectivity map belongs to the logical view only. */}
+      {mode === "logical" && <ConnectivityWheel />}
     </ViewportRoot>
   );
 }
