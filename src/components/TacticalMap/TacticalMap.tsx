@@ -1,6 +1,9 @@
 import { useRef } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import CenterIcon from "@mui/icons-material/CenterFocusStrong";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
 import HubIcon from "@mui/icons-material/Hub";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
@@ -10,6 +13,7 @@ import TruckIcon from "@mui/icons-material/LocalShipping";
 import mapImage from "@/assets/map-satellite.jpg";
 import { PlatformCard } from "@/components/PlatformCard";
 import { useMapDrag } from "@/hooks/useMapDrag";
+import { useMapViewport } from "@/hooks/useMapViewport";
 import {
   GROUND_STATION_POSITION,
   SATELLITE_POSITION,
@@ -28,8 +32,11 @@ import {
   LegendBox,
   LegendRow,
   LegendSwatch,
+  MapCanvas,
   MapImage,
   MapRoot,
+  ZoomButton,
+  ZoomControls,
   MarkerColumn,
   NodeBadge,
   DraggableNode,
@@ -64,15 +71,25 @@ export function TacticalMap({
 }: TacticalMapProps) {
   const theme = useTheme();
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
+  const { viewport, panning, zoomBy, reset, handlers } = useMapViewport(rootRef);
   const relay = relays[0]!;
-  const relayDrag = useMapDrag(rootRef, { x: relay.x, y: relay.y });
-  const stationDrag = useMapDrag(rootRef, GROUND_STATION_POSITION);
+  const relayDrag = useMapDrag(canvasRef, { x: relay.x, y: relay.y });
+  const stationDrag = useMapDrag(canvasRef, GROUND_STATION_POSITION);
 
   const color = (status: LinkStatus) => theme.palette.status[status];
   const radioPlatforms = platforms.filter(hasRadio);
 
   return (
     <MapRoot ref={rootRef}>
+      <MapCanvas
+        ref={canvasRef}
+        panning={panning}
+        style={{
+          transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
+        }}
+        {...handlers}
+      >
       <MapImage
         src={mapImage}
         alt="Satellite map of the operating area with vehicle positions"
@@ -231,6 +248,10 @@ export function TacticalMap({
           </Tooltip>
         </AnchoredPoint>
 
+      </OverlayLayer>
+      </MapCanvas>
+
+      <OverlayLayer>
         <InfoChip sx={{ left: 12, top: 12 }}>
           <MyLocationIcon /> {coordinates}
         </InfoChip>
@@ -252,6 +273,18 @@ export function TacticalMap({
           <div>{scaleLabel}</div>
         </ScaleBox>
       </OverlayLayer>
+
+      <ZoomControls>
+        <ZoomButton type="button" aria-label="Zoom in" onClick={() => zoomBy(1.3)}>
+          <AddIcon />
+        </ZoomButton>
+        <ZoomButton type="button" aria-label="Zoom out" onClick={() => zoomBy(1 / 1.3)}>
+          <RemoveIcon />
+        </ZoomButton>
+        <ZoomButton type="button" aria-label="Reset view" onClick={reset}>
+          <CenterIcon />
+        </ZoomButton>
+      </ZoomControls>
     </MapRoot>
   );
 }

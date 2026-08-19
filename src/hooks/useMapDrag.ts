@@ -41,10 +41,13 @@ export function useMapDrag(
     dragging,
     handlers: {
       onPointerDown: (event) => {
+        // Keep marker drags from panning the map underneath.
+        event.stopPropagation();
         event.currentTarget.setPointerCapture(event.pointerId);
         setDragging(true);
       },
       onPointerMove: (event) => {
+        if (dragging) event.stopPropagation();
         if (dragging) move(event.clientX, event.clientY);
       },
       onPointerUp: (event) => {
