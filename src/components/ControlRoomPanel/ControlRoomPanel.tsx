@@ -57,6 +57,10 @@ export function ControlRoomPanel({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [radioFrequency, setRadioFrequency] = useState(2412);
   const sims = useToggleList(SIM_CARDS.length);
+  // At least one communication range must stay active at all times.
+  const activeLinks = [modemOn, satOn, radioOn].filter(Boolean).length;
+  const isLastLink = (on: boolean) => on && activeLinks <= 1;
+  const activeSims = sims.values.filter(Boolean).length;
 
   return (
     <SidePanel
@@ -112,6 +116,7 @@ export function ControlRoomPanel({
           icon={<CellIcon />}
           enabled={modemOn}
           onEnabledChange={setModemOn}
+          lastActive={isLastLink(modemOn)}
           statusLabel={modemOn ? "OPERATIONAL" : "OFF"}
           statusTone={modemOn ? "good" : "poor"}
           temperature={47}
@@ -128,6 +133,7 @@ export function ControlRoomPanel({
               rate={sim.rate}
               enabled={modemOn && sims.isOn(index)}
               onEnabledChange={(value) => sims.set(index, value)}
+              lastActive={sims.isOn(index) && activeSims <= 1}
             />
           ))}
         </CommsAssetCard>
@@ -137,6 +143,7 @@ export function ControlRoomPanel({
           icon={<SatelliteIcon />}
           enabled={satOn}
           onEnabledChange={setSatOn}
+          lastActive={isLastLink(satOn)}
           statusLabel={satOn ? "SAT LOCKED" : "NO LOCK"}
           statusTone={satOn ? "good" : "poor"}
           temperature={52}
@@ -150,6 +157,7 @@ export function ControlRoomPanel({
           icon={<RadioIcon />}
           enabled={radioOn}
           onEnabledChange={setRadioOn}
+          lastActive={isLastLink(radioOn)}
           statusLabel={radioOn ? `${(radioFrequency / 1000).toFixed(3)} GHz` : "OFF"}
           statusTone={radioOn ? "good" : "poor"}
           temperature={41}

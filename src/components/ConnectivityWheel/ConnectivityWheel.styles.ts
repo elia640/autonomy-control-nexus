@@ -4,7 +4,7 @@ import ButtonBase from "@mui/material/ButtonBase";
 export const WheelRoot = styled("section", {
   shouldForwardProp: (prop) => prop !== "expanded" && prop !== "dragging",
 })<{ expanded: boolean; dragging: boolean }>(({ theme, expanded, dragging }) => ({
-  position: "absolute",
+  position: "fixed",
   width: expanded ? 420 : 190,
   boxShadow: dragging ? theme.shadows[8] : "none",
   borderRadius: theme.shape.borderRadius,
