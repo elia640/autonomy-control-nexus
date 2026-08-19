@@ -107,7 +107,7 @@ export function SettingsDialog({
               size="small"
               type="number"
               value={frequency}
-              inputProps={{ step: 0.025, min: 30, max: 6000 }}
+              slotProps={{ htmlInput: { step: 0.025, min: 30, max: 6000 } }}
               onChange={(event) => setFrequency(event.target.value)}
             />
             <FieldHint>Mesh operating frequency shared by all platforms.</FieldHint>
