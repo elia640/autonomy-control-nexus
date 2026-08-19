@@ -50,6 +50,7 @@ export function CommsAssetCard({
   temperature,
   cpuUsage,
   voltage,
+  quality,
   expanded,
   onExpandedChange,
   children,
