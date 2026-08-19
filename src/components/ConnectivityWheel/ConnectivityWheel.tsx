@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useTheme } from "@mui/material/styles";
 import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
@@ -79,46 +79,59 @@ const edges: WheelEdge[] = [
 export interface ConnectivityWheelProps {
   title?: string;
   defaultExpanded?: boolean;
-  /** Initial offset from the top-left of the viewport, in pixels. */
-  initialPosition?: { x: number; y: number };
+  /** Margin from the bottom-right corner before the operator drags it, in pixels. */
+  margin?: number;
 }
 
 export function ConnectivityWheel({
   title = "CONNECTIVITY MAP",
   defaultExpanded = false,
-  initialPosition = { x: 24, y: 24 },
+  margin = 24,
 }: ConnectivityWheelProps) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [focused, setFocused] = useState<string | null>(null);
-  const [position, setPosition] = useState(initialPosition);
+  /** null keeps the panel anchored to the bottom-right corner. */
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const [dragging, setDragging] = useState(false);
-  const offsetRef = useRef({ x: 0, y: 0 });
   const rootRef = useRef<HTMLElement | null>(null);
 
   const startDrag = useCallback((event: ReactPointerEvent<HTMLElement>) => {
-    const rect = rootRef.current?.getBoundingClientRect();
+    // Left button only, and never from a control inside the header.
+    if (event.button !== 0 || !(event.buttons & 1)) return;
+    if ((event.target as HTMLElement).closest("button,a,input")) return;
+    const element = rootRef.current;
+    const rect = element?.getBoundingClientRect();
     if (!rect) return;
-    offsetRef.current = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-    setDragging(true);
-  }, []);
 
-  useEffect(() => {
-    if (!dragging) return;
-    const onMove = (event: PointerEvent) => {
+    const offset = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    const size = { w: rect.width, h: rect.height };
+    setDragging(true);
+
+    const onMove = (move: PointerEvent) => {
+      if (!(move.buttons & 1)) {
+        stop();
+        return;
+      }
+      const maxX = Math.max(0, window.innerWidth - size.w);
+      const maxY = Math.max(0, window.innerHeight - size.h);
       setPosition({
-        x: event.clientX - offsetRef.current.x,
-        y: event.clientY - offsetRef.current.y,
+        x: Math.min(Math.max(0, move.clientX - offset.x), maxX),
+        y: Math.min(Math.max(0, move.clientY - offset.y), maxY),
       });
     };
-    const onUp = () => setDragging(false);
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    return () => {
+
+    const stop = () => {
+      setDragging(false);
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
     };
-  }, [dragging]);
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+  }, []);
 
   const isDimmed = (edge: WheelEdge) =>
     focused !== null && edge.from !== focused && edge.to !== focused;
@@ -128,7 +141,11 @@ export function ConnectivityWheel({
       ref={rootRef}
       expanded={expanded}
       dragging={dragging}
-      style={{ left: position.x, top: position.y }}
+      style={
+        position
+          ? { left: position.x, top: position.y, right: "auto", bottom: "auto" }
+          : { right: margin, bottom: margin }
+      }
     >
       <WheelHeader onPointerDown={startDrag}>
         {title}
