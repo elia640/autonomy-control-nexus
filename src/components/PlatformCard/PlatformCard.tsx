@@ -77,6 +77,14 @@ export function PlatformCard({
   const [cameraOpen, setCameraOpen] = useState(false);
 
   const activeKinds: LinkKind[] = unit.activeLinks ?? [unit.link];
+  // Redundancy rule: the operator must keep at least one communication range up.
+  const activeCount = [
+    unit.cellularModem ? cellularOn : false,
+    unit.sat && unit.satModem ? satcomOn : false,
+    unit.radioModem ? radioOn : false,
+  ].filter(Boolean).length;
+  const isLastLink = (on: boolean) => on && activeCount <= 1;
+  const activeSims = sims.values.filter(Boolean).length;
 
   return (
     <CardRoot variant={variant} status={unit.status}>
@@ -126,6 +134,7 @@ export function PlatformCard({
                 <PowerToggle
                   checked={cellularOn}
                   onChange={setCellularOn}
+                  lastActive={isLastLink(cellularOn)}
                   label={`${unit.label} cellular modem`}
                 />
               </ModemHeaderRow>
@@ -154,6 +163,7 @@ export function PlatformCard({
                             checked={sims.isOn(index)}
                             disabled={!cellularOn}
                             onChange={(value) => sims.set(index, value)}
+                            lastActive={sims.isOn(index) && activeSims <= 1}
                             label={`${unit.label} ${sim.label}`}
                           />
                         </AssetToggleCell>
@@ -180,6 +190,7 @@ export function PlatformCard({
                 <PowerToggle
                   checked={satcomOn}
                   onChange={setSatcomOn}
+                  lastActive={isLastLink(satcomOn)}
                   label={`${unit.label} satellite modem`}
                 />
               </ModemHeaderRow>
@@ -227,6 +238,7 @@ export function PlatformCard({
                 <PowerToggle
                   checked={radioOn}
                   onChange={setRadioOn}
+                  lastActive={isLastLink(radioOn)}
                   label={`${unit.label} radio modem`}
                 />
               </ModemHeaderRow>

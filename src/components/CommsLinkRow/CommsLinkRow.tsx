@@ -11,6 +11,8 @@ export interface CommsLinkRowProps {
   rate?: string;
   enabled: boolean;
   onEnabledChange: (enabled: boolean) => void;
+  /** Blocks switching off when this is the last active link. */
+  lastActive?: boolean;
 }
 
 export function CommsLinkRow({
@@ -19,11 +21,12 @@ export function CommsLinkRow({
   rate,
   enabled,
   onEnabledChange,
+  lastActive = false,
 }: CommsLinkRowProps) {
   return (
     <LinkRowRoot>
       <LinkRowLabel>{label}</LinkRowLabel>
-      <PowerToggle checked={enabled} onChange={onEnabledChange} label={label} />
+      <PowerToggle checked={enabled} onChange={onEnabledChange} label={label} lastActive={lastActive} />
       <LinkRowBar>
         <QualityBar value={enabled ? quality : 0} disabled={!enabled} ariaLabel={`${label} quality`} />
       </LinkRowBar>
