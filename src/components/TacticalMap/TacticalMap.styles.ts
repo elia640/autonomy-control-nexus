@@ -195,3 +195,43 @@ export const DualLinkChip = styled("span", {
   color: chipColor,
   "& .MuiSvgIcon-root": { fontSize: "0.6rem" },
 }));
+
+/** Transformed surface holding the imagery and every overlay node. */
+export const MapCanvas = styled("div", {
+  shouldForwardProp: (prop) => prop !== "panning",
+})<{ panning: boolean }>(({ panning }) => ({
+  position: "absolute",
+  inset: 0,
+  transformOrigin: "0 0",
+  cursor: panning ? "grabbing" : "grab",
+  touchAction: "none",
+}));
+
+export const ZoomControls = styled("div")(({ theme }) => ({
+  position: "absolute",
+  right: theme.spacing(3),
+  bottom: theme.spacing(3),
+  zIndex: 5,
+  display: "flex",
+  flexDirection: "column",
+  gap: 1,
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.divider}`,
+  overflow: "hidden",
+  backgroundColor: alpha(theme.palette.background.default, 0.85),
+  backdropFilter: "blur(4px)",
+}));
+
+export const ZoomButton = styled("button")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: 26,
+  width: 26,
+  border: "none",
+  background: "transparent",
+  color: theme.palette.text.secondary,
+  cursor: "pointer",
+  "&:hover": { color: theme.palette.primary.main },
+  "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
+}));
