@@ -71,6 +71,15 @@ export function CommsAssetCard({
           )}
           <AssetIconWrap>{icon}</AssetIconWrap>
           <AssetName>{name}</AssetName>
+          {quality !== undefined && (
+            <AssetQuality>
+              <QualityBar
+                value={enabled ? quality : 0}
+                disabled={!enabled}
+                ariaLabel={`${name} link quality`}
+              />
+            </AssetQuality>
+          )}
           <AssetSpacer />
           <StatusIndicator status={statusTone} label={statusLabel} />
           <PowerToggle checked={enabled} onChange={onEnabledChange} label={name} />
