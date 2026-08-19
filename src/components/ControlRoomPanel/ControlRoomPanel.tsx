@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
-import RadioIcon from "@mui/icons-material/Radio";
+import RadioIcon from "@mui/icons-material/CellTower";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { CommsAssetCard } from "@/components/CommsAssetCard";
@@ -9,6 +9,7 @@ import { CommsLinkRow } from "@/components/CommsLinkRow";
 import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { ThroughputChart } from "@/components/ThroughputChart";
 import { ViewModeSwitch } from "@/components/ViewModeSwitch";
 import { MAX_BANDWIDTH_MBPS, throughputSamples } from "@/data/network";
@@ -53,7 +54,8 @@ export function ControlRoomPanel({
   const [satOn, setSatOn] = useState(true);
   const [radioOn, setRadioOn] = useState(true);
   const [simsExpanded, setSimsExpanded] = useState(true);
-  const [radioExpanded, setRadioExpanded] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [radioFrequency, setRadioFrequency] = useState(2412);
   const sims = useToggleList(SIM_CARDS.length);
 
   return (
@@ -82,7 +84,10 @@ export function ControlRoomPanel({
             variant="outlined"
             size="small"
             startIcon={<SettingsIcon />}
-            onClick={onOpenSettings}
+            onClick={() => {
+              setSettingsOpen(true);
+              onOpenSettings?.();
+            }}
           >
             Settings
           </SettingsButton>
@@ -137,6 +142,7 @@ export function ControlRoomPanel({
           temperature={52}
           cpuUsage={24}
           voltage={12.6}
+          quality={74}
         />
 
         <CommsAssetCard
@@ -144,25 +150,23 @@ export function ControlRoomPanel({
           icon={<RadioIcon />}
           enabled={radioOn}
           onEnabledChange={setRadioOn}
-          statusLabel={radioOn ? "OPERATIONAL" : "OFF"}
+          statusLabel={radioOn ? `${(radioFrequency / 1000).toFixed(3)} GHz` : "OFF"}
           statusTone={radioOn ? "good" : "poor"}
           temperature={41}
           voltage={12.1}
-          expanded={radioExpanded}
-          onExpandedChange={setRadioExpanded}
-        >
-          <CommsLinkRow
-            label="RADIO"
-            quality={58}
-            rate="4.8 Mbps"
-            enabled={radioOn}
-            onEnabledChange={setRadioOn}
-          />
-        </CommsAssetCard>
+          quality={58}
+        />
       </AssetStack>
 
       <SectionHeader title="Performance Monitoring" />
       <ThroughputChart samples={throughputSamples} maxBandwidth={MAX_BANDWIDTH_MBPS} />
+
+      <SettingsDialog
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        radioFrequency={radioFrequency}
+        onRadioFrequencyChange={setRadioFrequency}
+      />
     </SidePanel>
   );
 }
