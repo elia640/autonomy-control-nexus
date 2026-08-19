@@ -130,9 +130,6 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
               opacity={0.9}
             />
           ))}
-          {edges.map((edge) => (
-            <circle key={`${edge.id}-dot`} cx={edge.labelX} cy={edge.labelY} r={0} />
-          ))}
         </EdgeSvg>
 
         <TopologyColumnStack>
@@ -153,10 +150,7 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
               const edge = edges.find((item) => item.id === unit.id);
               return (
                 <MemberColumn key={unit.id} ref={setNodeRef(unit.id)}>
-                  <EdgeLabel
-                    labelColor={edge?.color ?? theme.palette.divider}
-                    onLoad={undefined}
-                  >
+                  <EdgeLabel labelColor={edge?.color ?? theme.palette.divider}>
                     {hasRadio(unit) ? "RADIO → CP" : `${primaryKind(unit)} → CP`}
                   </EdgeLabel>
                   <PlatformCard
