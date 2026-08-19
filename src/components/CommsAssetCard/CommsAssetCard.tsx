@@ -3,6 +3,7 @@ import Collapse from "@mui/material/Collapse";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
+import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { StatusIndicator } from "@/components/GLOBAL/StatusIndicator";
 import type { LinkStatus } from "@/types/network";
 import {
@@ -13,6 +14,7 @@ import {
   AssetIconWrap,
   AssetMetrics,
   AssetName,
+  AssetQuality,
   AssetSpacer,
 } from "./CommsAssetCard.styles";
 
