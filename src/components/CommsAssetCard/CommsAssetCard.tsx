@@ -3,6 +3,7 @@ import Collapse from "@mui/material/Collapse";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
+import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { StatusIndicator } from "@/components/GLOBAL/StatusIndicator";
 import type { LinkStatus } from "@/types/network";
 import {
@@ -13,6 +14,7 @@ import {
   AssetIconWrap,
   AssetMetrics,
   AssetName,
+  AssetQuality,
   AssetSpacer,
 } from "./CommsAssetCard.styles";
 
@@ -30,6 +32,8 @@ export interface CommsAssetCardProps {
   cpuUsage?: number;
   /** Supply voltage in volts. */
   voltage?: number;
+  /** Link quality 0-100; renders a status bar beside the asset name. */
+  quality?: number;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   /** Nested links (SIMs, channels) revealed when expanded. */
@@ -46,6 +50,7 @@ export function CommsAssetCard({
   temperature,
   cpuUsage,
   voltage,
+  quality,
   expanded,
   onExpandedChange,
   children,
@@ -66,6 +71,15 @@ export function CommsAssetCard({
           )}
           <AssetIconWrap>{icon}</AssetIconWrap>
           <AssetName>{name}</AssetName>
+          {quality !== undefined && (
+            <AssetQuality>
+              <QualityBar
+                value={enabled ? quality : 0}
+                disabled={!enabled}
+                ariaLabel={`${name} link quality`}
+              />
+            </AssetQuality>
+          )}
           <AssetSpacer />
           <StatusIndicator status={statusTone} label={statusLabel} />
           <PowerToggle checked={enabled} onChange={onEnabledChange} label={name} />

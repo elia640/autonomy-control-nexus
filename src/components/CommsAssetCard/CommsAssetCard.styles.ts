@@ -53,3 +53,9 @@ export const AssetBodyInner = styled("div")(({ theme }) => ({
 }));
 
 export const AssetSpacer = styled("div")({ flex: 1 });
+
+/** Inline link-quality bar shown in the asset header. */
+export const AssetQuality = styled("div")({
+  width: 64,
+  flexShrink: 0,
+});

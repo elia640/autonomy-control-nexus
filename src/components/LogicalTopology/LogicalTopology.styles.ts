@@ -205,3 +205,40 @@ export const LinkLabel = styled("span", {
   letterSpacing: "0.1em",
   color: labelColor,
 }));
+
+/** Positioning context for the measured connection layer. */
+export const TopologyContent = styled("div")({
+  position: "relative",
+  minHeight: "100%",
+  width: "100%",
+});
+
+export const EdgeSvg = styled("svg")({
+  position: "absolute",
+  left: 0,
+  top: 0,
+  pointerEvents: "none",
+  overflow: "visible",
+});
+
+export const NodeGrid = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "flex-start",
+  justifyContent: "center",
+  gap: theme.spacing(6, 6),
+  marginTop: theme.spacing(14),
+}));
+
+export const EdgeLabel = styled("span", {
+  shouldForwardProp: (prop) => prop !== "labelColor",
+})<{ labelColor: string }>(({ theme, labelColor }) => ({
+  marginBottom: theme.spacing(1.5),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(labelColor, 0.7)}`,
+  backgroundColor: alpha(labelColor, 0.12),
+  padding: "1px 6px",
+  fontSize: "0.45rem",
+  letterSpacing: "0.12em",
+  color: labelColor,
+}));

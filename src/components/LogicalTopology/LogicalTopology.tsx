@@ -1,24 +1,22 @@
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import { PlatformCard } from "@/components/PlatformCard";
 import { platforms, relays } from "@/data/network";
-import type { LinkKind, PlatformUnit } from "@/types/network";
+import type { LinkKind, PlatformUnit, RelayUnit } from "@/types/network";
 import {
   CommandCaption,
   CommandNode,
   CommandRow,
   Connector,
-  HorizontalRule,
-  LinkLabel,
+  EdgeLabel,
+  EdgeSvg,
   MemberColumn,
+  NodeGrid,
   SatelliteNode,
-  SegmentColumn,
-  SegmentGrid,
-  SegmentMembers,
-  SegmentTitle,
   TopologyColumnStack,
+  TopologyContent,
   TopologyRoot,
 } from "./LogicalTopology.styles";
 
@@ -27,84 +25,145 @@ export interface LogicalTopologyProps {
   linksOn: boolean;
 }
 
-interface Segment {
-  kind: LinkKind;
-  title: string;
-  icon: ReactNode;
+interface Edge {
+  id: string;
+  path: string;
+  color: string;
+  dashed: boolean;
+  label: string;
+  labelX: number;
+  labelY: number;
 }
 
-const SEGMENTS: Segment[] = [
-  { kind: "CELLULAR", title: "CELLULAR SEGMENT", icon: <RadioIcon /> },
-  { kind: "SATCOM", title: "SATCOM SEGMENT", icon: <SatelliteIcon /> },
-  { kind: "RADIO", title: "RADIO SEGMENT", icon: <RadioIcon /> },
-];
-
-const hasRadio = (unit: { activeLinks?: LinkKind[]; link: LinkKind }): boolean =>
+const hasRadio = (unit: PlatformUnit | RelayUnit): boolean =>
   (unit.activeLinks ?? [unit.link]).includes("RADIO");
+
+const primaryKind = (unit: PlatformUnit | RelayUnit): LinkKind =>
+  (unit.activeLinks ?? [unit.link])[0] ?? unit.link;
 
 export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
   const theme = useTheme();
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const commandRef = useRef<HTMLDivElement | null>(null);
+  const nodeRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const [edges, setEdges] = useState<Edge[]>([]);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
-  const renderSegment = (segment: Segment, members: PlatformUnit[]) => (
-    <SegmentColumn key={segment.kind}>
-      <SegmentMembers>
-        {members.map((unit) => {
-          const color = linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
-          const radio = hasRadio(unit);
-          return (
-            <MemberColumn key={unit.id}>
-              <Connector length={14} lineColor={color} dashed={!radio} thick={radio} />
-              <LinkLabel labelColor={color}>{radio ? "RADIO → CP" : "→ CP"}</LinkLabel>
-              <Connector length={14} lineColor={color} dashed={!radio} thick={radio} />
-              <PlatformCard unit={unit} variant="topology" />
-            </MemberColumn>
-          );
-        })}
-      </SegmentMembers>
-    </SegmentColumn>
-  );
+  const nodes: (PlatformUnit | RelayUnit)[] = [...relays, ...platforms];
+
+  const setNodeRef = (id: string) => (element: HTMLDivElement | null) => {
+    if (element) nodeRefs.current.set(id, element);
+    else nodeRefs.current.delete(id);
+  };
+
+  const measure = useCallback(() => {
+    const content = contentRef.current;
+    const command = commandRef.current;
+    if (!content || !command) return;
+
+    const base = content.getBoundingClientRect();
+    const cp = command.getBoundingClientRect();
+    setSize({ width: content.scrollWidth, height: content.scrollHeight });
+
+    const originX = cp.left - base.left + cp.width / 2;
+    const originY = cp.bottom - base.top;
+
+    const next: Edge[] = [];
+    for (const unit of nodes) {
+      const element = nodeRefs.current.get(unit.id);
+      if (!element) continue;
+      const rect = element.getBoundingClientRect();
+      const targetX = rect.left - base.left + rect.width / 2;
+      const targetY = rect.top - base.top;
+      const busY = originY + Math.max(24, (targetY - originY) * 0.45);
+      const radio = hasRadio(unit);
+
+      next.push({
+        id: unit.id,
+        path: `M ${originX} ${originY} V ${busY} H ${targetX} V ${targetY}`,
+        color: linksOn ? theme.palette.status[unit.status] : theme.palette.divider,
+        dashed: !radio,
+        label: radio ? "RADIO" : primaryKind(unit),
+        labelX: targetX,
+        labelY: (busY + targetY) / 2,
+      });
+    }
+    setEdges(next);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linksOn, theme]);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [measure]);
+
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content) return;
+    const observer = new ResizeObserver(() => measure());
+    observer.observe(content);
+    for (const element of nodeRefs.current.values()) observer.observe(element);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
 
   return (
     <TopologyRoot>
-      <TopologyColumnStack>
-        <SatelliteNode>
-          <SatelliteIcon /> TELS-1 SATELLITE
-        </SatelliteNode>
-        <Connector length={24} lineColor={theme.palette.primary.main} />
+      <TopologyContent ref={contentRef}>
+        <EdgeSvg
+          width={size.width}
+          height={size.height}
+          viewBox={`0 0 ${Math.max(size.width, 1)} ${Math.max(size.height, 1)}`}
+          aria-hidden="true"
+        >
+          {edges.map((edge) => (
+            <path
+              key={edge.id}
+              d={edge.path}
+              fill="none"
+              stroke={edge.color}
+              strokeWidth={edge.dashed ? 1 : 1.6}
+              strokeDasharray={edge.dashed ? "4 4" : undefined}
+              strokeLinejoin="round"
+              opacity={0.9}
+            />
+          ))}
+        </EdgeSvg>
 
-        <CommandNode>
-          <CommandRow>
-            <RadioIcon /> COMMAND POST · GROUND STATION
-          </CommandRow>
-          <CommandCaption>NETWORK ROOT · ALL PLATFORM LINKS TERMINATE HERE</CommandCaption>
-        </CommandNode>
-        <Connector length={24} />
-        <HorizontalRule />
+        <TopologyColumnStack>
+          <SatelliteNode>
+            <SatelliteIcon /> TELS-1 SATELLITE
+          </SatelliteNode>
+          <Connector length={24} lineColor={theme.palette.primary.main} />
 
-        {relays.map((relay) => {
-          const color = linksOn ? theme.palette.status[relay.status] : theme.palette.divider;
-          return (
-            <MemberColumn key={relay.id}>
-              <SegmentTitle>
-                <RadioIcon /> {relay.label}
-              </SegmentTitle>
-              <Connector length={14} lineColor={color} thick={hasRadio(relay)} dashed={!hasRadio(relay)} />
-              <LinkLabel labelColor={color}>{hasRadio(relay) ? "RADIO → CP" : "→ CP"}</LinkLabel>
-              <Connector length={14} lineColor={color} thick={hasRadio(relay)} dashed={!hasRadio(relay)} />
-              <PlatformCard unit={relay} variant="topology" camera={false} />
-            </MemberColumn>
-          );
-        })}
-        <Connector length={24} />
-        <HorizontalRule />
+          <CommandNode ref={commandRef}>
+            <CommandRow>
+              <RadioIcon /> COMMAND POST · GROUND STATION
+            </CommandRow>
+            <CommandCaption>NETWORK ROOT · ALL PLATFORM LINKS TERMINATE HERE</CommandCaption>
+          </CommandNode>
 
-        <SegmentGrid>
-          {SEGMENTS.map((segment) => {
-            const members = platforms.filter((unit) => unit.link === segment.kind);
-            return members.length > 0 ? renderSegment(segment, members) : null;
-          })}
-        </SegmentGrid>
-      </TopologyColumnStack>
+          <NodeGrid>
+            {nodes.map((unit) => {
+              const edge = edges.find((item) => item.id === unit.id);
+              return (
+                <MemberColumn key={unit.id} ref={setNodeRef(unit.id)}>
+                  <EdgeLabel labelColor={edge?.color ?? theme.palette.divider}>
+                    {hasRadio(unit) ? "RADIO → CP" : `${primaryKind(unit)} → CP`}
+                  </EdgeLabel>
+                  <PlatformCard
+                    unit={unit}
+                    variant="topology"
+                    {...(unit.id === relays[0]?.id ? { camera: false } : {})}
+                  />
+                </MemberColumn>
+              );
+            })}
+          </NodeGrid>
+        </TopologyColumnStack>
+      </TopologyContent>
     </TopologyRoot>
   );
 }
