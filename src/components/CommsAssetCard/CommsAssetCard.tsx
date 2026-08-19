@@ -32,6 +32,8 @@ export interface CommsAssetCardProps {
   cpuUsage?: number;
   /** Supply voltage in volts. */
   voltage?: number;
+  /** Link quality 0-100; renders a status bar beside the asset name. */
+  quality?: number;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   /** Nested links (SIMs, channels) revealed when expanded. */
