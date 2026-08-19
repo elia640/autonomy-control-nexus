@@ -34,6 +34,8 @@ export interface CommsAssetCardProps {
   voltage?: number;
   /** Link quality 0-100; renders a status bar beside the asset name. */
   quality?: number;
+  /** Blocks switching off when this is the last active communication range. */
+  lastActive?: boolean;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   /** Nested links (SIMs, channels) revealed when expanded. */
@@ -51,6 +53,7 @@ export function CommsAssetCard({
   cpuUsage,
   voltage,
   quality,
+  lastActive = false,
   expanded,
   onExpandedChange,
   children,
@@ -82,7 +85,7 @@ export function CommsAssetCard({
           )}
           <AssetSpacer />
           <StatusIndicator status={statusTone} label={statusLabel} />
-          <PowerToggle checked={enabled} onChange={onEnabledChange} label={name} />
+          <PowerToggle checked={enabled} onChange={onEnabledChange} label={name} lastActive={lastActive} />
         </AssetHeaderRow>
 
         <AssetMetrics>
