@@ -69,7 +69,7 @@ export function FleetSidebar({
           <NameCell>Platform</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
-          <RateCell width={26}>Score</RateCell>
+          <RateCell width={34}>Score</RateCell>
           <RateCell>Down</RateCell>
         </ListHeadRow>
         {platforms.map((unit) => (
@@ -88,7 +88,7 @@ export function FleetSidebar({
             <GrowCell>
               <QualityBar value={unit.quality} ariaLabel={`${unit.label} quality`} />
             </GrowCell>
-            <RateCell width={26}>{unit.quality}</RateCell>
+            <RateCell width={34}>{unit.quality}</RateCell>
             <RateCell status={rateStatus(parseRate(unit.mbps))}>{unit.mbps}</RateCell>
           </ListRow>
         ))}
@@ -100,7 +100,7 @@ export function FleetSidebar({
           <NameCell>Relay</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
-          <RateCell width={26}>Score</RateCell>
+          <RateCell width={34}>Score</RateCell>
           <RateCell>Down</RateCell>
         </ListHeadRow>
         {relays.map((relay) => (
@@ -110,7 +110,7 @@ export function FleetSidebar({
             <GrowCell>
               <QualityBar value={relay.quality} ariaLabel={`${relay.label} quality`} />
             </GrowCell>
-            <RateCell width={26}>{relay.quality}</RateCell>
+            <RateCell width={34}>{relay.quality}</RateCell>
             <RateCell status={rateStatus(parseRate(relay.mbps))}>{relay.mbps}</RateCell>
           </ListRow>
         ))}
