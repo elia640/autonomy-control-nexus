@@ -131,23 +131,6 @@ export function ControlRoomPanel({
     >
       <SectionHeader title={title} />
 
-      {vehicle === null && (
-        <>
-          <CompareCaption>COMPARE MODEM MONITORING</CompareCaption>
-          <CompareRow>
-            {compareOptions.map((option) => (
-              <SeriesCheckbox
-                key={option.id}
-                label={option.label}
-                color={theme.palette.primary.main}
-                checked={compared.includes(option.id)}
-                onChange={(checked) => toggleCompare(option.id, checked)}
-              />
-            ))}
-          </CompareRow>
-        </>
-      )}
-
       <PanelStack>
         <ModemPanel
           modem={modem}
@@ -170,6 +153,24 @@ export function ControlRoomPanel({
         maxBandwidth={MAX_BANDWIDTH_MBPS}
         withLatency={vehicle !== null}
       />
+
+      {vehicle === null && (
+        <>
+          <CompareCaption>COMPARE MODEM MONITORING</CompareCaption>
+          <CompareRow>
+            {compareOptions.map((option) => (
+              <SeriesCheckbox
+                key={option.id}
+                label={option.label}
+                color={theme.palette.primary.main}
+                checked={compared.includes(option.id)}
+                onChange={(checked) => toggleCompare(option.id, checked)}
+              />
+            ))}
+          </CompareRow>
+        </>
+      )}
+
 
       {compared.map((id, index) => {
         const option = compareOptions.find((o) => o.id === id);

@@ -88,7 +88,9 @@ export const ListRow = styled("div", {
 
 
 export const NameCell = styled("span")(({ theme }) => ({
-  width: 62,
+  width: 78,
+  fontWeight: 700,
+  letterSpacing: "0.06em",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
@@ -96,7 +98,7 @@ export const NameCell = styled("span")(({ theme }) => ({
 }));
 
 export const KindCell = styled("span")(({ theme }) => ({
-  width: 52,
+  width: 74,
   color: theme.palette.text.secondary,
 }));
 

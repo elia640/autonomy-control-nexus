@@ -1,12 +1,15 @@
+import CellTowerIcon from "@mui/icons-material/CellTower";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
+import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
-import { rateStatus, temperatureStatus, voltageStatus } from "@/lib/linkStatus";
+import { rateStatus } from "@/lib/linkStatus";
 import type { RadioAsset } from "@/types/network";
 import {
+  AssetIcon,
   DetailItem,
-  DetailRow,
   HeaderRow,
+  MetaRow,
   PanelName,
   PanelRoot,
   ValueText,
@@ -38,6 +41,9 @@ export function RadioPanel({
           onToggle={() => onExpandedChange(!expanded)}
           label={`${radio.name} details`}
         />
+        <AssetIcon>
+          <CellTowerIcon />
+        </AssetIcon>
         <PanelName>{radio.name}</PanelName>
         <QualityMeter
           value={radio.quality}
@@ -52,24 +58,17 @@ export function RadioPanel({
         />
       </HeaderRow>
 
-      {expanded && (
-        <DetailRow>
-          <DetailItem>
-            {radio.rateLabel}{" "}
-            <ValueText tone={rateStatus(radio.rate)}>
-              {enabled ? `${radio.rate.toFixed(1)} Mbps` : "—"}
-            </ValueText>
-          </DetailItem>
-          <DetailItem>
-            TEMP{" "}
-            <ValueText tone={temperatureStatus(radio.temperature)}>{radio.temperature}°C</ValueText>
-          </DetailItem>
-          <DetailItem>
-            VOLTAGE{" "}
-            <ValueText tone={voltageStatus(radio.voltage)}>{radio.voltage.toFixed(1)}V</ValueText>
-          </DetailItem>
-        </DetailRow>
-      )}
+      <MetaRow>
+        <DetailItem>
+          {radio.rateLabel}{" "}
+          <ValueText tone={rateStatus(radio.rate)}>
+            {enabled ? `${radio.rate.toFixed(1)} Mbps` : "—"}
+          </ValueText>
+        </DetailItem>
+        <DetailItem>
+          <HealthMetrics temperature={radio.temperature} voltage={radio.voltage} />
+        </DetailItem>
+      </MetaRow>
     </PanelRoot>
   );
 }

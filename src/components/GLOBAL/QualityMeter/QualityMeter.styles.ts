@@ -17,7 +17,8 @@ export const MeterScore = styled("span", {
   fontSize: "0.625rem",
   fontWeight: 700,
   fontVariantNumeric: "tabular-nums",
-  minWidth: 20,
+  minWidth: 24,
+  flexShrink: 0,
   textAlign: "right",
   color: theme.palette.status[tone],
 }));

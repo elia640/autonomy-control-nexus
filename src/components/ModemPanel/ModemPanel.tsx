@@ -1,11 +1,14 @@
 import { useState } from "react";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import CellIcon from "@mui/icons-material/SignalCellularAlt";
+import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
-import { cpuStatus, rateStatus, temperatureStatus } from "@/lib/linkStatus";
+import { rateStatus } from "@/lib/linkStatus";
 import type { ChannelState, ModemAsset } from "@/types/network";
 import {
+  AssetIcon,
   ChannelList,
   ChannelName,
   ChannelRow,
@@ -50,16 +53,11 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
           onToggle={() => onExpandedChange(!expanded)}
           label={`${modem.name} channels`}
         />
+        <AssetIcon>
+          <CellIcon />
+        </AssetIcon>
         <PanelName>{modem.name}</PanelName>
         <QualityMeter value={modem.quality} ariaLabel={`${modem.name} quality`} />
-        <ResetButton
-          variant="outlined"
-          size="small"
-          startIcon={<RestartAltIcon sx={{ fontSize: "0.7rem" }} />}
-          onClick={() => onReset?.(modem.id)}
-        >
-          Reset
-        </ResetButton>
       </HeaderRow>
 
       <MetaRow>
@@ -68,14 +66,16 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
           <ValueText tone={rateStatus(modem.rate)}>{modem.rate.toFixed(1)} Mbps</ValueText>
         </MetaItem>
         <MetaItem>
-          CPU TEMP{" "}
-          <ValueText tone={temperatureStatus(modem.cpuTemperature)}>
-            {modem.cpuTemperature}°C
-          </ValueText>
+          <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} />
         </MetaItem>
-        <MetaItem>
-          CPU LOAD <ValueText tone={cpuStatus(modem.cpuLoad)}>{modem.cpuLoad}%</ValueText>
-        </MetaItem>
+        <ResetButton
+          variant="outlined"
+          size="small"
+          startIcon={<RestartAltIcon sx={{ fontSize: "0.7rem" }} />}
+          onClick={() => onReset?.(modem.id)}
+        >
+          Reset
+        </ResetButton>
       </MetaRow>
 
       {expanded && (

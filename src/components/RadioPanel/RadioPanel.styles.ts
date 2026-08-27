@@ -7,11 +7,22 @@ export const PanelRoot = styled("div")(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.paper, 0.7),
 }));
 
+/** Mirrors the modem panel header grid so both panels line up. */
 export const HeaderRow = styled("div")(({ theme }) => ({
-  display: "flex",
+  display: "grid",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr) 92px auto",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5),
+  "& > *": { minWidth: 0 },
+}));
+
+export const AssetIcon = styled("span")(({ theme }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: theme.palette.secondary.main,
+  "& .MuiSvgIcon-root": { fontSize: "1rem" },
 }));
 
 export const PanelName = styled("span")(({ theme }) => ({
@@ -20,14 +31,17 @@ export const PanelName = styled("span")(({ theme }) => ({
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
   whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 }));
 
-export const DetailRow = styled("div")(({ theme }) => ({
+export const MetaRow = styled("div")(({ theme }) => ({
   display: "flex",
+  alignItems: "center",
   flexWrap: "wrap",
-  gap: theme.spacing(1, 4),
-  borderTop: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(1.5, 2.5),
+  gap: theme.spacing(1, 2.5),
+  padding: theme.spacing(0, 2.5, 2),
+  paddingLeft: theme.spacing(8),
   fontSize: "0.5625rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,

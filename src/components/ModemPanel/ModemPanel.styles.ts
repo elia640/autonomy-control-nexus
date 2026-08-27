@@ -9,10 +9,21 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 }));
 
 export const HeaderRow = styled("div")(({ theme }) => ({
-  display: "flex",
+  display: "grid",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr) 92px auto",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5),
+  "& > *": { minWidth: 0 },
+}));
+
+/** Distinguishes the asset kind at a glance (cellular modem vs radio). */
+export const AssetIcon = styled("span")(({ theme }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: theme.palette.primary.main,
+  "& .MuiSvgIcon-root": { fontSize: "1rem" },
 }));
 
 export const PanelName = styled("span")(({ theme }) => ({
@@ -21,14 +32,17 @@ export const PanelName = styled("span")(({ theme }) => ({
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
   whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 }));
 
 export const MetaRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   flexWrap: "wrap",
-  gap: theme.spacing(1, 4),
+  gap: theme.spacing(1, 1.5),
   padding: theme.spacing(0, 2.5, 2),
+  paddingLeft: theme.spacing(8),
   fontSize: "0.5625rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
@@ -38,6 +52,8 @@ export const MetaItem = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(1),
+  whiteSpace: "nowrap",
+  flexShrink: 0,
 }));
 
 /** Numeric readout: white when normal, orange on warning, red when critical. */
@@ -55,15 +71,19 @@ export const ValueText = styled("span", {
 }));
 
 export const ResetButton = styled(Button)(({ theme }) => ({
+  marginLeft: "auto",
   minWidth: 0,
   padding: theme.spacing(0.75, 2),
   fontSize: "0.5625rem",
-  fontWeight: 700,
-  color: theme.palette.text.secondary,
-  borderColor: theme.palette.divider,
+  fontWeight: 800,
+  letterSpacing: "0.12em",
+  borderWidth: 1,
+  color: theme.palette.status.marginal,
+  borderColor: alpha(theme.palette.status.marginal, 0.7),
+  backgroundColor: alpha(theme.palette.status.marginal, 0.1),
   "&:hover": {
-    color: theme.palette.primary.main,
-    borderColor: alpha(theme.palette.primary.main, 0.6),
+    borderColor: theme.palette.status.marginal,
+    backgroundColor: alpha(theme.palette.status.marginal, 0.22),
   },
 }));
 
