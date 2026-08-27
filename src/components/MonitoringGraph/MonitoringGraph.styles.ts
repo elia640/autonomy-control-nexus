@@ -5,7 +5,7 @@ export const ChartRoot = styled("div")(({ theme }) => ({
   padding: theme.spacing(2, 2, 1),
 }));
 
-export const ChartCanvas = styled("div")({ height: 168, width: "100%" });
+export const ChartCanvas = styled("div")({ height: 200, width: "100%" });
 
 export const ChartLegend = styled("div")(({ theme }) => ({
   display: "flex",
