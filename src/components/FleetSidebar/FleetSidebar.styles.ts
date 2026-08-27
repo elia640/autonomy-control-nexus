@@ -70,12 +70,22 @@ export const ListHeadRow = styled("div")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const ListRow = styled("div")(({ theme }) => ({
+export const ListRow = styled("div", {
+  shouldForwardProp: (prop) => prop !== "selectable" && prop !== "selected",
+})<{ selectable?: boolean; selected?: boolean }>(({ theme, selectable, selected }) => ({
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(2),
-  padding: theme.spacing(1, 0),
+  padding: theme.spacing(1, 1),
+  marginInline: theme.spacing(-1),
+  borderLeft: `2px solid ${selected ? theme.palette.primary.main : "transparent"}`,
+  backgroundColor: selected ? alpha(theme.palette.primary.main, 0.12) : "transparent",
+  cursor: selectable ? "pointer" : "default",
+  "&:hover": selectable
+    ? { backgroundColor: alpha(theme.palette.primary.main, selected ? 0.18 : 0.08) }
+    : {},
 }));
+
 
 export const NameCell = styled("span")(({ theme }) => ({
   width: 62,

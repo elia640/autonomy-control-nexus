@@ -25,9 +25,18 @@ export interface FleetSidebarProps {
   title: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Platform currently shown in the control room panel. */
+  selectedVehicleId?: string | null;
+  onSelectVehicle?: (id: string | null) => void;
 }
 
-export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
+export function FleetSidebar({
+  title,
+  open,
+  onOpenChange,
+  selectedVehicleId = null,
+  onSelectVehicle,
+}: FleetSidebarProps) {
   if (!open) {
     return (
       <CollapsedRail onClick={() => onOpenChange(true)} aria-label="Expand panel">
@@ -60,15 +69,26 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
           <NameCell>Platform</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
+          <RateCell width={34}></RateCell>
           <RateCell>Down</RateCell>
         </ListHeadRow>
         {platforms.map((unit) => (
-          <ListRow key={unit.id}>
+          <ListRow
+            key={unit.id}
+            selectable
+            selected={selectedVehicleId === unit.id}
+            role="button"
+            aria-label={`Select ${unit.label}`}
+            onClick={() =>
+              onSelectVehicle?.(selectedVehicleId === unit.id ? null : unit.id)
+            }
+          >
             <NameCell>{unit.label}</NameCell>
             <KindCell>{(unit.activeLinks ?? [unit.link]).join(" + ")}</KindCell>
             <GrowCell>
               <QualityBar value={unit.quality} ariaLabel={`${unit.label} quality`} />
             </GrowCell>
+            <RateCell width={34}>{unit.quality}</RateCell>
             <RateCell status={rateStatus(parseRate(unit.mbps))}>{unit.mbps}</RateCell>
           </ListRow>
         ))}
@@ -80,6 +100,7 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
           <NameCell>Relay</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
+          <RateCell width={34}></RateCell>
           <RateCell>Down</RateCell>
         </ListHeadRow>
         {relays.map((relay) => (
@@ -89,6 +110,7 @@ export function FleetSidebar({ title, open, onOpenChange }: FleetSidebarProps) {
             <GrowCell>
               <QualityBar value={relay.quality} ariaLabel={`${relay.label} quality`} />
             </GrowCell>
+            <RateCell width={34}>{relay.quality}</RateCell>
             <RateCell status={rateStatus(parseRate(relay.mbps))}>{relay.mbps}</RateCell>
           </ListRow>
         ))}
