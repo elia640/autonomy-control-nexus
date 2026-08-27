@@ -40,7 +40,7 @@ export const MetaRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   flexWrap: "nowrap",
-  gap: theme.spacing(1, 2.5),
+  gap: theme.spacing(1, 1.5),
   padding: theme.spacing(0, 2.5, 2),
   paddingLeft: theme.spacing(8),
   fontSize: "0.5625rem",
@@ -54,6 +54,8 @@ export const MetaItem = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(1),
+  whiteSpace: "nowrap",
+  flexShrink: 0,
 }));
 
 /** Numeric readout: white when normal, orange on warning, red when critical. */
