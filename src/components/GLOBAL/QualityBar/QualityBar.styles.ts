@@ -4,7 +4,7 @@ export const QualityBarTrack = styled("div", {
   shouldForwardProp: (prop) => prop !== "muted",
 })<{ muted?: boolean | undefined }>(({ theme, muted }) => ({
   position: "relative",
-  height: 7,
+  height: 10,
   width: "100%",
   overflow: "hidden",
   borderRadius: 999,
