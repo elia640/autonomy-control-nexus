@@ -59,6 +59,9 @@ export interface TacticalMapProps {
   /** Platform currently shown in the right-hand panel. */
   selectedVehicleId?: string | null;
   onSelectVehicle?: (id: string | null) => void;
+  /** Relay focused from the sidebar; centres the map on it. */
+  selectedRelayId?: string | null;
+  onSelectRelay?: (id: string | null) => void;
 }
 
 const kindsOf = (unit: PlatformUnit | RelayUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
@@ -76,6 +79,8 @@ export function TacticalMap({
   scaleLabel = "500 m",
   selectedVehicleId = null,
   onSelectVehicle,
+  selectedRelayId = null,
+  onSelectRelay,
 }: TacticalMapProps) {
   const theme = useTheme();
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -91,9 +96,20 @@ export function TacticalMap({
     if (unit) centerOn(unit.x, unit.y);
   }, [selectedVehicleId, centerOn]);
 
+  // Selecting a relay in the sidebar recentres the map on its marker.
+  const relayPosition = relayDrag.position;
+  useEffect(() => {
+    if (selectedRelayId !== relay.id) return;
+    centerOn(relayPosition.x, relayPosition.y);
+    // Only re-centre when the selection changes, not while dragging.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRelayId, relay.id, centerOn]);
+
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [coordTarget, setCoordTarget] = useState<null | "relay" | "station">(null);
-  const [stationOffscreen, setStationOffscreen] = useState<{ angle: number } | null>(null);
+  const [stationOffscreen, setStationOffscreen] = useState<
+    { angle: number; left: number; top: number } | null
+  >(null);
 
   // Command post direction vector, shown when the station is panned off the map.
   useEffect(() => {
@@ -110,7 +126,22 @@ export function TacticalMap({
       }
       const cx = root.left + root.width / 2;
       const cy = root.top + root.height / 2;
-      setStationOffscreen({ angle: (Math.atan2(sy - cy, sx - cx) * 180) / Math.PI });
+      const dx = sx - cx;
+      const dy = sy - cy;
+      const margin = 44;
+      const halfW = Math.max(root.width / 2 - margin, 10);
+      const halfH = Math.max(root.height / 2 - margin, 10);
+      // Project the direction vector onto the visible map border.
+      const t = Math.min(
+        Math.abs(dx) > 0.001 ? halfW / Math.abs(dx) : Infinity,
+        Math.abs(dy) > 0.001 ? halfH / Math.abs(dy) : Infinity,
+      );
+      const scale = Number.isFinite(t) ? t : 0;
+      setStationOffscreen({
+        angle: (Math.atan2(dy, dx) * 180) / Math.PI,
+        left: root.width / 2 + dx * scale,
+        top: root.height / 2 + dy * scale,
+      });
     };
     update();
     window.addEventListener("resize", update);
@@ -228,7 +259,12 @@ export function TacticalMap({
             <DraggableNode
               dragging={stationDrag.dragging}
               role="button"
-              aria-label="Drag ground station"
+              aria-label="Ground station: drag to move, click for parameters"
+              onClick={() => {
+                if (stationDrag.dragging) return;
+                onSelectRelay?.(null);
+                onSelectVehicle?.(null);
+              }}
               onContextMenu={(event) => {
                 event.preventDefault();
                 setCoordTarget("station");
@@ -336,6 +372,7 @@ export function TacticalMap({
         {stationOffscreen && (
           <OffscreenArrow
             angle={stationOffscreen.angle}
+            style={{ left: stationOffscreen.left, top: stationOffscreen.top }}
             aria-label="Command post direction"
             title="Command post is off screen"
           >
