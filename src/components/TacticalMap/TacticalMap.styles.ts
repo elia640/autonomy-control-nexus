@@ -235,3 +235,27 @@ export const ZoomButton = styled("button")(({ theme }) => ({
   "&:hover": { color: theme.palette.primary.main },
   "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
 }));
+
+/** Edge marker pointing at the command post when it sits outside the viewport. */
+export const OffscreenArrow = styled("div", {
+  shouldForwardProp: (prop) => prop !== "angle",
+})<{ angle: number }>(({ theme, angle }) => ({
+  position: "absolute",
+  right: theme.spacing(3),
+  bottom: theme.spacing(10),
+  display: "inline-flex",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.5, 1),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.primary.main}`,
+  backgroundColor: alpha(theme.palette.background.paper, 0.9),
+  color: theme.palette.primary.main,
+  fontSize: "0.625rem",
+  letterSpacing: "0.12em",
+  pointerEvents: "none",
+  "& .MuiSvgIcon-root": {
+    fontSize: "0.9rem",
+    transform: `rotate(${angle + 90}deg)`,
+  },
+}));
