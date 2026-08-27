@@ -100,6 +100,8 @@ export const KindCell = styled("span")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+export const GrowCellPlaceholder = null;
+
 export const GrowCell = styled("span")({ flex: 1, minWidth: 0 });
 
 export const RateCell = styled("span", {

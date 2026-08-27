@@ -1,9 +1,8 @@
 import ChevronsLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import ChevronsRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
-import { QualityBar } from "@/components/GLOBAL/QualityBar";
+import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
 import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
-import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { MeshMatrix } from "@/components/MeshMatrix";
 import { platforms, relays } from "@/data/network";
 import {
@@ -16,7 +15,6 @@ import {
   ListRow,
   NameCell,
   RailLabel,
-  RateCell,
   SidebarHeader,
   SidebarTitle,
 } from "./FleetSidebar.styles";
@@ -69,8 +67,6 @@ export function FleetSidebar({
           <NameCell>Platform</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
-          <RateCell width={34}></RateCell>
-          <RateCell>Down</RateCell>
         </ListHeadRow>
         {platforms.map((unit) => (
           <ListRow
@@ -86,10 +82,8 @@ export function FleetSidebar({
             <NameCell>{unit.label}</NameCell>
             <KindCell>{(unit.activeLinks ?? [unit.link]).join(" + ")}</KindCell>
             <GrowCell>
-              <QualityBar value={unit.quality} ariaLabel={`${unit.label} quality`} />
+              <QualityMeter value={unit.quality} ariaLabel={`${unit.label} quality`} />
             </GrowCell>
-            <RateCell width={34}>{unit.quality}</RateCell>
-            <RateCell status={rateStatus(parseRate(unit.mbps))}>{unit.mbps}</RateCell>
           </ListRow>
         ))}
       </ListBody>
@@ -100,18 +94,14 @@ export function FleetSidebar({
           <NameCell>Relay</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
-          <RateCell width={34}></RateCell>
-          <RateCell>Down</RateCell>
         </ListHeadRow>
         {relays.map((relay) => (
           <ListRow key={relay.id}>
             <NameCell>{relay.label}</NameCell>
             <KindCell>{relay.link}</KindCell>
             <GrowCell>
-              <QualityBar value={relay.quality} ariaLabel={`${relay.label} quality`} />
+              <QualityMeter value={relay.quality} ariaLabel={`${relay.label} quality`} />
             </GrowCell>
-            <RateCell width={34}>{relay.quality}</RateCell>
-            <RateCell status={rateStatus(parseRate(relay.mbps))}>{relay.mbps}</RateCell>
           </ListRow>
         ))}
       </ListBody>
