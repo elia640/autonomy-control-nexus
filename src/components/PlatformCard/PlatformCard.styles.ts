@@ -5,9 +5,17 @@ import type { LinkStatus } from "@/types/network";
 export type PlatformCardVariant = "overlay" | "topology";
 
 export const CardRoot = styled("div", {
-  shouldForwardProp: (prop) => prop !== "variant" && prop !== "status",
-})<{ variant: PlatformCardVariant; status: LinkStatus }>(({ theme, variant, status }) => ({
-  width: variant === "overlay" ? 214 : 224,
+  shouldForwardProp: (prop) =>
+    prop !== "variant" && prop !== "status" && prop !== "selected" && prop !== "clickable",
+})<{
+  variant: PlatformCardVariant;
+  status: LinkStatus;
+  selected?: boolean;
+  clickable?: boolean;
+}>(({ theme, variant, status, selected, clickable }) => ({
+  width: variant === "overlay" ? 244 : 256,
+  cursor: clickable ? "pointer" : "default",
+  boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${
     variant === "overlay" ? theme.palette.divider : theme.palette.status[status]
@@ -17,7 +25,7 @@ export const CardRoot = styled("div", {
       ? alpha(theme.palette.background.default, 0.92)
       : alpha(theme.palette.background.paper, 0.6),
   backdropFilter: variant === "overlay" ? "blur(4px)" : "none",
-  fontSize: "0.5625rem",
+  fontSize: "0.625rem",
   lineHeight: 1.35,
   pointerEvents: "auto",
   marginTop: variant === "overlay" ? theme.spacing(1) : 0,
