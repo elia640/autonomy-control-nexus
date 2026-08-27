@@ -10,7 +10,7 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "20px 20px minmax(0, 1fr) 104px auto",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr) 92px auto",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5),
