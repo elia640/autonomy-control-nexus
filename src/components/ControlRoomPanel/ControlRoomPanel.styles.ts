@@ -97,18 +97,27 @@ export const PanelStack = styled("div")(({ theme }) => ({
   padding: theme.spacing(2.5, 3),
 }));
 
+/** Clear, one-per-row list of modems that can be compared against. */
 export const CompareRow = styled("div")(({ theme }) => ({
   display: "flex",
-  flexWrap: "wrap",
-  gap: theme.spacing(1, 3),
-  padding: theme.spacing(2, 3, 0),
+  flexDirection: "column",
+  margin: theme.spacing(0, 3, 1),
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.background.paper, 0.7),
+  "& > *": {
+    padding: theme.spacing(1.25, 2),
+    borderBottom: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+  },
+  "& > *:last-of-type": { borderBottom: "none" },
 }));
 
 export const CompareCaption = styled("p")(({ theme }) => ({
-  margin: theme.spacing(0, 0, 1),
+  margin: theme.spacing(0, 0, 1.5),
   padding: theme.spacing(2, 3, 0),
-  fontSize: "0.5625rem",
-  letterSpacing: "0.12em",
+  fontSize: "0.625rem",
+  fontWeight: 700,
+  letterSpacing: "0.14em",
   color: theme.palette.text.secondary,
 }));
 
