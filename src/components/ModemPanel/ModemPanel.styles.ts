@@ -10,7 +10,7 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "22px 22px auto minmax(96px, 1fr) auto",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr) 104px auto",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5),
@@ -32,6 +32,8 @@ export const PanelName = styled("span")(({ theme }) => ({
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
   whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 }));
 
 export const MetaRow = styled("div")(({ theme }) => ({
