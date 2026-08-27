@@ -101,7 +101,14 @@ export function FleetSidebar({
           <GrowCell>Quality</GrowCell>
         </ListHeadRow>
         {relays.map((relay) => (
-          <ListRow key={relay.id}>
+          <ListRow
+            key={relay.id}
+            selectable
+            selected={selectedRelayId === relay.id}
+            role="button"
+            aria-label={`Center map on ${relay.label}`}
+            onClick={() => onSelectRelay?.(selectedRelayId === relay.id ? null : relay.id)}
+          >
             <NameCell>{relay.label}</NameCell>
             <KindCell>{relay.link}</KindCell>
             <GrowCell>
