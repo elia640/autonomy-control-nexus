@@ -26,6 +26,9 @@ export interface FleetSidebarProps {
   /** Platform currently shown in the control room panel. */
   selectedVehicleId?: string | null;
   onSelectVehicle?: (id: string | null) => void;
+  /** Relay currently focused on the tactical map. */
+  selectedRelayId?: string | null;
+  onSelectRelay?: (id: string | null) => void;
 }
 
 export function FleetSidebar({
