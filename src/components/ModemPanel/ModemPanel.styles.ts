@@ -39,7 +39,7 @@ export const PanelName = styled("span")(({ theme }) => ({
 export const MetaRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  flexWrap: "nowrap",
+  flexWrap: "wrap",
   gap: theme.spacing(1, 1.5),
   padding: theme.spacing(0, 2.5, 2),
   paddingLeft: theme.spacing(8),
@@ -48,7 +48,7 @@ export const MetaRow = styled("div")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const MetaSpacer = styled("span")({ flex: 1 });
+export const MetaSpacer = styled("span")({ flex: 1, minWidth: 0 });
 
 export const MetaItem = styled("span")(({ theme }) => ({
   display: "inline-flex",
