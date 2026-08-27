@@ -37,6 +37,8 @@ export function FleetSidebar({
   onOpenChange,
   selectedVehicleId = null,
   onSelectVehicle,
+  selectedRelayId = null,
+  onSelectRelay,
 }: FleetSidebarProps) {
   if (!open) {
     return (
