@@ -20,18 +20,25 @@ export const ViewportTitle = styled("div")(({ theme }) => ({
   pointerEvents: "none",
 }));
 
-export const TraySlot = styled("div")(({ theme }) => ({
+/** Top-right control bar: links toggle with the notification tray beside it. */
+export const TopRightBar = styled("div")(({ theme }) => ({
   position: "absolute",
   right: theme.spacing(3),
-  top: theme.spacing(8),
+  top: theme.spacing(3),
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1.5),
+  zIndex: 5,
 }));
+
+export const TraySlot = styled("div")({
+  display: "flex",
+  alignItems: "center",
+});
 
 export const LinksButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",
 })<{ active: boolean }>(({ theme, active }) => ({
-  position: "absolute",
-  right: theme.spacing(3),
-  top: theme.spacing(3),
   padding: theme.spacing(1, 2),
   fontSize: "0.625rem",
   border: `1px solid ${active ? theme.palette.primary.main : theme.palette.divider}`,

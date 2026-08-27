@@ -4,7 +4,13 @@ import { LogicalTopology } from "@/components/LogicalTopology";
 import { NotificationTray } from "@/components/NotificationTray";
 import { TacticalMap } from "@/components/TacticalMap";
 import type { ViewMode } from "@/types/network";
-import { LinksButton, TraySlot, ViewportRoot, ViewportTitle } from "./MonitorViewport.styles";
+import {
+  LinksButton,
+  TopRightBar,
+  TraySlot,
+  ViewportRoot,
+  ViewportTitle,
+} from "./MonitorViewport.styles";
 
 export interface MonitorViewportProps {
   mode: ViewMode;
@@ -41,19 +47,20 @@ export function MonitorViewport({
 
       <ViewportTitle>{title}</ViewportTitle>
 
-      <LinksButton
-        active={linksOn}
-        size="small"
-        startIcon={<LinkIcon />}
-        aria-pressed={linksOn}
-        onClick={() => onLinksOnChange(!linksOn)}
-      >
-        Links {linksOn ? "On" : "Off"}
-      </LinksButton>
-
-      <TraySlot>
-        <NotificationTray />
-      </TraySlot>
+      <TopRightBar>
+        <LinksButton
+          active={linksOn}
+          size="small"
+          startIcon={<LinkIcon />}
+          aria-pressed={linksOn}
+          onClick={() => onLinksOnChange(!linksOn)}
+        >
+          Links {linksOn ? "On" : "Off"}
+        </LinksButton>
+        <TraySlot>
+          <NotificationTray />
+        </TraySlot>
+      </TopRightBar>
 
       {/* The connectivity map belongs to the logical view only. */}
       {mode === "logical" && <ConnectivityWheel />}
