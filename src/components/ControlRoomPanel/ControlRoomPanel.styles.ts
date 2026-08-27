@@ -116,6 +116,7 @@ export const FooterSpacer = styled("div")({ flex: 1 });
 
 export const FooterRow = styled("div")(({ theme }) => ({
   flexBasis: "100%",
+  width: "100%",
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(1.5),
