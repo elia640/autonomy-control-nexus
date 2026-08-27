@@ -91,6 +91,7 @@ export function TacticalMap({
     if (unit) centerOn(unit.x, unit.y);
   }, [selectedVehicleId, centerOn]);
 
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [coordTarget, setCoordTarget] = useState<null | "relay" | "station">(null);
   const [stationOffscreen, setStationOffscreen] = useState<{ angle: number } | null>(null);
 
@@ -118,6 +119,9 @@ export function TacticalMap({
 
   const color = (status: LinkStatus) => theme.palette.status[status];
   const radioPlatforms = platforms.filter(hasRadio);
+  // With links off, hovering a vehicle reveals only that vehicle's connectivity.
+  const showsLink = (...ids: string[]) =>
+    linksOn || (hoveredId !== null && ids.includes(hoveredId));
 
   return (
     <MapRoot ref={rootRef}>
@@ -151,10 +155,10 @@ export function TacticalMap({
           </defs>
           <rect width="100" height="100" fill="url(#tactical-grid)" />
 
-          {linksOn && (
+          {(linksOn || hoveredId) && (
             <g>
               {/* Radio-only connectivity: platform ↔ ground station */}
-              {radioPlatforms.map((unit) => (
+              {radioPlatforms.filter((unit) => showsLink(unit.id)).map((unit) => (
                 <line
                   key={`gs-${unit.id}`}
                   x1={stationDrag.position.x}
@@ -172,7 +176,10 @@ export function TacticalMap({
               {/* Radio-only connectivity: platform ↔ platform */}
               {radioLinks
                 .filter(
-                  (link) => hasRadio(findPlatform(link.from)) && hasRadio(findPlatform(link.to)),
+                  (link) =>
+                    hasRadio(findPlatform(link.from)) &&
+                    hasRadio(findPlatform(link.to)) &&
+                    showsLink(link.from, link.to),
                 )
                 .map((link) => (
                   <line
@@ -191,7 +198,7 @@ export function TacticalMap({
 
               {/* Radio-only connectivity: relay ↔ platform */}
               {relay.connectedTo
-                .filter((id) => hasRadio(findPlatform(id)))
+                .filter((id) => hasRadio(findPlatform(id)) && showsLink(id))
                 .map((id) => (
                   <line
                     key={`relay-${id}`}
@@ -250,7 +257,10 @@ export function TacticalMap({
           const kinds = kindsOf(unit);
           return (
             <AnchoredPoint key={unit.id} badgeSize={30} style={{ left: `${unit.x}%`, top: `${unit.y}%` }}>
-              <MarkerColumn>
+              <MarkerColumn
+                onMouseEnter={() => setHoveredId(unit.id)}
+                onMouseLeave={() => setHoveredId((prev) => (prev === unit.id ? null : prev))}
+              >
                 <NodeBadge shape="square" borderColor={color(unit.status)}>
                   <TruckIcon />
                 </NodeBadge>
