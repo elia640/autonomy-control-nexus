@@ -4,7 +4,6 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -18,13 +17,13 @@ type SeriesKey = "upload" | "download" | "latency" | "bandwidth";
 
 export interface MonitoringGraphProps {
   samples: ThroughputSample[];
-  /** Dashed maximum-bandwidth reference, in Mbps. */
-  maxBandwidth: number;
+  /** Dashed maximum-bandwidth reference, in Mbps (kept for API compatibility). */
+  maxBandwidth?: number;
   /** Adds the latency series and its right-hand axis (vehicle modems). */
   withLatency?: boolean;
 }
 
-export function MonitoringGraph({ samples, maxBandwidth, withLatency }: MonitoringGraphProps) {
+export function MonitoringGraph({ samples, withLatency }: MonitoringGraphProps) {
   const theme = useTheme();
   const [visible, setVisible] = useState<Record<SeriesKey, boolean>>({
     upload: true,
@@ -98,20 +97,6 @@ export function MonitoringGraph({ samples, maxBandwidth, withLatency }: Monitori
                 background: theme.palette.background.paper,
                 border: `1px solid ${theme.palette.divider}`,
                 fontSize: 10,
-              }}
-            />
-            <ReferenceLine
-              yAxisId="mbps"
-              y={maxBandwidth}
-              stroke={theme.palette.primary.main}
-              strokeDasharray="5 4"
-              strokeWidth={1.2}
-              ifOverflow="extendDomain"
-              label={{
-                value: "MAX BW",
-                position: "insideTopRight",
-                fontSize: 8,
-                fill: theme.palette.primary.main,
               }}
             />
             {series
