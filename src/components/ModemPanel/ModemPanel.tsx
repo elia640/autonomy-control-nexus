@@ -15,6 +15,7 @@ import {
   HeaderRow,
   MetaItem,
   MetaRow,
+  MetaSpacer,
   PanelName,
   PanelRoot,
   RateCell,
@@ -58,14 +59,6 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         </AssetIcon>
         <PanelName>{modem.name}</PanelName>
         <QualityMeter value={modem.quality} ariaLabel={`${modem.name} quality`} />
-        <ResetButton
-          variant="outlined"
-          size="small"
-          startIcon={<RestartAltIcon sx={{ fontSize: "0.7rem" }} />}
-          onClick={() => onReset?.(modem.id)}
-        >
-          Reset
-        </ResetButton>
       </HeaderRow>
 
       <MetaRow>
@@ -76,6 +69,15 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         <MetaItem>
           <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} />
         </MetaItem>
+        <MetaSpacer />
+        <ResetButton
+          variant="outlined"
+          size="small"
+          startIcon={<RestartAltIcon sx={{ fontSize: "0.7rem" }} />}
+          onClick={() => onReset?.(modem.id)}
+        >
+          Reset
+        </ResetButton>
       </MetaRow>
 
       {expanded && (

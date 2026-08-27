@@ -41,10 +41,13 @@ export const MetaRow = styled("div")(({ theme }) => ({
   gap: theme.spacing(1, 2.5),
   padding: theme.spacing(0, 2.5, 2),
   paddingLeft: theme.spacing(8),
+  flexWrap: "nowrap",
   fontSize: "0.5625rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
 }));
+
+export const MetaSpacer = styled("span")({ flex: 1 });
 
 export const MetaItem = styled("span")(({ theme }) => ({
   display: "inline-flex",
