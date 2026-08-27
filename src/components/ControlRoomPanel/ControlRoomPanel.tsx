@@ -87,6 +87,7 @@ export function ControlRoomPanel({
   return (
     <SidePanel
       side="right"
+      width={340}
       header={
         <PanelHeader>
           <PrecheckBar>
@@ -130,18 +131,22 @@ export function ControlRoomPanel({
     >
       <SectionHeader title={title} />
 
-      <CompareCaption>COMPARE MODEM MONITORING</CompareCaption>
-      <CompareRow>
-        {compareOptions.map((option) => (
-          <SeriesCheckbox
-            key={option.id}
-            label={option.label}
-            color={theme.palette.primary.main}
-            checked={compared.includes(option.id)}
-            onChange={(checked) => toggleCompare(option.id, checked)}
-          />
-        ))}
-      </CompareRow>
+      {vehicle === null && (
+        <>
+          <CompareCaption>COMPARE MODEM MONITORING</CompareCaption>
+          <CompareRow>
+            {compareOptions.map((option) => (
+              <SeriesCheckbox
+                key={option.id}
+                label={option.label}
+                color={theme.palette.primary.main}
+                checked={compared.includes(option.id)}
+                onChange={(checked) => toggleCompare(option.id, checked)}
+              />
+            ))}
+          </CompareRow>
+        </>
+      )}
 
       <PanelStack>
         <ModemPanel
