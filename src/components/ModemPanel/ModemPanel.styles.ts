@@ -37,11 +37,10 @@ export const PanelName = styled("span")(({ theme }) => ({
 export const MetaRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  flexWrap: "wrap",
+  flexWrap: "nowrap",
   gap: theme.spacing(1, 2.5),
   padding: theme.spacing(0, 2.5, 2),
   paddingLeft: theme.spacing(8),
-  flexWrap: "nowrap",
   fontSize: "0.5625rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
