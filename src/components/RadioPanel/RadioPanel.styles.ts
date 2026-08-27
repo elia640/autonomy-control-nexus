@@ -10,10 +10,11 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 /** Mirrors the modem panel header grid so both panels line up. */
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "22px 22px 112px 1fr auto",
+  gridTemplateColumns: "22px 22px 112px minmax(0, 1fr) auto",
   alignItems: "center",
-  gap: theme.spacing(1.5),
+  gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5),
+  "& > *": { minWidth: 0 },
 }));
 
 export const AssetIcon = styled("span")(({ theme }) => ({
