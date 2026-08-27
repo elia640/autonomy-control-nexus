@@ -48,8 +48,6 @@ export const MetaRow = styled("div")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-export const MetaSpacer = styled("span")({ flex: 1, minWidth: 0 });
-
 export const MetaItem = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
@@ -73,6 +71,7 @@ export const ValueText = styled("span", {
 }));
 
 export const ResetButton = styled(Button)(({ theme }) => ({
+  marginLeft: "auto",
   minWidth: 0,
   padding: theme.spacing(0.75, 2),
   fontSize: "0.5625rem",

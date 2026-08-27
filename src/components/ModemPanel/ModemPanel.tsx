@@ -15,7 +15,6 @@ import {
   HeaderRow,
   MetaItem,
   MetaRow,
-  MetaSpacer,
   PanelName,
   PanelRoot,
   RateCell,
@@ -69,7 +68,6 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         <MetaItem>
           <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} />
         </MetaItem>
-        <MetaSpacer />
         <ResetButton
           variant="outlined"
           size="small"
