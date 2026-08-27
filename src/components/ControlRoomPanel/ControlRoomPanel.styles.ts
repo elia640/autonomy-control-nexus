@@ -69,11 +69,13 @@ export const HealthScale = styled("div")(({ theme }) => ({
 export const PanelFooter = styled("footer")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: theme.spacing(2),
+  flexWrap: "wrap",
+  gap: theme.spacing(1.5),
   padding: theme.spacing(2.5, 3),
   borderTop: `1px solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.panel.header,
 }));
+
 
 export const SettingsButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1.5, 2.5),
