@@ -19,6 +19,8 @@ export interface MapViewportApi {
   panning: boolean;
   reset: () => void;
   zoomBy: (factor: number) => void;
+  /** Centres the given map percentage position in the container. */
+  centerOn: (x: number, y: number) => void;
   /** Spread onto the pannable surface. */
   handlers: {
     onPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
@@ -80,6 +82,20 @@ export function useMapViewport(containerRef: RefObject<HTMLElement | null>): Map
     [containerRef],
   );
 
+  const centerOn = useCallback(
+    (x: number, y: number) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const { zoom } = viewportRef.current;
+      setViewport({
+        zoom,
+        x: rect.width / 2 - (x / 100) * rect.width * zoom,
+        y: rect.height / 2 - (y / 100) * rect.height * zoom,
+      });
+    },
+    [containerRef],
+  );
+
   const reset = useCallback(() => setViewport({ zoom: 1, x: 0, y: 0 }), []);
 
   const onPointerDown = useCallback((event: ReactPointerEvent<HTMLElement>) => {
@@ -133,5 +149,5 @@ export function useMapViewport(containerRef: RefObject<HTMLElement | null>): Map
     }
   }, []);
 
-  return { viewport, panning, reset, zoomBy, handlers: { onPointerDown, onClickCapture } };
+  return { viewport, panning, reset, zoomBy, centerOn, handlers: { onPointerDown, onClickCapture } };
 }

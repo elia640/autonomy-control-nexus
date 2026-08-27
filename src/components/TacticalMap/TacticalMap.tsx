@@ -1,16 +1,18 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CenterIcon from "@mui/icons-material/CenterFocusStrong";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import NavigationIcon from "@mui/icons-material/Navigation";
 import HubIcon from "@mui/icons-material/Hub";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
 import TruckIcon from "@mui/icons-material/LocalShipping";
 import mapImage from "@/assets/map-satellite.jpg";
+import { CoordinateDialog } from "@/components/CoordinateDialog";
 import { PlatformCard } from "@/components/PlatformCard";
 import { useMapDrag } from "@/hooks/useMapDrag";
 import { useMapViewport } from "@/hooks/useMapViewport";
@@ -35,6 +37,7 @@ import {
   MapCanvas,
   MapImage,
   MapRoot,
+  OffscreenArrow,
   ZoomButton,
   ZoomControls,
   MarkerColumn,
@@ -53,6 +56,9 @@ export interface TacticalMapProps {
   linksOn: boolean;
   coordinates?: string;
   scaleLabel?: string;
+  /** Platform currently shown in the right-hand panel. */
+  selectedVehicleId?: string | null;
+  onSelectVehicle?: (id: string | null) => void;
 }
 
 const kindsOf = (unit: PlatformUnit | RelayUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
@@ -68,14 +74,47 @@ export function TacticalMap({
   linksOn,
   coordinates = "N 31°46.2' E 035°13.7'",
   scaleLabel = "500 m",
+  selectedVehicleId = null,
+  onSelectVehicle,
 }: TacticalMapProps) {
   const theme = useTheme();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
-  const { viewport, panning, zoomBy, reset, handlers } = useMapViewport(rootRef);
+  const { viewport, panning, zoomBy, reset, centerOn, handlers } = useMapViewport(rootRef);
   const relay = relays[0]!;
   const relayDrag = useMapDrag(canvasRef, { x: relay.x, y: relay.y });
   const stationDrag = useMapDrag(canvasRef, GROUND_STATION_POSITION);
+  // Selecting a platform recentres the map on it.
+  useEffect(() => {
+    if (!selectedVehicleId) return;
+    const unit = platforms.find((item) => item.id === selectedVehicleId);
+    if (unit) centerOn(unit.x, unit.y);
+  }, [selectedVehicleId, centerOn]);
+
+  const [coordTarget, setCoordTarget] = useState<null | "relay" | "station">(null);
+  const [stationOffscreen, setStationOffscreen] = useState<{ angle: number } | null>(null);
+
+  // Command post direction vector, shown when the station is panned off the map.
+  useEffect(() => {
+    const update = () => {
+      const root = rootRef.current?.getBoundingClientRect();
+      const canvas = canvasRef.current?.getBoundingClientRect();
+      if (!root || !canvas) return;
+      const sx = canvas.left + (stationDrag.position.x / 100) * canvas.width;
+      const sy = canvas.top + (stationDrag.position.y / 100) * canvas.height;
+      const inside = sx >= root.left && sx <= root.right && sy >= root.top && sy <= root.bottom;
+      if (inside) {
+        setStationOffscreen(null);
+        return;
+      }
+      const cx = root.left + root.width / 2;
+      const cy = root.top + root.height / 2;
+      setStationOffscreen({ angle: (Math.atan2(sy - cy, sx - cx) * 180) / Math.PI });
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [stationDrag.position.x, stationDrag.position.y, viewport.x, viewport.y, viewport.zoom]);
 
   const color = (status: LinkStatus) => theme.palette.status[status];
   const radioPlatforms = platforms.filter(hasRadio);
@@ -183,6 +222,10 @@ export function TacticalMap({
               dragging={stationDrag.dragging}
               role="button"
               aria-label="Drag ground station"
+              onContextMenu={(event) => {
+                event.preventDefault();
+                setCoordTarget("station");
+              }}
               {...stationDrag.handlers}
             >
               <NodeBadge shape="circle" borderColor={theme.palette.primary.main}>
@@ -223,7 +266,15 @@ export function TacticalMap({
                     })}
                   </DualLinkRow>
                 )}
-                <PlatformCard unit={unit} variant="overlay" collapsible />
+                <PlatformCard
+                  unit={unit}
+                  variant="overlay"
+                  compact
+                  selected={selectedVehicleId === unit.id}
+                  onSelect={() =>
+                    onSelectVehicle?.(selectedVehicleId === unit.id ? null : unit.id)
+                  }
+                />
               </MarkerColumn>
             </AnchoredPoint>
           );
@@ -238,12 +289,16 @@ export function TacticalMap({
               dragging={relayDrag.dragging}
               role="button"
               aria-label="Drag relay"
+              onContextMenu={(event) => {
+                event.preventDefault();
+                setCoordTarget("relay");
+              }}
               {...relayDrag.handlers}
             >
               <NodeBadge shape="circle" borderColor={color(relay.status)}>
                 <HubIcon />
               </NodeBadge>
-              <PlatformCard unit={relay} variant="overlay" camera={false} collapsible hideTitle />
+              <PlatformCard unit={relay} variant="overlay" camera={false} compact hideTitle />
             </DraggableNode>
           </Tooltip>
         </AnchoredPoint>
@@ -268,6 +323,16 @@ export function TacticalMap({
           </LegendRow>
         </LegendBox>
 
+        {stationOffscreen && (
+          <OffscreenArrow
+            angle={stationOffscreen.angle}
+            aria-label="Command post direction"
+            title="Command post is off screen"
+          >
+            <NavigationIcon /> CP
+          </OffscreenArrow>
+        )}
+
         <ScaleBox>
           <ScaleBar />
           <div>{scaleLabel}</div>
@@ -285,6 +350,18 @@ export function TacticalMap({
           <CenterIcon />
         </ZoomButton>
       </ZoomControls>
+
+      <CoordinateDialog
+        open={coordTarget !== null}
+        title={coordTarget === "relay" ? relay.label : "COMMAND POST"}
+        value={coordTarget === "relay" ? relayDrag.position : stationDrag.position}
+        onClose={() => setCoordTarget(null)}
+        onSubmit={(position) =>
+          coordTarget === "relay"
+            ? relayDrag.setPosition(position)
+            : stationDrag.setPosition(position)
+        }
+      />
     </MapRoot>
   );
 }

@@ -13,10 +13,17 @@ export const ViewportTitle = styled("div")(({ theme }) => ({
   left: "50%",
   top: theme.spacing(3),
   transform: "translateX(-50%)",
-  fontSize: "0.6875rem",
+  fontSize: "0.8125rem",
+  fontWeight: 700,
   letterSpacing: "0.2em",
   color: theme.palette.text.primary,
   pointerEvents: "none",
+}));
+
+export const TraySlot = styled("div")(({ theme }) => ({
+  position: "absolute",
+  right: theme.spacing(3),
+  top: theme.spacing(8),
 }));
 
 export const LinksButton = styled(Button, {

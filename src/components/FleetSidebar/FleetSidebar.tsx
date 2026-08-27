@@ -49,7 +49,7 @@ export function FleetSidebar({
   return (
     <SidePanel
       side="left"
-      width={260}
+      width={296}
       header={
         <SidebarHeader>
           <SidebarTitle component="h1">{title}</SidebarTitle>
@@ -63,7 +63,7 @@ export function FleetSidebar({
         </SidebarHeader>
       }
     >
-      <SectionHeader title="Networked Vehicles" />
+      <SectionHeader title="Vehicles" />
       <ListBody>
         <ListHeadRow>
           <NameCell>Platform</NameCell>

@@ -10,6 +10,7 @@ import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityBar } from "@/components/GLOBAL/QualityBar";
+import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
 import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { useToggleList } from "@/hooks/useToggleList";
 import type { LinkKind, PlatformUnit } from "@/types/network";
@@ -53,6 +54,10 @@ export interface PlatformCardProps {
   camera?: boolean;
   /** Hides the card title (used where the map marker already names the unit). */
   hideTitle?: boolean;
+  /** Fixed summary card: name, ranges, quality + score and the camera control. */
+  compact?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 const KIND_ICON: Record<LinkKind, ReactElement> = {
@@ -67,6 +72,9 @@ export function PlatformCard({
   collapsible = false,
   camera = true,
   hideTitle = false,
+  compact = false,
+  selected = false,
+  onSelect,
 }: PlatformCardProps) {
   const [expanded, setExpanded] = useState(collapsible ? !!unit.defaultExpanded : true);
   const sims = useToggleList(unit.sims?.length ?? 0);
@@ -86,8 +94,46 @@ export function PlatformCard({
   const isLastLink = (on: boolean) => on && activeCount <= 1;
   const activeSims = sims.values.filter(Boolean).length;
 
+  if (compact) {
+    return (
+      <CardRoot
+        variant={variant}
+        status={unit.status}
+        selected={selected}
+        clickable={!!onSelect}
+        {...(onSelect ? { role: "button", onClick: onSelect } : {})}
+      >
+        <CardHeader>
+          {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
+          <KindBadges>
+            {activeKinds.map((kind) => (
+              <KindBadge key={kind}>
+                {KIND_ICON[kind]} {kind}
+              </KindBadge>
+            ))}
+          </KindBadges>
+        </CardHeader>
+        <CardSection>
+          <QualityMeter value={unit.quality} ariaLabel={`${unit.label} link quality`} />
+        </CardSection>
+        {camera && (
+          <CardSection>
+            <CameraButton onClick={() => setCameraOpen(true)} aria-label={`${unit.label} camera`}>
+              <VideocamIcon /> CAMERA
+            </CameraButton>
+            <CameraWindow
+              title={unit.label}
+              open={cameraOpen}
+              onClose={() => setCameraOpen(false)}
+            />
+          </CardSection>
+        )}
+      </CardRoot>
+    );
+  }
+
   return (
-    <CardRoot variant={variant} status={unit.status}>
+    <CardRoot variant={variant} status={unit.status} selected={selected}>
       <CardHeader>
         {collapsible && (
           <CollapseButton

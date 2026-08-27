@@ -8,6 +8,8 @@ export interface MapPosition {
 export interface MapDragApi {
   position: MapPosition;
   dragging: boolean;
+  /** Moves the marker programmatically (coordinate entry). */
+  setPosition: (position: MapPosition) => void;
   /** Spread onto the draggable element. */
   handlers: {
     onPointerDown: (event: ReactPointerEvent<HTMLElement>) => void;
@@ -39,6 +41,7 @@ export function useMapDrag(
   return {
     position,
     dragging,
+    setPosition,
     handlers: {
       onPointerDown: (event) => {
         // Keep marker drags from panning the map underneath.
