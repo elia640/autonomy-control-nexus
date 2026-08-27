@@ -33,6 +33,7 @@ function MonitorPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mode, setMode] = useState<ViewMode>("tactical");
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
+  const [selectedRelayId, setSelectedRelayId] = useState<string | null>(null);
 
   return (
     <MonitorLayout>
@@ -42,6 +43,11 @@ function MonitorPage() {
         onOpenChange={setSidebarOpen}
         selectedVehicleId={selectedVehicleId}
         onSelectVehicle={setSelectedVehicleId}
+        selectedRelayId={selectedRelayId}
+        onSelectRelay={(id) => {
+          setSelectedRelayId(id);
+          if (id) setSelectedVehicleId(null);
+        }}
       />
       <MonitorViewport
         mode={mode}
@@ -49,7 +55,12 @@ function MonitorPage() {
         onLinksOnChange={setLinksOn}
         title="CIVIL NETWORK MONITORING SYSTEM"
         selectedVehicleId={selectedVehicleId}
-        onSelectVehicle={setSelectedVehicleId}
+        onSelectVehicle={(id) => {
+          setSelectedVehicleId(id);
+          if (id) setSelectedRelayId(null);
+        }}
+        selectedRelayId={selectedRelayId}
+        onSelectRelay={setSelectedRelayId}
       />
       <ControlRoomPanel
         mode={mode}

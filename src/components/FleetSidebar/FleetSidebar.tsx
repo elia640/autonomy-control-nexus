@@ -26,6 +26,9 @@ export interface FleetSidebarProps {
   /** Platform currently shown in the control room panel. */
   selectedVehicleId?: string | null;
   onSelectVehicle?: (id: string | null) => void;
+  /** Relay currently focused on the tactical map. */
+  selectedRelayId?: string | null;
+  onSelectRelay?: (id: string | null) => void;
 }
 
 export function FleetSidebar({
@@ -34,6 +37,8 @@ export function FleetSidebar({
   onOpenChange,
   selectedVehicleId = null,
   onSelectVehicle,
+  selectedRelayId = null,
+  onSelectRelay,
 }: FleetSidebarProps) {
   if (!open) {
     return (
@@ -96,7 +101,14 @@ export function FleetSidebar({
           <GrowCell>Quality</GrowCell>
         </ListHeadRow>
         {relays.map((relay) => (
-          <ListRow key={relay.id}>
+          <ListRow
+            key={relay.id}
+            selectable
+            selected={selectedRelayId === relay.id}
+            role="button"
+            aria-label={`Center map on ${relay.label}`}
+            onClick={() => onSelectRelay?.(selectedRelayId === relay.id ? null : relay.id)}
+          >
             <NameCell>{relay.label}</NameCell>
             <KindCell>{relay.link}</KindCell>
             <GrowCell>

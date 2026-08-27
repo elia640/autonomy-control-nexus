@@ -241,8 +241,7 @@ export const OffscreenArrow = styled("div", {
   shouldForwardProp: (prop) => prop !== "angle",
 })<{ angle: number }>(({ theme, angle }) => ({
   position: "absolute",
-  right: theme.spacing(3),
-  bottom: theme.spacing(10),
+  transform: "translate(-50%, -50%)",
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(0.5),
