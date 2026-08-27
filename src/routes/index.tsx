@@ -48,6 +48,8 @@ function MonitorPage() {
         linksOn={linksOn}
         onLinksOnChange={setLinksOn}
         title="CIVIL NETWORK MONITORING SYSTEM"
+        selectedVehicleId={selectedVehicleId}
+        onSelectVehicle={setSelectedVehicleId}
       />
       <ControlRoomPanel
         mode={mode}

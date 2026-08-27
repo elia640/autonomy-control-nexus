@@ -80,10 +80,17 @@ export function TacticalMap({
   const theme = useTheme();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
-  const { viewport, panning, zoomBy, reset, handlers } = useMapViewport(rootRef);
+  const { viewport, panning, zoomBy, reset, centerOn, handlers } = useMapViewport(rootRef);
   const relay = relays[0]!;
   const relayDrag = useMapDrag(canvasRef, { x: relay.x, y: relay.y });
   const stationDrag = useMapDrag(canvasRef, GROUND_STATION_POSITION);
+  // Selecting a platform recentres the map on it.
+  useEffect(() => {
+    if (!selectedVehicleId) return;
+    const unit = platforms.find((item) => item.id === selectedVehicleId);
+    if (unit) centerOn(unit.x, unit.y);
+  }, [selectedVehicleId, centerOn]);
+
   const [coordTarget, setCoordTarget] = useState<null | "relay" | "station">(null);
   const [stationOffscreen, setStationOffscreen] = useState<{ angle: number } | null>(null);
 

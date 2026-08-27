@@ -23,6 +23,8 @@ import {
 export interface LogicalTopologyProps {
   /** Hides link colouring when false, matching the tactical view. */
   linksOn: boolean;
+  selectedVehicleId?: string | null;
+  onSelectVehicle?: (id: string | null) => void;
 }
 
 interface Edge {
@@ -41,7 +43,11 @@ const hasRadio = (unit: PlatformUnit | RelayUnit): boolean =>
 const primaryKind = (unit: PlatformUnit | RelayUnit): LinkKind =>
   (unit.activeLinks ?? [unit.link])[0] ?? unit.link;
 
-export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
+export function LogicalTopology({
+  linksOn,
+  selectedVehicleId = null,
+  onSelectVehicle,
+}: LogicalTopologyProps) {
   const theme = useTheme();
   const contentRef = useRef<HTMLDivElement | null>(null);
   const commandRef = useRef<HTMLDivElement | null>(null);
@@ -156,7 +162,14 @@ export function LogicalTopology({ linksOn }: LogicalTopologyProps) {
                   <PlatformCard
                     unit={unit}
                     variant="topology"
-                    {...(unit.id === relays[0]?.id ? { camera: false } : {})}
+                    compact
+                    selected={selectedVehicleId === unit.id}
+                    {...(unit.id === relays[0]?.id
+                      ? { camera: false }
+                      : {
+                          onSelect: () =>
+                            onSelectVehicle?.(selectedVehicleId === unit.id ? null : unit.id),
+                        })}
                   />
                 </MemberColumn>
               );

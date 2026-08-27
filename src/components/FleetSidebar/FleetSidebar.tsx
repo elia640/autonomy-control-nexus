@@ -63,7 +63,7 @@ export function FleetSidebar({
         </SidebarHeader>
       }
     >
-      <SectionHeader title="Networked Vehicles" />
+      <SectionHeader title="Vehicles" />
       <ListBody>
         <ListHeadRow>
           <NameCell>Platform</NameCell>
