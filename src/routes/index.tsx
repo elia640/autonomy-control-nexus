@@ -32,6 +32,7 @@ function MonitorPage() {
   const [linksOn, setLinksOn] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mode, setMode] = useState<ViewMode>("tactical");
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
 
   return (
     <MonitorLayout>
@@ -39,6 +40,8 @@ function MonitorPage() {
         title="COMMS NETWORK MONITOR"
         open={sidebarOpen}
         onOpenChange={setSidebarOpen}
+        selectedVehicleId={selectedVehicleId}
+        onSelectVehicle={setSelectedVehicleId}
       />
       <MonitorViewport
         mode={mode}
@@ -46,7 +49,13 @@ function MonitorPage() {
         onLinksOnChange={setLinksOn}
         title="CIVIL NETWORK MONITORING SYSTEM"
       />
-      <ControlRoomPanel mode={mode} onModeChange={setMode} />
+      <ControlRoomPanel
+        mode={mode}
+        onModeChange={setMode}
+        selectedVehicleId={selectedVehicleId}
+        onSelectVehicle={setSelectedVehicleId}
+      />
+
     </MonitorLayout>
   );
 }

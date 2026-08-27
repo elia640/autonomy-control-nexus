@@ -1,73 +1,93 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import CellIcon from "@mui/icons-material/SignalCellularAlt";
-import RadioIcon from "@mui/icons-material/CellTower";
-import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
+import HubIcon from "@mui/icons-material/Hub";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { CommsAssetCard } from "@/components/CommsAssetCard";
-import { CommsLinkRow } from "@/components/CommsLinkRow";
-import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
+import { SeriesCheckbox } from "@/components/GLOBAL/SeriesCheckbox";
 import { SidePanel } from "@/components/GLOBAL/SidePanel";
+import { ModemCompareWindow } from "@/components/ModemCompareWindow";
+import { ModemPanel } from "@/components/ModemPanel";
+import { MonitoringGraph } from "@/components/MonitoringGraph";
+import { RadioPanel } from "@/components/RadioPanel";
 import { SettingsDialog } from "@/components/SettingsDialog";
-import { ThroughputChart } from "@/components/ThroughputChart";
 import { ViewModeSwitch } from "@/components/ViewModeSwitch";
-import { MAX_BANDWIDTH_MBPS, throughputSamples } from "@/data/network";
-import { useToggleList } from "@/hooks/useToggleList";
+import {
+  controlRoomModem,
+  controlRoomRadio,
+  monitoringSamples,
+  vehicleModem,
+  vehicleRadio,
+} from "@/data/modems";
+import { MAX_BANDWIDTH_MBPS, platforms } from "@/data/network";
+import { useTheme } from "@mui/material/styles";
 import type { ViewMode } from "@/types/network";
 import {
-  AssetStack,
-  HealthCaption,
-  HealthScale,
+  CompareCaption,
+  CompareRow,
+  ControlRoomButton,
+  FooterSpacer,
   PanelFooter,
   PanelHeader,
-  PanelTitle,
+  PanelStack,
   PrecheckBar,
   PrecheckLabel,
   RunButton,
-  SectionBody,
   SettingsButton,
 } from "./ControlRoomPanel.styles";
-
-const SIM_CARDS = [
-  { label: "SIM 1", quality: 72, rate: "12.5 Mbps" },
-  { label: "SIM 2", quality: 64, rate: "12.5 Mbps" },
-  { label: "SIM 3", quality: 81, rate: "12.5 Mbps" },
-];
-
-const OVERALL_QUALITY = 78;
 
 export interface ControlRoomPanelProps {
   mode: ViewMode;
   onModeChange: (mode: ViewMode) => void;
+  /** Platform id shown in the panel; null shows the control room itself. */
+  selectedVehicleId: string | null;
+  onSelectVehicle: (id: string | null) => void;
   onRunPrecheck?: () => void;
-  onOpenSettings?: () => void;
 }
 
 export function ControlRoomPanel({
   mode,
   onModeChange,
+  selectedVehicleId,
+  onSelectVehicle,
   onRunPrecheck,
-  onOpenSettings,
 }: ControlRoomPanelProps) {
-  const [modemOn, setModemOn] = useState(true);
-  const [satOn, setSatOn] = useState(true);
+  const theme = useTheme();
+  const [modemExpanded, setModemExpanded] = useState(false);
+  const [radioExpanded, setRadioExpanded] = useState(false);
   const [radioOn, setRadioOn] = useState(true);
-  const [simsExpanded, setSimsExpanded] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [radioFrequency, setRadioFrequency] = useState(2412);
-  const sims = useToggleList(SIM_CARDS.length);
-  // At least one communication range must stay active at all times.
-  const activeLinks = [modemOn, satOn, radioOn].filter(Boolean).length;
-  const isLastLink = (on: boolean) => on && activeLinks <= 1;
-  const activeSims = sims.values.filter(Boolean).length;
+  const [compared, setCompared] = useState<string[]>([]);
+
+  const vehicle = selectedVehicleId
+    ? (platforms.find((p) => p.id === selectedVehicleId) ?? null)
+    : null;
+
+  const modem = useMemo(
+    () => (vehicle ? vehicleModem(vehicle.id) : controlRoomModem),
+    [vehicle],
+  );
+  const radio = useMemo(() => (vehicle ? vehicleRadio(vehicle.id) : controlRoomRadio), [vehicle]);
+  const samples = useMemo(
+    () => monitoringSamples(vehicle ? vehicle.label.length + vehicle.quality / 10 : 0),
+    [vehicle],
+  );
+
+  const title = vehicle ? vehicle.label : "CONTROL ROOM";
+
+  const compareOptions = [
+    { id: "cr-modem", label: controlRoomModem.name },
+    ...platforms.map((p) => ({ id: p.id, label: `${p.label} · J8` })),
+  ];
+
+  const toggleCompare = (id: string, checked: boolean) =>
+    setCompared((prev) => (checked ? [...prev, id] : prev.filter((item) => item !== id)));
 
   return (
     <SidePanel
       side="right"
       header={
         <PanelHeader>
-          <PanelTitle component="h1">CONTROL ROOM</PanelTitle>
           <PrecheckBar>
             <PrecheckLabel>PRECHECK</PrecheckLabel>
             <RunButton
@@ -84,90 +104,85 @@ export function ControlRoomPanel({
       footer={
         <PanelFooter>
           <ViewModeSwitch mode={mode} onModeChange={onModeChange} />
+          <ControlRoomButton
+            variant="outlined"
+            size="small"
+            active={vehicle === null}
+            startIcon={<HubIcon />}
+            onClick={() => onSelectVehicle(null)}
+          >
+            Control Room
+          </ControlRoomButton>
+          <FooterSpacer />
           <SettingsButton
             variant="outlined"
             size="small"
             startIcon={<SettingsIcon />}
-            onClick={() => {
-              setSettingsOpen(true);
-              onOpenSettings?.();
-            }}
+            onClick={() => setSettingsOpen(true)}
           >
             Settings
           </SettingsButton>
         </PanelFooter>
       }
     >
-      <SectionHeader title="Network Health" />
-      <SectionBody>
-        <HealthCaption>Overall link quality</HealthCaption>
-        <QualityBar value={OVERALL_QUALITY} ariaLabel="Overall link quality" />
-        <HealthScale>
-          <span>Poor</span>
-          <span>Marginal</span>
-          <span>Good</span>
-        </HealthScale>
-      </SectionBody>
+      <SectionHeader title={title} />
 
-      <SectionHeader title="Communication Assets" />
-      <AssetStack>
-        <CommsAssetCard
-          name="MODEM CM-4200"
-          icon={<CellIcon />}
-          enabled={modemOn}
-          onEnabledChange={setModemOn}
-          lastActive={isLastLink(modemOn)}
-          statusLabel={modemOn ? "OPERATIONAL" : "OFF"}
-          statusTone={modemOn ? "good" : "poor"}
-          temperature={47}
-          cpuUsage={38}
-          voltage={12.4}
-          expanded={simsExpanded}
-          onExpandedChange={setSimsExpanded}
-        >
-          {SIM_CARDS.map((sim, index) => (
-            <CommsLinkRow
-              key={sim.label}
-              label={sim.label}
-              quality={sim.quality}
-              rate={sim.rate}
-              enabled={modemOn && sims.isOn(index)}
-              onEnabledChange={(value) => sims.set(index, value)}
-              lastActive={sims.isOn(index) && activeSims <= 1}
-            />
-          ))}
-        </CommsAssetCard>
+      <CompareCaption>COMPARE MODEM MONITORING</CompareCaption>
+      <CompareRow>
+        {compareOptions.map((option) => (
+          <SeriesCheckbox
+            key={option.id}
+            label={option.label}
+            color={theme.palette.primary.main}
+            checked={compared.includes(option.id)}
+            onChange={(checked) => toggleCompare(option.id, checked)}
+          />
+        ))}
+      </CompareRow>
 
-        <CommsAssetCard
-          name="SATCOM MDM-9"
-          icon={<SatelliteIcon />}
-          enabled={satOn}
-          onEnabledChange={setSatOn}
-          lastActive={isLastLink(satOn)}
-          statusLabel={satOn ? "SAT LOCKED" : "NO LOCK"}
-          statusTone={satOn ? "good" : "poor"}
-          temperature={52}
-          cpuUsage={24}
-          voltage={12.6}
-          quality={74}
+      <PanelStack>
+        <ModemPanel
+          modem={modem}
+          expanded={modemExpanded}
+          onExpandedChange={setModemExpanded}
         />
-
-        <CommsAssetCard
-          name="RADIO VHF-7"
-          icon={<RadioIcon />}
+        <RadioPanel
+          radio={radio}
+          expanded={radioExpanded}
+          onExpandedChange={setRadioExpanded}
           enabled={radioOn}
           onEnabledChange={setRadioOn}
-          lastActive={isLastLink(radioOn)}
-          statusLabel={radioOn ? `${(radioFrequency / 1000).toFixed(3)} GHz` : "OFF"}
-          statusTone={radioOn ? "good" : "poor"}
-          temperature={41}
-          voltage={12.1}
-          quality={58}
+          lastActive={false}
         />
-      </AssetStack>
+      </PanelStack>
 
-      <SectionHeader title="Performance Monitoring" />
-      <ThroughputChart samples={throughputSamples} maxBandwidth={MAX_BANDWIDTH_MBPS} />
+      <SectionHeader title={vehicle ? "Modem Monitoring" : "Control Room Monitoring"} />
+      <MonitoringGraph
+        samples={samples}
+        maxBandwidth={MAX_BANDWIDTH_MBPS}
+        withLatency={vehicle !== null}
+      />
+
+      {compared.map((id, index) => {
+        const option = compareOptions.find((o) => o.id === id);
+        const isControlRoom = id === "cr-modem";
+        return (
+          <ModemCompareWindow
+            key={id}
+            title={option?.label ?? id}
+            samples={
+              isControlRoom
+                ? monitoringSamples(0)
+                : monitoringSamples(
+                    (platforms.find((p) => p.id === id)?.quality ?? 50) / 10 +
+                      (platforms.find((p) => p.id === id)?.label.length ?? 0),
+                  )
+            }
+            initial={{ x: 120 + index * 32, y: 120 + index * 32 }}
+            onClose={() => toggleCompare(id, false)}
+          />
+        );
+      })}
 
       <SettingsDialog
         open={settingsOpen}

@@ -110,7 +110,47 @@ export interface ThroughputSample {
   upload: number;
   download: number;
   bandwidth: number;
+  /** Round-trip latency in ms (vehicle modems only). */
+  latency?: number;
 }
+
+/** Connection state of a modem channel (SIM / satellite service). */
+export type ChannelState = "connected" | "disconnected" | "absent" | "unplugged";
+
+export interface ModemChannel {
+  id: string;
+  label: string;
+  state: ChannelState;
+  /** 0-100. */
+  quality: number;
+  /** Mbps. */
+  rate: number;
+}
+
+/** A modem shown in the right-side control panel. */
+export interface ModemAsset {
+  id: string;
+  name: string;
+  quality: number;
+  rate: number;
+  /** Caption of the rate figure, e.g. "ETH1 UPLOAD (RX)". */
+  rateLabel: string;
+  cpuTemperature: number;
+  cpuLoad: number;
+  channels: ModemChannel[];
+}
+
+/** A radio unit shown in the right-side control panel. */
+export interface RadioAsset {
+  id: string;
+  name: string;
+  quality: number;
+  rate: number;
+  rateLabel: string;
+  temperature: number;
+  voltage: number;
+}
+
 
 /** Display mode for the mesh matrix in the fleet sidebar. */
 export type MatrixMetric = "modulation" | "snr" | "rssi";

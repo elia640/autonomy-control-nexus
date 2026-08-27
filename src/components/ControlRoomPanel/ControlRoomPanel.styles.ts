@@ -87,3 +87,43 @@ export const SettingsButton = styled(Button)(({ theme }) => ({
   },
   "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
 }));
+
+export const PanelStack = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2.5),
+  padding: theme.spacing(2.5, 3),
+}));
+
+export const CompareRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: theme.spacing(1, 3),
+  padding: theme.spacing(2, 3, 0),
+}));
+
+export const CompareCaption = styled("p")(({ theme }) => ({
+  margin: theme.spacing(0, 0, 1),
+  padding: theme.spacing(2, 3, 0),
+  fontSize: "0.5625rem",
+  letterSpacing: "0.12em",
+  color: theme.palette.text.secondary,
+}));
+
+export const FooterSpacer = styled("div")({ flex: 1 });
+
+export const ControlRoomButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<{ active: boolean }>(({ theme, active }) => ({
+  padding: theme.spacing(1.5, 2.5),
+  fontSize: "0.625rem",
+  fontWeight: 700,
+  color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+  borderColor: active ? theme.palette.primary.main : theme.palette.divider,
+  backgroundColor: active ? alpha(theme.palette.primary.main, 0.14) : "transparent",
+  "&:hover": {
+    color: theme.palette.primary.main,
+    borderColor: alpha(theme.palette.primary.main, 0.6),
+  },
+  "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
+}));
