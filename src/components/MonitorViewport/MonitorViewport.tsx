@@ -19,6 +19,8 @@ export interface MonitorViewportProps {
   title: string;
   selectedVehicleId?: string | null;
   onSelectVehicle?: (id: string | null) => void;
+  selectedRelayId?: string | null;
+  onSelectRelay?: (id: string | null) => void;
 }
 
 export function MonitorViewport({
@@ -28,6 +30,8 @@ export function MonitorViewport({
   title,
   selectedVehicleId = null,
   onSelectVehicle,
+  selectedRelayId = null,
+  onSelectRelay,
 }: MonitorViewportProps) {
   return (
     <ViewportRoot>
@@ -35,7 +39,9 @@ export function MonitorViewport({
         <TacticalMap
           linksOn={linksOn}
           selectedVehicleId={selectedVehicleId}
+          selectedRelayId={selectedRelayId}
           {...(onSelectVehicle ? { onSelectVehicle } : {})}
+          {...(onSelectRelay ? { onSelectRelay } : {})}
         />
       ) : (
         <LogicalTopology
