@@ -3,17 +3,21 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 export const ModeToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  flex: 1,
+  display: "flex",
+  width: "100%",
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
   overflow: "hidden",
 }));
 
 export const ModeToggleButton = styled(ToggleButton)(({ theme }) => ({
-  flex: 1,
+  flex: "1 1 0",
+  minWidth: 0,
+  whiteSpace: "nowrap",
   border: "none",
   borderRadius: 0,
   padding: theme.spacing(1.5, 3),
+
   fontSize: "0.625rem",
   fontWeight: 600,
   letterSpacing: "0.16em",
