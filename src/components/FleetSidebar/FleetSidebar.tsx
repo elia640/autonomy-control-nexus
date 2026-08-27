@@ -69,7 +69,7 @@ export function FleetSidebar({
           <NameCell>Platform</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
-          <RateCell width={34}>Score</RateCell>
+          <RateCell width={34}></RateCell>
           <RateCell>Down</RateCell>
         </ListHeadRow>
         {platforms.map((unit) => (
@@ -100,7 +100,7 @@ export function FleetSidebar({
           <NameCell>Relay</NameCell>
           <KindCell>Range</KindCell>
           <GrowCell>Quality</GrowCell>
-          <RateCell width={34}>Score</RateCell>
+          <RateCell width={34}></RateCell>
           <RateCell>Down</RateCell>
         </ListHeadRow>
         {relays.map((relay) => (

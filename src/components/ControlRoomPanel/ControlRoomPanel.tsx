@@ -25,6 +25,7 @@ import {
   CompareCaption,
   CompareRow,
   ControlRoomButton,
+  FooterRow,
   FooterSpacer,
   PanelFooter,
   PanelHeader,
@@ -103,7 +104,9 @@ export function ControlRoomPanel({
       }
       footer={
         <PanelFooter>
-          <ViewModeSwitch mode={mode} onModeChange={onModeChange} />
+          <FooterRow>
+            <ViewModeSwitch mode={mode} onModeChange={onModeChange} />
+          </FooterRow>
           <ControlRoomButton
             variant="outlined"
             size="small"
