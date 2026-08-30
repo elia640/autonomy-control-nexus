@@ -18,7 +18,7 @@ export function QualityMeter({ value, disabled, ariaLabel }: QualityMeterProps) 
       <MeterBar>
         <QualityBar value={shown} disabled={disabled ?? false} ariaLabel={ariaLabel ?? "Quality"} />
       </MeterBar>
-      <MeterScore tone={qualityStatus(shown)}>{shown}</MeterScore>
+      <MeterScore tone={qualityStatus(shown)}>{shown}%</MeterScore>
     </MeterRoot>
   );
 }
