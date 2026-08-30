@@ -1,6 +1,7 @@
 import { useState } from "react";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
+import Tooltip from "@mui/material/Tooltip";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
@@ -21,6 +22,7 @@ import {
   RateCell,
   RateText,
   ResetButton,
+  ResetRow,
   StateChip,
   ValueText,
 } from "./ModemPanel.styles";
@@ -61,21 +63,12 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         <NameBlock>
           <PanelName>{modem.name}</PanelName>
         </NameBlock>
-        <ResetButton
-          variant="outlined"
-          size="small"
-          startIcon={<RestartAltIcon />}
-          onClick={() => onReset?.(modem.id)}
-        >
-          Reset
-        </ResetButton>
       </HeaderRow>
 
       <MeterRow>
         <QualityMeter value={modem.quality} ariaLabel={`${modem.name} quality`} />
         <RateText>
-          {modem.rateLabel}{" "}
-          <ValueText tone={rateStatus(modem.rate)}>{modem.rate.toFixed(1)} Mbps</ValueText>
+          <ValueText tone={rateStatus(modem.rate)}>{modem.rate.toFixed(1)} Mbps (RX)</ValueText>
         </RateText>
       </MeterRow>
 
@@ -83,42 +76,74 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} dense />
       </HealthRow>
 
-
-
       {expanded && (
-        <ChannelList>
-          {modem.channels.map((ch) => {
-            const powerable_ = isPowerable(ch.state);
-            const on = powerable_ && !off[ch.id];
-            return (
-              <ChannelRow key={ch.id}>
-                <ChannelName>{ch.label}</ChannelName>
-                <StateChip state={on ? ch.state : powerable_ ? "disconnected" : ch.state}>
-                  {on ? STATE_LABEL[ch.state] : powerable_ ? "NOT CONNECTED" : STATE_LABEL[ch.state]}
-                </StateChip>
-                <QualityMeter
-                  value={ch.quality}
-                  disabled={!on}
-                  ariaLabel={`${ch.label} quality`}
-                />
-                <RateCell>
-                  {on ? (
-                    <ValueText tone={rateStatus(ch.rate)}>{ch.rate.toFixed(1)}</ValueText>
-                  ) : (
-                    "—"
-                  )}
-                </RateCell>
-                <PowerToggle
-                  checked={on}
-                  disabled={!powerable_}
-                  label={`${modem.name} ${ch.label}`}
-                  lastActive={on && activeCount <= 1}
-                  onChange={(next) => setOff((prev) => ({ ...prev, [ch.id]: !next }))}
-                />
-              </ChannelRow>
-            );
-          })}
-        </ChannelList>
+        <>
+          <ChannelList>
+            {modem.channels.map((ch) => {
+              const powerable_ = isPowerable(ch.state);
+              const on = powerable_ && !off[ch.id];
+              const row = (
+                <ChannelRow key={ch.id}>
+                  <PowerToggle
+                    checked={on}
+                    disabled={!powerable_}
+                    label={`${modem.name} ${ch.label}`}
+                    lastActive={on && activeCount <= 1}
+                    onChange={(next) => setOff((prev) => ({ ...prev, [ch.id]: !next }))}
+                  />
+                  <ChannelName>{ch.label}</ChannelName>
+                  <StateChip state={on ? ch.state : powerable_ ? "disconnected" : ch.state}>
+                    {on
+                      ? STATE_LABEL[ch.state]
+                      : powerable_
+                        ? "NOT CONNECTED"
+                        : STATE_LABEL[ch.state]}
+                  </StateChip>
+                  <QualityMeter
+                    value={ch.quality}
+                    disabled={!on}
+                    ariaLabel={`${ch.label} quality`}
+                  />
+                  <RateCell>
+                    {on ? (
+                      <ValueText tone={rateStatus(ch.rate)}>{ch.rate.toFixed(1)} (RX)</ValueText>
+                    ) : (
+                      "—"
+                    )}
+                  </RateCell>
+                </ChannelRow>
+              );
+
+              return ch.metrics ? (
+                <Tooltip
+                  key={ch.id}
+                  arrow
+                  placement="left"
+                  title={
+                    <span>
+                      SINR {ch.metrics.sinr} dB · RSSI {ch.metrics.rssi} dBm · RSRP{" "}
+                      {ch.metrics.rsrp} dBW/m²
+                    </span>
+                  }
+                >
+                  {row}
+                </Tooltip>
+              ) : (
+                row
+              );
+            })}
+          </ChannelList>
+          <ResetRow>
+            <ResetButton
+              variant="outlined"
+              size="small"
+              startIcon={<RestartAltIcon />}
+              onClick={() => onReset?.(modem.id)}
+            >
+              Reset
+            </ResetButton>
+          </ResetRow>
+        </>
       )}
     </PanelRoot>
   );
