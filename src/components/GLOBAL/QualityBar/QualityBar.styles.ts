@@ -1,4 +1,4 @@
-import { styled } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 
 export const QualityBarTrack = styled("div", {
   shouldForwardProp: (prop) => prop !== "muted",
@@ -8,8 +8,11 @@ export const QualityBarTrack = styled("div", {
   width: "100%",
   overflow: "hidden",
   borderRadius: 999,
-  backgroundColor: theme.palette.action.hover,
-  opacity: muted ? 0.3 : 1,
+  /** High-contrast empty track so the unfilled remainder reads clearly. */
+  backgroundColor: theme.palette.background.default,
+  border: `1px solid ${alpha(theme.palette.divider, 0.9)}`,
+  boxShadow: `inset 0 0 0 1px ${alpha(theme.palette.background.default, 0.9)}`,
+  opacity: muted ? 0.35 : 1,
 }));
 
 export const QualityBarFill = styled("div", {
@@ -19,5 +22,5 @@ export const QualityBarFill = styled("div", {
   borderRadius: 999,
   transition: theme.transitions.create(["width", "background-color"]),
   backgroundColor: fillColor,
+  boxShadow: `0 0 6px ${alpha(fillColor, 0.45)}`,
 }));
-

@@ -13,11 +13,12 @@ import {
   ChannelName,
   ChannelRow,
   HeaderRow,
-  MetaItem,
-  MetaRow,
+  MeterRow,
+  NameBlock,
   PanelName,
   PanelRoot,
   RateCell,
+  RateText,
   ResetButton,
   StateChip,
   ValueText,
@@ -56,27 +57,28 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         <AssetIcon>
           <CellIcon />
         </AssetIcon>
-        <PanelName>{modem.name}</PanelName>
-        <QualityMeter value={modem.quality} ariaLabel={`${modem.name} quality`} />
-      </HeaderRow>
-
-      <MetaRow>
-        <MetaItem>
-          {modem.rateLabel}{" "}
-          <ValueText tone={rateStatus(modem.rate)}>{modem.rate.toFixed(1)} Mbps</ValueText>
-        </MetaItem>
-        <MetaItem>
-          <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} />
-        </MetaItem>
+        <NameBlock>
+          <PanelName>{modem.name}</PanelName>
+          <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} dense />
+        </NameBlock>
         <ResetButton
           variant="outlined"
           size="small"
-          startIcon={<RestartAltIcon sx={{ fontSize: "0.7rem" }} />}
+          startIcon={<RestartAltIcon />}
           onClick={() => onReset?.(modem.id)}
         >
           Reset
         </ResetButton>
-      </MetaRow>
+      </HeaderRow>
+
+      <MeterRow>
+        <QualityMeter value={modem.quality} ariaLabel={`${modem.name} quality`} />
+        <RateText>
+          {modem.rateLabel}{" "}
+          <ValueText tone={rateStatus(modem.rate)}>{modem.rate.toFixed(1)} Mbps</ValueText>
+        </RateText>
+      </MeterRow>
+
 
       {expanded && (
         <ChannelList>

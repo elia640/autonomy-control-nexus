@@ -7,11 +7,12 @@ import { rateStatus } from "@/lib/linkStatus";
 import type { RadioAsset } from "@/types/network";
 import {
   AssetIcon,
-  DetailItem,
   HeaderRow,
-  MetaRow,
+  MeterRow,
+  NameBlock,
   PanelName,
   PanelRoot,
+  RateText,
   ValueText,
 } from "./RadioPanel.styles";
 
@@ -44,12 +45,10 @@ export function RadioPanel({
         <AssetIcon>
           <CellTowerIcon />
         </AssetIcon>
-        <PanelName>{radio.name}</PanelName>
-        <QualityMeter
-          value={radio.quality}
-          disabled={!enabled}
-          ariaLabel={`${radio.name} quality`}
-        />
+        <NameBlock>
+          <PanelName>{radio.name}</PanelName>
+          <HealthMetrics temperature={radio.temperature} voltage={radio.voltage} dense />
+        </NameBlock>
         <PowerToggle
           checked={enabled}
           onChange={onEnabledChange}
@@ -58,17 +57,19 @@ export function RadioPanel({
         />
       </HeaderRow>
 
-      <MetaRow>
-        <DetailItem>
+      <MeterRow>
+        <QualityMeter
+          value={radio.quality}
+          disabled={!enabled}
+          ariaLabel={`${radio.name} quality`}
+        />
+        <RateText>
           {radio.rateLabel}{" "}
           <ValueText tone={rateStatus(radio.rate)}>
             {enabled ? `${radio.rate.toFixed(1)} Mbps` : "—"}
           </ValueText>
-        </DetailItem>
-        <DetailItem>
-          <HealthMetrics temperature={radio.temperature} voltage={radio.voltage} />
-        </DetailItem>
-      </MetaRow>
+        </RateText>
+      </MeterRow>
     </PanelRoot>
   );
 }

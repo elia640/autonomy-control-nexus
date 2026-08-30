@@ -10,10 +10,10 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 /** Mirrors the modem panel header grid so both panels line up. */
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "20px 20px minmax(0, 1fr) 92px auto",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr) auto",
   alignItems: "center",
   gap: theme.spacing(2),
-  padding: theme.spacing(2, 2.5),
+  padding: theme.spacing(2, 2.5, 1),
   "& > *": { minWidth: 0 },
 }));
 
@@ -23,6 +23,13 @@ export const AssetIcon = styled("span")(({ theme }) => ({
   justifyContent: "center",
   color: theme.palette.secondary.main,
   "& .MuiSvgIcon-root": { fontSize: "1rem" },
+}));
+
+export const NameBlock = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1),
+  minWidth: 0,
 }));
 
 export const PanelName = styled("span")(({ theme }) => ({
@@ -35,22 +42,23 @@ export const PanelName = styled("span")(({ theme }) => ({
   textOverflow: "ellipsis",
 }));
 
-export const MetaRow = styled("div")(({ theme }) => ({
+export const MeterRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  flexWrap: "wrap",
-  gap: theme.spacing(1, 2.5),
+  gap: theme.spacing(2),
   padding: theme.spacing(0, 2.5, 2),
   paddingLeft: theme.spacing(8),
-  fontSize: "0.5625rem",
-  letterSpacing: "0.08em",
-  color: theme.palette.text.secondary,
 }));
 
-export const DetailItem = styled("span")(({ theme }) => ({
+export const RateText = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(1),
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  fontSize: "0.5625rem",
+  letterSpacing: "0.08em",
+  color: theme.palette.text.secondary,
 }));
 
 export const ValueText = styled("span", {
