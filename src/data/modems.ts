@@ -20,7 +20,7 @@ export const controlRoomModem: ModemAsset = {
   name: "MODEM CONVOY 23",
   quality: 78,
   rate: 14.2,
-  rateLabel: "ETH1 UPLOAD (RX)",
+  rateLabel: "UPLOAD (RX)",
   cpuTemperature: 52,
   cpuLoad: 41,
   channels: [
@@ -38,7 +38,7 @@ export const controlRoomRadio: RadioAsset = {
   name: "RADIO CR VHF-7",
   quality: 64,
   rate: 8.6,
-  rateLabel: "ETH1 DOWNLOAD (RX)",
+  rateLabel: "DOWNLOAD (RX)",
   temperature: 44,
   voltage: 12.3,
 };
@@ -80,7 +80,7 @@ export const vehicleRadio = (platformId: string): RadioAsset => {
     name: unit?.radioModem?.name ?? "RADIO",
     quality: unit?.radio?.quality ?? 0,
     rate: Number.parseFloat(unit?.radio?.mbps ?? "0"),
-    rateLabel: "ETH1 UPLOAD (RX)",
+    rateLabel: "UPLOAD (RX)",
     temperature: unit?.radioModem?.temperature ?? 42,
     voltage: unit?.radioModem?.voltage ?? 12.2,
   };

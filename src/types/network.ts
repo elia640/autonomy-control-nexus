@@ -133,7 +133,7 @@ export interface ModemAsset {
   name: string;
   quality: number;
   rate: number;
-  /** Caption of the rate figure, e.g. "ETH1 UPLOAD (RX)". */
+  /** Caption of the rate figure, e.g. "UPLOAD (RX)". */
   rateLabel: string;
   cpuTemperature: number;
   cpuLoad: number;

@@ -8,6 +8,7 @@ import type { RadioAsset } from "@/types/network";
 import {
   AssetIcon,
   HeaderRow,
+  HealthRow,
   MeterRow,
   NameBlock,
   PanelName,
@@ -47,7 +48,6 @@ export function RadioPanel({
         </AssetIcon>
         <NameBlock>
           <PanelName>{radio.name}</PanelName>
-          <HealthMetrics temperature={radio.temperature} voltage={radio.voltage} dense />
         </NameBlock>
         <PowerToggle
           checked={enabled}
@@ -70,6 +70,11 @@ export function RadioPanel({
           </ValueText>
         </RateText>
       </MeterRow>
+
+      <HealthRow>
+        <HealthMetrics temperature={radio.temperature} voltage={radio.voltage} dense />
+      </HealthRow>
+
     </PanelRoot>
   );
 }

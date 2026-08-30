@@ -13,6 +13,7 @@ import {
   ChannelName,
   ChannelRow,
   HeaderRow,
+  HealthRow,
   MeterRow,
   NameBlock,
   PanelName,
@@ -59,7 +60,6 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
         </AssetIcon>
         <NameBlock>
           <PanelName>{modem.name}</PanelName>
-          <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} dense />
         </NameBlock>
         <ResetButton
           variant="outlined"
@@ -78,6 +78,11 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
           <ValueText tone={rateStatus(modem.rate)}>{modem.rate.toFixed(1)} Mbps</ValueText>
         </RateText>
       </MeterRow>
+
+      <HealthRow>
+        <HealthMetrics temperature={modem.cpuTemperature} cpu={modem.cpuLoad} dense />
+      </HealthRow>
+
 
 
       {expanded && (
