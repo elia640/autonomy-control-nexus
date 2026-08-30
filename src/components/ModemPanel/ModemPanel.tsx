@@ -13,6 +13,7 @@ import {
   ChannelName,
   ChannelRow,
   HeaderRow,
+  HealthRow,
   MeterRow,
   NameBlock,
   PanelName,

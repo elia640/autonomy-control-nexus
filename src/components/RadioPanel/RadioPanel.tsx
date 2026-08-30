@@ -8,6 +8,7 @@ import type { RadioAsset } from "@/types/network";
 import {
   AssetIcon,
   HeaderRow,
+  HealthRow,
   MeterRow,
   NameBlock,
   PanelName,

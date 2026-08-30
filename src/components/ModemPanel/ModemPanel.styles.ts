@@ -149,3 +149,10 @@ export const RateCell = styled("span")({
   textAlign: "right",
   fontVariantNumeric: "tabular-nums",
 });
+
+/** Health chips sit under the quality bar, aligned with it. */
+export const HealthRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  padding: theme.spacing(0, 2.5, 2),
+  paddingLeft: theme.spacing(8),
+}));
