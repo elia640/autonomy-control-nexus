@@ -10,10 +10,10 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "20px 20px minmax(0, 1fr) 92px auto",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr) auto",
   alignItems: "center",
   gap: theme.spacing(2),
-  padding: theme.spacing(2, 2.5),
+  padding: theme.spacing(2, 2.5, 1),
   "& > *": { minWidth: 0 },
 }));
 
@@ -26,6 +26,14 @@ export const AssetIcon = styled("span")(({ theme }) => ({
   "& .MuiSvgIcon-root": { fontSize: "1rem" },
 }));
 
+/** Asset name with its health chips directly underneath. */
+export const NameBlock = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1),
+  minWidth: 0,
+}));
+
 export const PanelName = styled("span")(({ theme }) => ({
   fontSize: "0.6875rem",
   fontWeight: 700,
@@ -36,24 +44,24 @@ export const PanelName = styled("span")(({ theme }) => ({
   textOverflow: "ellipsis",
 }));
 
-export const MetaRow = styled("div")(({ theme }) => ({
+/** Quality bar, score and throughput share one row. */
+export const MeterRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  flexWrap: "wrap",
-  gap: theme.spacing(1, 1.5),
+  gap: theme.spacing(2),
   padding: theme.spacing(0, 2.5, 2),
   paddingLeft: theme.spacing(8),
-  fontSize: "0.5625rem",
-  letterSpacing: "0.08em",
-  color: theme.palette.text.secondary,
 }));
 
-export const MetaItem = styled("span")(({ theme }) => ({
+export const RateText = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(1),
-  whiteSpace: "nowrap",
   flexShrink: 0,
+  whiteSpace: "nowrap",
+  fontSize: "0.5625rem",
+  letterSpacing: "0.08em",
+  color: theme.palette.text.secondary,
 }));
 
 /** Numeric readout: white when normal, orange on warning, red when critical. */
@@ -70,21 +78,22 @@ export const ValueText = styled("span", {
         : theme.palette.status.poor,
 }));
 
+/** Matches the outlined footer controls (Settings / Control Room). */
 export const ResetButton = styled(Button)(({ theme }) => ({
   marginLeft: "auto",
   minWidth: 0,
-  padding: theme.spacing(0.75, 2),
-  fontSize: "0.5625rem",
-  fontWeight: 800,
-  letterSpacing: "0.12em",
-  borderWidth: 1,
-  color: theme.palette.status.marginal,
-  borderColor: alpha(theme.palette.status.marginal, 0.7),
-  backgroundColor: alpha(theme.palette.status.marginal, 0.1),
+  padding: theme.spacing(1, 2),
+  fontSize: "0.625rem",
+  fontWeight: 600,
+  letterSpacing: "0.16em",
+  color: theme.palette.text.secondary,
+  borderColor: theme.palette.divider,
   "&:hover": {
-    borderColor: theme.palette.status.marginal,
-    backgroundColor: alpha(theme.palette.status.marginal, 0.22),
+    color: theme.palette.primary.main,
+    borderColor: alpha(theme.palette.primary.main, 0.6),
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
   },
+  "& .MuiSvgIcon-root": { fontSize: "0.8rem" },
 }));
 
 export const ChannelList = styled("div")(({ theme }) => ({
