@@ -125,6 +125,8 @@ export interface ModemChannel {
   quality: number;
   /** Mbps. */
   rate: number;
+  /** RF readouts shown in a tooltip (satellite channels). */
+  metrics?: SatMetrics;
 }
 
 /** A modem shown in the right-side control panel. */

@@ -34,7 +34,7 @@ export const QualityBarValue = styled("span", {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   fontWeight: 700,
   letterSpacing: "0.04em",
   fontVariantNumeric: "tabular-nums",
