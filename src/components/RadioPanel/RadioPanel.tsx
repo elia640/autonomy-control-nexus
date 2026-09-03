@@ -64,7 +64,6 @@ export function RadioPanel({
           ariaLabel={`${radio.name} quality`}
         />
         <RateText>
-          {radio.rateLabel}{" "}
           <ValueText tone={rateStatus(radio.rate)}>
             {enabled ? `${radio.rate.toFixed(1)} Mbps (RX)` : "—"}
           </ValueText>
