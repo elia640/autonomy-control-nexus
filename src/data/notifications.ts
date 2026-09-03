@@ -39,3 +39,7 @@ export const notifications: AlertNotification[] = [
     severity: "marginal",
   },
 ];
+
+/** Open alerts (BIT faults / warnings) raised against a given unit label. */
+export const alertCountFor = (label: string): number =>
+  notifications.filter((n) => n.severity !== "good" && n.title.startsWith(label)).length;

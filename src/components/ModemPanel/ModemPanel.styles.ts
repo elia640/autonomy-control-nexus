@@ -10,7 +10,7 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "20px 20px minmax(0, 1fr) auto",
+  gridTemplateColumns: "20px 20px minmax(0, 1fr)",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5, 1),
@@ -59,7 +59,7 @@ export const RateText = styled("span")(({ theme }) => ({
   gap: theme.spacing(1),
   flexShrink: 0,
   whiteSpace: "nowrap",
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
 }));
@@ -96,6 +96,13 @@ export const ResetButton = styled(Button)(({ theme }) => ({
   "& .MuiSvgIcon-root": { fontSize: "0.8rem" },
 }));
 
+/** Reset sits under the channel list, visible only when the panel is open. */
+export const ResetRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "flex-end",
+  padding: theme.spacing(0, 2.5, 2),
+}));
+
 export const ChannelList = styled("div")(({ theme }) => ({
   borderTop: `1px solid ${theme.palette.divider}`,
   padding: theme.spacing(1.5, 2.5, 2),
@@ -106,10 +113,10 @@ export const ChannelList = styled("div")(({ theme }) => ({
 
 export const ChannelRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "48px 78px 1fr 46px auto",
+  gridTemplateColumns: "auto 48px 78px 1fr 58px",
   alignItems: "center",
   gap: theme.spacing(1.5),
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   color: theme.palette.text.secondary,
 }));
 

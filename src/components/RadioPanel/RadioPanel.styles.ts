@@ -10,7 +10,7 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 /** Mirrors the modem panel header grid so both panels line up. */
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "20px 20px minmax(0, 1fr) auto",
+  gridTemplateColumns: "auto 20px 20px minmax(0, 1fr)",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5, 1),
@@ -56,7 +56,7 @@ export const RateText = styled("span")(({ theme }) => ({
   gap: theme.spacing(1),
   flexShrink: 0,
   whiteSpace: "nowrap",
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
 }));

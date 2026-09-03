@@ -20,6 +20,8 @@ export function ModemCompareWindow({ title, samples, initial, onClose }: ModemCo
 
   const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
+    /** Never start a drag from the close control, or its click is swallowed. */
+    if ((event.target as HTMLElement).closest("button")) return;
     drag.current = { dx: event.clientX - pos.x, dy: event.clientY - pos.y };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
