@@ -157,7 +157,7 @@ export const LockState = styled("span", {
 /** Shared 4-column grid so every asset row lines up: label | bar | value | toggle. */
 export const AssetRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "42px minmax(0, 1fr) 40px 26px",
+  gridTemplateColumns: "26px 42px minmax(0, 1fr) 46px",
   alignItems: "center",
   columnGap: theme.spacing(0.75),
   minWidth: 0,
@@ -177,17 +177,44 @@ export const AssetValue = styled("span", {
 })<{ status?: LinkStatus }>(({ theme, status }) => ({
   minWidth: 0,
   textAlign: "right",
+  fontWeight: 600,
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  fontSize: "0.5rem",
+  fontSize: "0.625rem",
   color: status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
 }));
 
 export const AssetToggleCell = styled("div")({
   display: "flex",
-  justifyContent: "flex-end",
+  justifyContent: "flex-start",
 });
+
+/** Download rate and latency shown on the collapsed map card. */
+export const CompactMetaRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  gap: theme.spacing(1),
+  padding: theme.spacing(0, 1.5, 1),
+  fontSize: "0.625rem",
+  fontVariantNumeric: "tabular-nums",
+  color: theme.palette.text.secondary,
+}));
+
+/** Red count of open alerts for the unit, mirroring the global tray badge. */
+export const AlertBadge = styled("span")(({ theme }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: 15,
+  height: 15,
+  padding: "0 4px",
+  borderRadius: 999,
+  backgroundColor: theme.palette.status.poor,
+  color: theme.palette.common.white,
+  fontSize: "0.55rem",
+  fontWeight: 700,
+}));
 
 /** SINR / RSRP / RSSI readouts under the satellite modem. */
 export const MetricGrid = styled("div")(({ theme }) => ({
