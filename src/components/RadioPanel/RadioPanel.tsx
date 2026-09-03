@@ -38,6 +38,12 @@ export function RadioPanel({
   return (
     <PanelRoot>
       <HeaderRow>
+        <PowerToggle
+          checked={enabled}
+          onChange={onEnabledChange}
+          label={radio.name}
+          lastActive={lastActive}
+        />
         <CollapseButton
           expanded={expanded}
           onToggle={() => onExpandedChange(!expanded)}
@@ -49,12 +55,6 @@ export function RadioPanel({
         <NameBlock>
           <PanelName>{radio.name}</PanelName>
         </NameBlock>
-        <PowerToggle
-          checked={enabled}
-          onChange={onEnabledChange}
-          label={radio.name}
-          lastActive={lastActive}
-        />
       </HeaderRow>
 
       <MeterRow>
@@ -66,7 +66,7 @@ export function RadioPanel({
         <RateText>
           {radio.rateLabel}{" "}
           <ValueText tone={rateStatus(radio.rate)}>
-            {enabled ? `${radio.rate.toFixed(1)} Mbps` : "—"}
+            {enabled ? `${radio.rate.toFixed(1)} Mbps (RX)` : "—"}
           </ValueText>
         </RateText>
       </MeterRow>

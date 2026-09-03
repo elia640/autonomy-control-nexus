@@ -4,6 +4,7 @@ import type {
   ModemAsset,
   ModemChannel,
   RadioAsset,
+  SatMetrics,
   ThroughputSample,
 } from "@/types/network";
 
@@ -12,7 +13,22 @@ const channel = (
   state: ChannelState,
   quality: number,
   rate: number,
-): ModemChannel => ({ id: label.toLowerCase().replace(/\s+/g, "-"), label, state, quality, rate });
+  metrics?: SatMetrics,
+): ModemChannel => ({
+  id: label.toLowerCase().replace(/\s+/g, "-"),
+  label,
+  state,
+  quality,
+  rate,
+  ...(metrics ? { metrics } : {}),
+});
+
+/** Deterministic RF readouts for a satellite channel, shown in its tooltip. */
+const satMetrics = (quality: number): SatMetrics => ({
+  sinr: Number((2 + quality / 8).toFixed(1)),
+  rsrp: Number((-118 + quality / 4).toFixed(1)),
+  rssi: Number((-95 + quality / 5).toFixed(1)),
+});
 
 /** Modem of the control room itself. */
 export const controlRoomModem: ModemAsset = {
@@ -28,7 +44,7 @@ export const controlRoomModem: ModemAsset = {
     channel("SIM 2", "connected", 61, 9.1),
     channel("SIM 3", "disconnected", 18, 0),
     channel("SIM 4", "absent", 0, 0),
-    channel("ONEWEB", "connected", 72, 15.8),
+    channel("ONEWEB", "connected", 72, 15.8, satMetrics(72)),
     channel("STARLINK", "unplugged", 0, 0),
   ],
 };
@@ -66,7 +82,13 @@ export const vehicleModem = (platformId: string): ModemAsset => {
         return channel(sim.label, state, sim.quality, Number((sim.quality / 6).toFixed(1)));
       }),
       unit?.sat?.connected
-        ? channel("ONEWEB", "connected", Math.max(30, base - 12), 11.4)
+        ? channel(
+            "ONEWEB",
+            "connected",
+            Math.max(30, base - 12),
+            11.4,
+            unit?.sat?.metrics ?? satMetrics(Math.max(30, base - 12)),
+          )
         : channel("ONEWEB", unit?.satModem ? "disconnected" : "unplugged", 0, 0),
       channel("STARLINK", unit?.sat?.locked ? "connected" : "unplugged", unit?.sat?.locked ? 66 : 0, unit?.sat?.locked ? 17.2 : 0),
     ],
