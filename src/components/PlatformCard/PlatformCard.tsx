@@ -14,7 +14,10 @@ import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
 import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { useToggleList } from "@/hooks/useToggleList";
 import type { LinkKind, PlatformUnit } from "@/types/network";
+import { alertCountFor } from "@/data/notifications";
+import { estimateLatency } from "@/lib/telemetry";
 import {
+  AlertBadge,
   AssetLabel,
   AssetRow,
   AssetToggleCell,
@@ -26,6 +29,7 @@ import {
   CardRoot,
   CardSection,
   CardTitle,
+  CompactMetaRow,
   KindBadge,
   KindBadges,
   LockRow,
@@ -93,6 +97,8 @@ export function PlatformCard({
   ].filter(Boolean).length;
   const isLastLink = (on: boolean) => on && activeCount <= 1;
   const activeSims = sims.values.filter(Boolean).length;
+  const alerts = alertCountFor(unit.label);
+  const latency = estimateLatency(unit.quality);
 
   if (compact) {
     return (
@@ -105,6 +111,7 @@ export function PlatformCard({
       >
         <CardHeader>
           {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
+          {alerts > 0 && <AlertBadge title={`${alerts} open alerts`}>{alerts}</AlertBadge>}
           <KindBadges>
             {activeKinds.map((kind) => (
               <KindBadge key={kind}>
@@ -116,6 +123,10 @@ export function PlatformCard({
         <CardSection>
           <QualityMeter value={unit.quality} ariaLabel={`${unit.label} link quality`} />
         </CardSection>
+        <CompactMetaRow>
+          <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps (RX)</RateText>
+          <span>LAT {latency} ms</span>
+        </CompactMetaRow>
         {camera && (
           <CardSection>
             <CameraButton onClick={() => setCameraOpen(true)} aria-label={`${unit.label} camera`}>
@@ -143,6 +154,7 @@ export function PlatformCard({
           />
         )}
         {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
+        {alerts > 0 && <AlertBadge title={`${alerts} open alerts`}>{alerts}</AlertBadge>}
         {/* Shown collapsed and expanded; neutral grey so only the bar carries colour. */}
         <KindBadges>
           {activeKinds.map((kind) => (
@@ -160,13 +172,22 @@ export function PlatformCard({
       {expanded && (
         <CardDetails>
           <CardMetaRow>
-            <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps</RateText>
+            <RateText status={rateStatus(parseRate(unit.mbps))}>
+              {unit.mbps} Mbps (RX)
+            </RateText>
+            <span>LAT {latency} ms</span>
             <span>{unit.lat}</span>
           </CardMetaRow>
 
           {unit.cellularModem && (
             <ModemGroup>
               <ModemHeaderRow>
+                <PowerToggle
+                  checked={cellularOn}
+                  onChange={setCellularOn}
+                  lastActive={isLastLink(cellularOn)}
+                  label={`${unit.label} cellular modem`}
+                />
                 {unit.sims && unit.sims.length > 0 && (
                   <CollapseButton
                     expanded={simsExpanded}
@@ -177,12 +198,6 @@ export function PlatformCard({
                 <ModemKind>CELLULAR</ModemKind>
                 <ModemName>{unit.cellularModem.name}</ModemName>
                 <ModemSpacer />
-                <PowerToggle
-                  checked={cellularOn}
-                  onChange={setCellularOn}
-                  lastActive={isLastLink(cellularOn)}
-                  label={`${unit.label} cellular modem`}
-                />
               </ModemHeaderRow>
               <HealthMetrics
                 dense
@@ -197,13 +212,6 @@ export function PlatformCard({
                     const on = cellularOn && sims.isOn(index);
                     return (
                       <AssetRow key={sim.label}>
-                        <AssetLabel>{sim.label}</AssetLabel>
-                        <QualityBar
-                          value={on ? sim.quality : 0}
-                          disabled={!on}
-                          ariaLabel={`${unit.label} ${sim.label} quality`}
-                        />
-                        <AssetValue>{on ? `${sim.quality}%` : "OFF"}</AssetValue>
                         <AssetToggleCell>
                           <PowerToggle
                             checked={sims.isOn(index)}
@@ -213,6 +221,13 @@ export function PlatformCard({
                             label={`${unit.label} ${sim.label}`}
                           />
                         </AssetToggleCell>
+                        <AssetLabel>{sim.label}</AssetLabel>
+                        <QualityBar
+                          value={on ? sim.quality : 0}
+                          disabled={!on}
+                          ariaLabel={`${unit.label} ${sim.label} quality`}
+                        />
+                        <AssetValue>{on ? `${sim.quality}%` : "OFF"}</AssetValue>
                       </AssetRow>
                     );
                   })}
@@ -224,6 +239,12 @@ export function PlatformCard({
           {unit.sat && unit.satModem && (
             <ModemGroup>
               <ModemHeaderRow>
+                <PowerToggle
+                  checked={satcomOn}
+                  onChange={setSatcomOn}
+                  lastActive={isLastLink(satcomOn)}
+                  label={`${unit.label} satellite modem`}
+                />
                 <ModemKind>SATCOM</ModemKind>
                 <ModemName>{unit.satModem.name}</ModemName>
                 <ModemSpacer />
@@ -233,12 +254,6 @@ export function PlatformCard({
                     {unit.sat.locked ? "LOCKED" : "NO LOCK"}
                   </LockState>
                 </LockRow>
-                <PowerToggle
-                  checked={satcomOn}
-                  onChange={setSatcomOn}
-                  lastActive={isLastLink(satcomOn)}
-                  label={`${unit.label} satellite modem`}
-                />
               </ModemHeaderRow>
               <HealthMetrics
                 dense
@@ -263,6 +278,7 @@ export function PlatformCard({
                 </MetricGrid>
               )}
               <AssetRow>
+                <AssetToggleCell />
                 <AssetLabel>LINK</AssetLabel>
                 <QualityBar
                   value={satcomOn && unit.sat.connected ? unit.quality : 0}
@@ -270,7 +286,6 @@ export function PlatformCard({
                   ariaLabel={`${unit.label} satellite quality`}
                 />
                 <AssetValue>{satcomOn && unit.sat.connected ? "CONN" : "DISC"}</AssetValue>
-                <AssetToggleCell />
               </AssetRow>
             </ModemGroup>
           )}
@@ -278,15 +293,15 @@ export function PlatformCard({
           {unit.radioModem && (
             <ModemGroup>
               <ModemHeaderRow>
-                <ModemKind>RADIO</ModemKind>
-                <ModemName>{unit.radioModem.name}</ModemName>
-                <ModemSpacer />
                 <PowerToggle
                   checked={radioOn}
                   onChange={setRadioOn}
                   lastActive={isLastLink(radioOn)}
                   label={`${unit.label} radio modem`}
                 />
+                <ModemKind>RADIO</ModemKind>
+                <ModemName>{unit.radioModem.name}</ModemName>
+                <ModemSpacer />
               </ModemHeaderRow>
               <HealthMetrics
                 dense
@@ -295,6 +310,7 @@ export function PlatformCard({
               />
               {unit.radio && (
                 <AssetRow>
+                  <AssetToggleCell />
                   <AssetLabel>LINK</AssetLabel>
                   <QualityBar
                     value={radioOn ? unit.radio.quality : 0}
@@ -302,9 +318,8 @@ export function PlatformCard({
                     ariaLabel={`${unit.label} radio quality`}
                   />
                   <AssetValue status={rateStatus(parseRate(unit.radio.mbps))}>
-                    {radioOn ? `${unit.radio.mbps} Mb` : "OFF"}
+                    {radioOn ? `${unit.radio.mbps} (RX)` : "OFF"}
                   </AssetValue>
-                  <AssetToggleCell />
                 </AssetRow>
               )}
             </ModemGroup>
