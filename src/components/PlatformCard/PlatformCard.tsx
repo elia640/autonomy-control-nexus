@@ -227,7 +227,7 @@ export function PlatformCard({
                           disabled={!on}
                           ariaLabel={`${unit.label} ${sim.label} quality`}
                         />
-                        <AssetValue>{on ? `${sim.quality}%` : "OFF"}</AssetValue>
+                        <AssetValue>{on ? "ON" : "OFF"}</AssetValue>
                       </AssetRow>
                     );
                   })}
