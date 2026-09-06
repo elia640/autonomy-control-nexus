@@ -9,8 +9,8 @@ import { CameraWindow } from "@/components/CameraWindow";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
-import { QualityBar } from "@/components/GLOBAL/QualityBar";
-import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
+import { SignalBars } from "@/components/GLOBAL/SignalBars";
+
 import { parseRate, rateStatus } from "@/lib/linkStatus";
 import { useToggleList } from "@/hooks/useToggleList";
 import type { LinkKind, PlatformUnit } from "@/types/network";
@@ -121,7 +121,7 @@ export function PlatformCard({
           </KindBadges>
         </CardHeader>
         <CardSection>
-          <QualityMeter value={unit.quality} ariaLabel={`${unit.label} link quality`} />
+          <SignalBars value={unit.quality} ariaLabel={`${unit.label} link quality`} />
         </CardSection>
         <CompactMetaRow>
           <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps (RX)</RateText>
@@ -166,15 +166,13 @@ export function PlatformCard({
       </CardHeader>
 
       <CardSection>
-        <QualityBar value={unit.quality} ariaLabel={`${unit.label} link quality`} />
+        <SignalBars value={unit.quality} ariaLabel={`${unit.label} link quality`} />
       </CardSection>
 
       {expanded && (
         <CardDetails>
           <CardMetaRow>
-            <RateText status={rateStatus(parseRate(unit.mbps))}>
-              {unit.mbps} Mbps (RX)
-            </RateText>
+            <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps (RX)</RateText>
             <span>LAT {latency} ms</span>
             <span>{unit.lat}</span>
           </CardMetaRow>
@@ -222,12 +220,12 @@ export function PlatformCard({
                           />
                         </AssetToggleCell>
                         <AssetLabel>{sim.label}</AssetLabel>
-                        <QualityBar
+                        <SignalBars
                           value={on ? sim.quality : 0}
                           disabled={!on}
                           ariaLabel={`${unit.label} ${sim.label} quality`}
                         />
-                        <AssetValue>{on ? `${sim.quality}%` : "OFF"}</AssetValue>
+                        <AssetValue>{on ? "ON" : "OFF"}</AssetValue>
                       </AssetRow>
                     );
                   })}
@@ -280,7 +278,7 @@ export function PlatformCard({
               <AssetRow>
                 <AssetToggleCell />
                 <AssetLabel>LINK</AssetLabel>
-                <QualityBar
+                <SignalBars
                   value={satcomOn && unit.sat.connected ? unit.quality : 0}
                   disabled={!satcomOn}
                   ariaLabel={`${unit.label} satellite quality`}
@@ -312,7 +310,7 @@ export function PlatformCard({
                 <AssetRow>
                   <AssetToggleCell />
                   <AssetLabel>LINK</AssetLabel>
-                  <QualityBar
+                  <SignalBars
                     value={radioOn ? unit.radio.quality : 0}
                     disabled={!radioOn}
                     ariaLabel={`${unit.label} radio quality`}

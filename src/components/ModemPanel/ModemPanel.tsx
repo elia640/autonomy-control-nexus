@@ -1,10 +1,10 @@
 import { useState } from "react";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
 import Tooltip from "@mui/material/Tooltip";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
+import { RebootButton } from "@/components/GLOBAL/RebootButton";
 import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
 import { rateStatus } from "@/lib/linkStatus";
 import type { ChannelState, ModemAsset } from "@/types/network";
@@ -21,8 +21,7 @@ import {
   PanelRoot,
   RateCell,
   RateText,
-  ResetButton,
-  ResetRow,
+  RebootRow,
   StateChip,
   ValueText,
 } from "./ModemPanel.styles";
@@ -31,7 +30,8 @@ export interface ModemPanelProps {
   modem: ModemAsset;
   expanded: boolean;
   onExpandedChange: (expanded: boolean) => void;
-  onReset?: (modemId: string) => void;
+  /** Fired when the reboot cycle for the modem completes. */
+  onReboot?: (modemId: string) => void;
 }
 
 const STATE_LABEL: Record<ChannelState, string> = {
@@ -44,8 +44,10 @@ const STATE_LABEL: Record<ChannelState, string> = {
 /** Channels with no hardware present cannot be powered. */
 const isPowerable = (state: ChannelState) => state === "connected" || state === "disconnected";
 
-export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: ModemPanelProps) {
+export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: ModemPanelProps) {
   const [off, setOff] = useState<Record<string, boolean>>({});
+  /** Channels cannot be switched while the modem restarts. */
+  const [rebooting, setRebooting] = useState(false);
   const powerable = modem.channels.filter((c) => isPowerable(c.state));
   const activeCount = powerable.filter((c) => !off[c.id]).length;
 
@@ -86,7 +88,7 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
                 <ChannelRow key={ch.id}>
                   <PowerToggle
                     checked={on}
-                    disabled={!powerable_}
+                    disabled={!powerable_ || rebooting}
                     label={`${modem.name} ${ch.label}`}
                     lastActive={on && activeCount <= 1}
                     onChange={(next) => setOff((prev) => ({ ...prev, [ch.id]: !next }))}
@@ -133,16 +135,13 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReset }: Modem
               );
             })}
           </ChannelList>
-          <ResetRow>
-            <ResetButton
-              variant="outlined"
-              size="small"
-              startIcon={<RestartAltIcon />}
-              onClick={() => onReset?.(modem.id)}
-            >
-              Reset
-            </ResetButton>
-          </ResetRow>
+          <RebootRow>
+            <RebootButton
+              label={`${modem.name} reboot`}
+              onRebootingChange={setRebooting}
+              onComplete={() => onReboot?.(modem.id)}
+            />
+          </RebootRow>
         </>
       )}
     </PanelRoot>

@@ -13,7 +13,7 @@ export const CardRoot = styled("div", {
   selected?: boolean;
   clickable?: boolean;
 }>(({ theme, variant, status, selected, clickable }) => ({
-  width: variant === "overlay" ? 244 : 256,
+  width: variant === "overlay" ? 150 : 158,
   cursor: clickable ? "pointer" : "default",
   boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
   borderRadius: theme.shape.borderRadius,
@@ -25,8 +25,8 @@ export const CardRoot = styled("div", {
       ? alpha(theme.palette.background.default, 0.92)
       : alpha(theme.palette.background.paper, 0.6),
   backdropFilter: variant === "overlay" ? "blur(4px)" : "none",
-  fontSize: "0.625rem",
-  lineHeight: 1.35,
+  fontSize: "0.5625rem",
+  lineHeight: 1.25,
   pointerEvents: "auto",
   marginTop: variant === "overlay" ? theme.spacing(1) : 0,
 }));
@@ -34,8 +34,8 @@ export const CardRoot = styled("div", {
 export const CardHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: theme.spacing(1),
-  padding: theme.spacing(1, 1.5),
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.5, 0.75),
   borderBottom: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
 }));
 
@@ -71,14 +71,14 @@ export const KindBadge = styled("span")(({ theme }) => ({
 }));
 
 export const CardSection = styled("div")(({ theme }) => ({
-  padding: theme.spacing(1, 1.5),
+  padding: theme.spacing(0.5, 0.75),
 }));
 
 export const CardDetails = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(1),
-  padding: theme.spacing(1, 1.5),
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.5, 0.75),
   borderTop: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
 }));
 
@@ -100,7 +100,7 @@ export const ModemGroup = styled("div")(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.divider, 0.9)}`,
   backgroundColor: alpha(theme.palette.background.paper, 0.35),
-  padding: theme.spacing(0.75),
+  padding: theme.spacing(0.5),
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(0.75),
@@ -157,9 +157,9 @@ export const LockState = styled("span", {
 /** Shared 4-column grid so every asset row lines up: label | bar | value | toggle. */
 export const AssetRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "26px 42px minmax(0, 1fr) 46px",
+  gridTemplateColumns: "22px minmax(0, 1fr) auto auto",
   alignItems: "center",
-  columnGap: theme.spacing(0.75),
+  columnGap: theme.spacing(0.5),
   minWidth: 0,
 }));
 
@@ -181,7 +181,7 @@ export const AssetValue = styled("span", {
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  fontSize: "0.625rem",
+  fontSize: "0.5625rem",
   color: status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
 }));
 
@@ -195,8 +195,8 @@ export const CompactMetaRow = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   gap: theme.spacing(1),
-  padding: theme.spacing(0, 1.5, 1),
-  fontSize: "0.625rem",
+  padding: theme.spacing(0, 0.75, 0.5),
+  fontSize: "0.5625rem",
   fontVariantNumeric: "tabular-nums",
   color: theme.palette.text.secondary,
 }));
@@ -249,7 +249,7 @@ export const MetricValue = styled("span")(({ theme }) => ({
 export const CameraButton = styled(ButtonBase)(({ theme }) => ({
   width: "100%",
   gap: theme.spacing(1),
-  padding: theme.spacing(0.75, 1),
+  padding: theme.spacing(0.5, 0.75),
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.6)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.12),
