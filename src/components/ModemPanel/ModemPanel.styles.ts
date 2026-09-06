@@ -78,26 +78,8 @@ export const ValueText = styled("span", {
         : theme.palette.status.poor,
 }));
 
-/** Matches the outlined footer controls (Settings / Control Room). */
-export const ResetButton = styled(Button)(({ theme }) => ({
-  marginLeft: "auto",
-  minWidth: 0,
-  padding: theme.spacing(1, 2),
-  fontSize: "0.625rem",
-  fontWeight: 600,
-  letterSpacing: "0.16em",
-  color: theme.palette.text.secondary,
-  borderColor: theme.palette.divider,
-  "&:hover": {
-    color: theme.palette.primary.main,
-    borderColor: alpha(theme.palette.primary.main, 0.6),
-    backgroundColor: alpha(theme.palette.primary.main, 0.1),
-  },
-  "& .MuiSvgIcon-root": { fontSize: "0.8rem" },
-}));
-
-/** Reset sits under the channel list, visible only when the panel is open. */
-export const ResetRow = styled("div")(({ theme }) => ({
+/** Reboot sits under the channel list, visible only when the panel is open. */
+export const RebootRow = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 2.5, 2),
