@@ -6,14 +6,19 @@ export type PlatformCardVariant = "overlay" | "topology";
 
 export const CardRoot = styled("div", {
   shouldForwardProp: (prop) =>
-    prop !== "variant" && prop !== "status" && prop !== "selected" && prop !== "clickable",
+    prop !== "variant" &&
+    prop !== "status" &&
+    prop !== "selected" &&
+    prop !== "clickable" &&
+    prop !== "dense",
 })<{
   variant: PlatformCardVariant;
   status: LinkStatus;
   selected?: boolean;
   clickable?: boolean;
-}>(({ theme, variant, status, selected, clickable }) => ({
-  width: variant === "overlay" ? 150 : 158,
+  dense?: boolean;
+}>(({ theme, variant, status, selected, clickable, dense }) => ({
+  width: dense ? 96 : variant === "overlay" ? 150 : 158,
   cursor: clickable ? "pointer" : "default",
   boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
   borderRadius: theme.shape.borderRadius,
@@ -258,4 +263,33 @@ export const CameraButton = styled(ButtonBase)(({ theme }) => ({
   letterSpacing: "0.14em",
   "& .MuiSvgIcon-root": { fontSize: "0.7rem" },
   "&:hover": { backgroundColor: alpha(theme.palette.primary.main, 0.22) },
+}));
+
+/** Minimal map marker card: short name + active ranges. */
+export const CompactHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.25, 0.5),
+  borderBottom: `1px solid ${alpha(theme.palette.divider, 0.7)}`,
+}));
+
+export const CompactBody = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  padding: theme.spacing(0.25, 0.5),
+}));
+
+export const CameraIconButton = styled(ButtonBase)(({ theme }) => ({
+  marginLeft: "auto",
+  flex: "none",
+  height: 16,
+  width: 16,
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.6)}`,
+  backgroundColor: alpha(theme.palette.primary.main, 0.12),
+  color: theme.palette.primary.main,
+  "& .MuiSvgIcon-root": { fontSize: "0.7rem" },
+  "&:hover": { backgroundColor: alpha(theme.palette.primary.main, 0.24) },
 }));

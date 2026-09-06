@@ -23,6 +23,9 @@ import {
   AssetToggleCell,
   AssetValue,
   CameraButton,
+  CameraIconButton,
+  CompactBody,
+  CompactHeader,
   CardDetails,
   CardHeader,
   CardMetaRow,
@@ -63,6 +66,13 @@ export interface PlatformCardProps {
   selected?: boolean;
   onSelect?: () => void;
 }
+
+/** "PLATFORM 3" -> "PLT 3": keeps the marker readable at minimum width. */
+const shortLabel = (label: string): string =>
+  label
+    .split(/\s+/)
+    .map((word) => (/^\d+$/.test(word) ? word : word.slice(0, 3)))
+    .join(" ");
 
 const KIND_ICON: Record<LinkKind, ReactElement> = {
   CELLULAR: <CellIcon />,
@@ -106,38 +116,38 @@ export function PlatformCard({
         variant={variant}
         status={unit.status}
         selected={selected}
+        dense
         clickable={!!onSelect}
         {...(onSelect ? { role: "button", onClick: onSelect } : {})}
       >
-        <CardHeader>
-          {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
+        <CompactHeader title={unit.label}>
+          {!hideTitle && <CardTitle>{shortLabel(unit.label)}</CardTitle>}
           {alerts > 0 && <AlertBadge title={`${alerts} open alerts`}>{alerts}</AlertBadge>}
           <KindBadges>
             {activeKinds.map((kind) => (
-              <KindBadge key={kind}>
-                {KIND_ICON[kind]} {kind}
+              <KindBadge key={kind} title={kind}>
+                {KIND_ICON[kind]} {kind.slice(0, 3)}
               </KindBadge>
             ))}
           </KindBadges>
-        </CardHeader>
-        <CardSection>
-          <SignalBars value={unit.quality} ariaLabel={`${unit.label} link quality`} />
-        </CardSection>
-        <CompactMetaRow>
-          <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps (RX)</RateText>
-          <span>LAT {latency} ms</span>
-        </CompactMetaRow>
+        </CompactHeader>
+        <CompactBody>
+          <SignalBars value={unit.quality} bars={4} ariaLabel={`${unit.label} link quality`} />
+          {camera && (
+            <CameraIconButton
+              onClick={(event) => {
+                event.stopPropagation();
+                setCameraOpen(true);
+              }}
+              aria-label={`${unit.label} camera`}
+              title="Camera"
+            >
+              <VideocamIcon />
+            </CameraIconButton>
+          )}
+        </CompactBody>
         {camera && (
-          <CardSection>
-            <CameraButton onClick={() => setCameraOpen(true)} aria-label={`${unit.label} camera`}>
-              <VideocamIcon /> CAMERA
-            </CameraButton>
-            <CameraWindow
-              title={unit.label}
-              open={cameraOpen}
-              onClose={() => setCameraOpen(false)}
-            />
-          </CardSection>
+          <CameraWindow title={unit.label} open={cameraOpen} onClose={() => setCameraOpen(false)} />
         )}
       </CardRoot>
     );
