@@ -146,7 +146,7 @@ export function LogicalTopology({
 
           <CommandNode ref={commandRef}>
             <CommandRow>
-              <RadioIcon /> COMMAND POST · GROUND STATION
+              <RadioIcon /> CONTROL ROOM
             </CommandRow>
             <CommandCaption>NETWORK ROOT · ALL PLATFORM LINKS TERMINATE HERE</CommandCaption>
           </CommandNode>
@@ -157,7 +157,7 @@ export function LogicalTopology({
               return (
                 <MemberColumn key={unit.id} ref={setNodeRef(unit.id)}>
                   <EdgeLabel labelColor={edge?.color ?? theme.palette.divider}>
-                    {hasRadio(unit) ? "RADIO → CP" : `${primaryKind(unit)} → CP`}
+                    {hasRadio(unit) ? "RADIO → CR" : `${primaryKind(unit)} → CR`}
                   </EdgeLabel>
                   <PlatformCard
                     unit={unit}

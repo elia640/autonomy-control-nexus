@@ -61,7 +61,7 @@ export function MonitorViewport({
           aria-pressed={linksOn}
           onClick={() => onLinksOnChange(!linksOn)}
         >
-          Links {linksOn ? "On" : "Off"}
+          Mesh Link {linksOn ? "On" : "Off"}
         </LinksButton>
         <TraySlot>
           <NotificationTray />

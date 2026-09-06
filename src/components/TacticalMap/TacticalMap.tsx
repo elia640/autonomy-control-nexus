@@ -259,7 +259,7 @@ export function TacticalMap({
             <DraggableNode
               dragging={stationDrag.dragging}
               role="button"
-              aria-label="Ground station: drag to move, click for parameters"
+              aria-label="Control room: drag to move, click for parameters"
               onClick={() => {
                 if (stationDrag.dragging) return;
                 onSelectRelay?.(null);
@@ -275,7 +275,7 @@ export function TacticalMap({
                 <PingRing />
                 <RadioIcon />
               </NodeBadge>
-              <NodeLabel>GROUND STATION</NodeLabel>
+              <NodeLabel>CONTROL ROOM</NodeLabel>
             </DraggableNode>
           </Tooltip>
         </AnchoredPoint>
@@ -373,10 +373,10 @@ export function TacticalMap({
           <OffscreenArrow
             angle={stationOffscreen.angle}
             style={{ left: stationOffscreen.left, top: stationOffscreen.top }}
-            aria-label="Command post direction"
-            title="Command post is off screen"
+            aria-label="Control room direction"
+            title="Control room is off screen"
           >
-            <NavigationIcon /> CP
+            <NavigationIcon /> CR
           </OffscreenArrow>
         )}
 
@@ -400,7 +400,7 @@ export function TacticalMap({
 
       <CoordinateDialog
         open={coordTarget !== null}
-        title={coordTarget === "relay" ? relay.label : "COMMAND POST"}
+        title={coordTarget === "relay" ? relay.label : "CONTROL ROOM"}
         value={coordTarget === "relay" ? relayDrag.position : stationDrag.position}
         onClose={() => setCoordTarget(null)}
         onSubmit={(position) =>

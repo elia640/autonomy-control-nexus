@@ -27,7 +27,7 @@ interface MatrixNode {
 const GROUND_STATION_ID = "gs";
 
 const nodes: MatrixNode[] = [
-  { id: GROUND_STATION_ID, short: "GS", label: "GROUND STATION" },
+  { id: GROUND_STATION_ID, short: "CR", label: "CONTROL ROOM" },
   ...platforms.map((unit) => ({
     id: unit.id,
     short: `P${unit.label.split(" ")[1]}`,
