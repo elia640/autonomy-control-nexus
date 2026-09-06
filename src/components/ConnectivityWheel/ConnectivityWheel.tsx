@@ -40,7 +40,7 @@ const marginOf = (a: string, b: string): number =>
   meshMargins[`${a}|${b}`] ?? meshMargins[`${b}|${a}`] ?? 10;
 
 const ids = [
-  { id: GROUND_STATION_ID, short: "GS", label: "GROUND STATION" },
+  { id: GROUND_STATION_ID, short: "CR", label: "CONTROL ROOM" },
   ...platforms.map((unit) => ({
     id: unit.id,
     short: `P${unit.label.split(" ")[1]}`,

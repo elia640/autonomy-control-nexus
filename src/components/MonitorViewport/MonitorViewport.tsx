@@ -54,15 +54,19 @@ export function MonitorViewport({
       <ViewportTitle>{title}</ViewportTitle>
 
       <TopRightBar>
-        <LinksButton
-          active={linksOn}
-          size="small"
-          startIcon={<LinkIcon />}
-          aria-pressed={linksOn}
-          onClick={() => onLinksOnChange(!linksOn)}
-        >
-          Links {linksOn ? "On" : "Off"}
-        </LinksButton>
+        {/* Mesh links control belongs to the tactical map only. */}
+        {mode === "tactical" && (
+          <LinksButton
+            active={linksOn}
+            size="small"
+            startIcon={<LinkIcon />}
+            aria-pressed={linksOn}
+            onClick={() => onLinksOnChange(!linksOn)}
+          >
+            Mesh Link {linksOn ? "On" : "Off"}
+          </LinksButton>
+        )}
+
         <TraySlot>
           <NotificationTray />
         </TraySlot>
