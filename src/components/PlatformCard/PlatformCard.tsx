@@ -172,9 +172,7 @@ export function PlatformCard({
       {expanded && (
         <CardDetails>
           <CardMetaRow>
-            <RateText status={rateStatus(parseRate(unit.mbps))}>
-              {unit.mbps} Mbps (RX)
-            </RateText>
+            <RateText status={rateStatus(parseRate(unit.mbps))}>{unit.mbps} Mbps (RX)</RateText>
             <span>LAT {latency} ms</span>
             <span>{unit.lat}</span>
           </CardMetaRow>
