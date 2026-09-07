@@ -45,6 +45,7 @@ export const CardHeader = styled("div")(({ theme }) => ({
 }));
 
 export const CardTitle = styled("span")(({ theme }) => ({
+  whiteSpace: "nowrap",
   fontWeight: 600,
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
