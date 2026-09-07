@@ -102,6 +102,60 @@ export const ChannelRow = styled("div")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
+export const ChannelGroup = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(1),
+}));
+
+/** Clickable channel name that reveals the RF readouts underneath. */
+export const ChannelNameButton = styled("button")(({ theme }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  border: "none",
+  padding: 0,
+  background: "none",
+  cursor: "pointer",
+  textAlign: "left",
+  font: "inherit",
+  fontWeight: 700,
+  letterSpacing: "0.06em",
+  color: theme.palette.text.primary,
+  "& .MuiSvgIcon-root": { fontSize: "0.85rem", color: theme.palette.primary.main },
+}));
+
+/** SINR / RSSI / RSRP readouts revealed under a satellite channel. */
+export const MetricsRow = styled("div")(({ theme }) => ({
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: theme.spacing(1),
+  marginLeft: theme.spacing(6),
+  padding: theme.spacing(1),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(theme.palette.divider, 0.8)}`,
+  backgroundColor: alpha(theme.palette.background.default, 0.5),
+}));
+
+export const MetricCell = styled("span")({
+  display: "flex",
+  flexDirection: "column",
+  minWidth: 0,
+});
+
+export const MetricName = styled("span")(({ theme }) => ({
+  fontSize: "0.5625rem",
+  letterSpacing: "0.06em",
+  color: theme.palette.text.secondary,
+}));
+
+export const MetricValue = styled("span")(({ theme }) => ({
+  fontSize: "0.6875rem",
+  fontWeight: 700,
+  fontVariantNumeric: "tabular-nums",
+  color: theme.palette.text.primary,
+}));
+
 export const ChannelName = styled("span")(({ theme }) => ({
   fontWeight: 700,
   letterSpacing: "0.06em",
