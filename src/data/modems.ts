@@ -45,7 +45,7 @@ export const controlRoomModem: ModemAsset = {
     channel("SIM 3", "disconnected", 18, 0),
     channel("SIM 4", "absent", 0, 0),
     channel("ONEWEB", "connected", 72, 15.8, satMetrics(72)),
-    channel("STARLINK", "unplugged", 0, 0),
+    channel("STARLINK", "unplugged", 0, 0, satMetrics(0)),
   ],
 };
 
