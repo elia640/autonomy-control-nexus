@@ -30,8 +30,8 @@ export const CardRoot = styled("div", {
       ? alpha(theme.palette.background.default, 0.92)
       : alpha(theme.palette.background.paper, 0.6),
   backdropFilter: variant === "overlay" ? "blur(4px)" : "none",
-  fontSize: "0.5625rem",
-  lineHeight: 1.25,
+  fontSize: variant === "overlay" ? "0.625rem" : "0.6875rem",
+  lineHeight: 1.3,
   pointerEvents: "auto",
   marginTop: variant === "overlay" ? theme.spacing(1) : 0,
 }));
