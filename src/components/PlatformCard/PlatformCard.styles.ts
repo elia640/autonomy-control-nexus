@@ -46,8 +46,12 @@ export const CardHeader = styled("div")(({ theme }) => ({
 
 export const CardTitle = styled("span")(({ theme }) => ({
   whiteSpace: "nowrap",
-  fontWeight: 600,
-  letterSpacing: "0.1em",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  minWidth: 0,
+  fontWeight: 800,
+  fontSize: "1.05em",
+  letterSpacing: "0.06em",
   color: theme.palette.text.primary,
 }));
 
