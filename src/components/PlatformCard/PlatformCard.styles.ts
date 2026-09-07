@@ -18,7 +18,7 @@ export const CardRoot = styled("div", {
   clickable?: boolean;
   dense?: boolean;
 }>(({ theme, variant, status, selected, clickable, dense }) => ({
-  width: dense ? 118 : variant === "overlay" ? 150 : 158,
+  width: variant === "overlay" ? (dense ? 60 : 76) : 220,
   cursor: clickable ? "pointer" : "default",
   boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
   borderRadius: theme.shape.borderRadius,
@@ -30,8 +30,8 @@ export const CardRoot = styled("div", {
       ? alpha(theme.palette.background.default, 0.92)
       : alpha(theme.palette.background.paper, 0.6),
   backdropFilter: variant === "overlay" ? "blur(4px)" : "none",
-  fontSize: "0.5625rem",
-  lineHeight: 1.25,
+  fontSize: variant === "overlay" ? "0.625rem" : "0.6875rem",
+  lineHeight: 1.3,
   pointerEvents: "auto",
   marginTop: variant === "overlay" ? theme.spacing(1) : 0,
 }));
@@ -46,8 +46,12 @@ export const CardHeader = styled("div")(({ theme }) => ({
 
 export const CardTitle = styled("span")(({ theme }) => ({
   whiteSpace: "nowrap",
-  fontWeight: 600,
-  letterSpacing: "0.1em",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  minWidth: 0,
+  fontWeight: 800,
+  fontSize: "1.05em",
+  letterSpacing: "0.06em",
   color: theme.palette.text.primary,
 }));
 
