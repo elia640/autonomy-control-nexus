@@ -18,7 +18,7 @@ export const CardRoot = styled("div", {
   clickable?: boolean;
   dense?: boolean;
 }>(({ theme, variant, status, selected, clickable, dense }) => ({
-  width: dense ? 96 : variant === "overlay" ? 150 : 158,
+  width: dense ? 118 : variant === "overlay" ? 150 : 158,
   cursor: clickable ? "pointer" : "default",
   boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
   borderRadius: theme.shape.borderRadius,
@@ -45,6 +45,7 @@ export const CardHeader = styled("div")(({ theme }) => ({
 }));
 
 export const CardTitle = styled("span")(({ theme }) => ({
+  whiteSpace: "nowrap",
   fontWeight: 600,
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,

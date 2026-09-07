@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { useTheme } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
@@ -148,6 +148,29 @@ export function TacticalMap({
     return () => window.removeEventListener("resize", update);
   }, [stationDrag.position.x, stationDrag.position.y, viewport.x, viewport.y, viewport.zoom]);
 
+  // Markers sitting on top of each other are fanned out so each stays readable.
+  const stackOffsets = useMemo(() => {
+    const groups: PlatformUnit[][] = [];
+    platforms.forEach((unit) => {
+      const group = groups.find((members) =>
+        members.some((other) => Math.abs(other.x - unit.x) < 7 && Math.abs(other.y - unit.y) < 9),
+      );
+      if (group) group.push(unit);
+      else groups.push([unit]);
+    });
+    const offsets: Record<string, { dx: number; dy: number; stacked: boolean }> = {};
+    groups.forEach((members) =>
+      members.forEach((unit, index) => {
+        offsets[unit.id] = {
+          dx: (index - (members.length - 1) / 2) * 52,
+          dy: index * 16,
+          stacked: members.length > 1,
+        };
+      }),
+    );
+    return offsets;
+  }, []);
+
   const color = (status: LinkStatus) => theme.palette.status[status];
   const radioPlatforms = platforms.filter(hasRadio);
   // With links off, hovering a vehicle reveals only that vehicle's connectivity.
@@ -291,8 +314,18 @@ export function TacticalMap({
 
         {platforms.map((unit) => {
           const kinds = kindsOf(unit);
+          const offset = stackOffsets[unit.id] ?? { dx: 0, dy: 0, stacked: false };
+          const raised = hoveredId === unit.id || selectedVehicleId === unit.id;
           return (
-            <AnchoredPoint key={unit.id} badgeSize={30} style={{ left: `${unit.x}%`, top: `${unit.y}%` }}>
+            <AnchoredPoint
+              key={unit.id}
+              badgeSize={30}
+              style={{
+                left: `calc(${unit.x}% + ${offset.dx}px)`,
+                top: `calc(${unit.y}% + ${offset.dy}px)`,
+                zIndex: raised ? 40 : offset.stacked ? 10 : 5,
+              }}
+            >
               <MarkerColumn
                 onMouseEnter={() => setHoveredId(unit.id)}
                 onMouseLeave={() => setHoveredId((prev) => (prev === unit.id ? null : prev))}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
-import Tooltip from "@mui/material/Tooltip";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
@@ -10,9 +11,15 @@ import { rateStatus } from "@/lib/linkStatus";
 import type { ChannelState, ModemAsset } from "@/types/network";
 import {
   AssetIcon,
+  ChannelGroup,
   ChannelList,
   ChannelName,
+  ChannelNameButton,
   ChannelRow,
+  MetricCell,
+  MetricName,
+  MetricValue,
+  MetricsRow,
   HeaderRow,
   HealthRow,
   MeterRow,
@@ -46,6 +53,8 @@ const isPowerable = (state: ChannelState) => state === "connected" || state === 
 
 export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: ModemPanelProps) {
   const [off, setOff] = useState<Record<string, boolean>>({});
+  /** Channels whose RF readouts (SINR / RSSI / RSRP) are expanded. */
+  const [openMetrics, setOpenMetrics] = useState<Record<string, boolean>>({});
   /** Channels cannot be switched while the modem restarts. */
   const [rebooting, setRebooting] = useState(false);
   const powerable = modem.channels.filter((c) => isPowerable(c.state));
@@ -84,54 +93,69 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
             {modem.channels.map((ch) => {
               const powerable_ = isPowerable(ch.state);
               const on = powerable_ && !off[ch.id];
-              const row = (
-                <ChannelRow key={ch.id}>
-                  <PowerToggle
-                    checked={on}
-                    disabled={!powerable_ || rebooting}
-                    label={`${modem.name} ${ch.label}`}
-                    lastActive={on && activeCount <= 1}
-                    onChange={(next) => setOff((prev) => ({ ...prev, [ch.id]: !next }))}
-                  />
-                  <ChannelName>{ch.label}</ChannelName>
-                  <StateChip state={on ? ch.state : powerable_ ? "disconnected" : ch.state}>
-                    {on
-                      ? STATE_LABEL[ch.state]
-                      : powerable_
-                        ? "NOT CONNECTED"
-                        : STATE_LABEL[ch.state]}
-                  </StateChip>
-                  <QualityMeter
-                    value={ch.quality}
-                    disabled={!on}
-                    ariaLabel={`${ch.label} quality`}
-                  />
-                  <RateCell>
-                    {on ? (
-                      <ValueText tone={rateStatus(ch.rate)}>{ch.rate.toFixed(1)} (RX)</ValueText>
+              const metricsOpen = !!openMetrics[ch.id];
+              return (
+                <ChannelGroup key={ch.id}>
+                  <ChannelRow>
+                    <PowerToggle
+                      checked={on}
+                      disabled={!powerable_ || rebooting}
+                      label={`${modem.name} ${ch.label}`}
+                      lastActive={on && activeCount <= 1}
+                      onChange={(next) => setOff((prev) => ({ ...prev, [ch.id]: !next }))}
+                    />
+                    {ch.metrics ? (
+                      <ChannelNameButton
+                        type="button"
+                        aria-expanded={metricsOpen}
+                        aria-label={`${ch.label} RF details`}
+                        onClick={() =>
+                          setOpenMetrics((prev) => ({ ...prev, [ch.id]: !prev[ch.id] }))
+                        }
+                      >
+                        {ch.label}
+                        {metricsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                      </ChannelNameButton>
                     ) : (
-                      "—"
+                      <ChannelName>{ch.label}</ChannelName>
                     )}
-                  </RateCell>
-                </ChannelRow>
-              );
-
-              return ch.metrics ? (
-                <Tooltip
-                  key={ch.id}
-                  arrow
-                  placement="left"
-                  title={
-                    <span>
-                      SINR {ch.metrics.sinr} dB · RSSI {ch.metrics.rssi} dBm · RSRP{" "}
-                      {ch.metrics.rsrp} dBW/m²
-                    </span>
-                  }
-                >
-                  {row}
-                </Tooltip>
-              ) : (
-                row
+                    <StateChip state={on ? ch.state : powerable_ ? "disconnected" : ch.state}>
+                      {on
+                        ? STATE_LABEL[ch.state]
+                        : powerable_
+                          ? "NOT CONNECTED"
+                          : STATE_LABEL[ch.state]}
+                    </StateChip>
+                    <QualityMeter
+                      value={ch.quality}
+                      disabled={!on}
+                      ariaLabel={`${ch.label} quality`}
+                    />
+                    <RateCell>
+                      {on ? (
+                        <ValueText tone={rateStatus(ch.rate)}>{ch.rate.toFixed(1)} (RX)</ValueText>
+                      ) : (
+                        "—"
+                      )}
+                    </RateCell>
+                  </ChannelRow>
+                  {ch.metrics && metricsOpen && (
+                    <MetricsRow>
+                      <MetricCell>
+                        <MetricName>SINR dB</MetricName>
+                        <MetricValue>{ch.metrics.sinr}</MetricValue>
+                      </MetricCell>
+                      <MetricCell>
+                        <MetricName>RSSI dBm</MetricName>
+                        <MetricValue>{ch.metrics.rssi}</MetricValue>
+                      </MetricCell>
+                      <MetricCell>
+                        <MetricName>RSRP dBW/m²</MetricName>
+                        <MetricValue>{ch.metrics.rsrp}</MetricValue>
+                      </MetricCell>
+                    </MetricsRow>
+                  )}
+                </ChannelGroup>
               );
             })}
           </ChannelList>

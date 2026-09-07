@@ -71,7 +71,7 @@ export interface PlatformCardProps {
 const shortLabel = (label: string): string =>
   label
     .split(/\s+/)
-    .map((word) => (/^\d+$/.test(word) ? word : word.slice(0, 3)))
+    .map((word) => (/^\d+$/.test(word) ? word : (word.replace(/[AEIOU]/gi, "") || word).slice(0, 3)))
     .join(" ");
 
 const KIND_ICON: Record<LinkKind, ReactElement> = {
