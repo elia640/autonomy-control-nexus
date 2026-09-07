@@ -122,7 +122,18 @@ export const ChannelNameButton = styled("button")(({ theme }) => ({
   fontWeight: 700,
   letterSpacing: "0.06em",
   color: theme.palette.text.primary,
-  "& .MuiSvgIcon-root": { fontSize: "0.85rem", color: theme.palette.primary.main },
+  "& .MuiSvgIcon-root": {
+    fontSize: "1.05rem",
+    color: theme.palette.primary.main,
+    borderRadius: "50%",
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.6)}`,
+    backgroundColor: alpha(theme.palette.primary.main, 0.14),
+    transition: theme.transitions.create(["background-color", "border-color"]),
+  },
+  "&:hover .MuiSvgIcon-root": {
+    backgroundColor: alpha(theme.palette.primary.main, 0.28),
+    borderColor: theme.palette.primary.main,
+  },
 }));
 
 /** SINR / RSSI / RSRP readouts revealed under a satellite channel. */

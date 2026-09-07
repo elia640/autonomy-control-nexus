@@ -45,7 +45,7 @@ export const controlRoomModem: ModemAsset = {
     channel("SIM 3", "disconnected", 18, 0),
     channel("SIM 4", "absent", 0, 0),
     channel("ONEWEB", "connected", 72, 15.8, satMetrics(72)),
-    channel("STARLINK", "unplugged", 0, 0),
+    channel("STARLINK", "unplugged", 0, 0, satMetrics(0)),
   ],
 };
 
@@ -90,7 +90,13 @@ export const vehicleModem = (platformId: string): ModemAsset => {
             unit?.sat?.metrics ?? satMetrics(Math.max(30, base - 12)),
           )
         : channel("ONEWEB", unit?.satModem ? "disconnected" : "unplugged", 0, 0),
-      channel("STARLINK", unit?.sat?.locked ? "connected" : "unplugged", unit?.sat?.locked ? 66 : 0, unit?.sat?.locked ? 17.2 : 0),
+      channel(
+        "STARLINK",
+        unit?.sat?.locked ? "connected" : "unplugged",
+        unit?.sat?.locked ? 66 : 0,
+        unit?.sat?.locked ? 17.2 : 0,
+        satMetrics(unit?.sat?.locked ? 66 : 0),
+      ),
     ],
   };
 };
