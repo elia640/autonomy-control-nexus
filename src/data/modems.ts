@@ -90,7 +90,13 @@ export const vehicleModem = (platformId: string): ModemAsset => {
             unit?.sat?.metrics ?? satMetrics(Math.max(30, base - 12)),
           )
         : channel("ONEWEB", unit?.satModem ? "disconnected" : "unplugged", 0, 0),
-      channel("STARLINK", unit?.sat?.locked ? "connected" : "unplugged", unit?.sat?.locked ? 66 : 0, unit?.sat?.locked ? 17.2 : 0),
+      channel(
+        "STARLINK",
+        unit?.sat?.locked ? "connected" : "unplugged",
+        unit?.sat?.locked ? 66 : 0,
+        unit?.sat?.locked ? 17.2 : 0,
+        satMetrics(unit?.sat?.locked ? 66 : 0),
+      ),
     ],
   };
 };
