@@ -21,7 +21,7 @@ export const SectionHeaderTitle = styled(Typography, {
   textAlign: "center",
   textTransform: "uppercase",
   color: emphasis ? theme.palette.primary.light : theme.palette.text.primary,
-})) as ReturnType<typeof styled>;
+}));
 
 export const SectionHeaderAction = styled("div")(({ theme }) => ({
   position: "absolute",
