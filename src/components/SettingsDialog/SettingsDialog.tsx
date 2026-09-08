@@ -24,11 +24,14 @@ export interface SettingsDialogProps {
   /** Current radio frequency in MHz. */
   radioFrequency: number;
   onRadioFrequencyChange: (frequencyMhz: number) => void;
+  /** Starts the system precheck sequence. */
+  onRunPrecheck?: () => void;
 }
 
-type SettingsTabKey = "satellite" | "radio" | "cellular";
+type SettingsTabKey = "system" | "satellite" | "radio" | "cellular";
 
 const TABS: { key: SettingsTabKey; label: string }[] = [
+  { key: "system", label: "System" },
   { key: "satellite", label: "Satellite" },
   { key: "radio", label: "Radio" },
   { key: "cellular", label: "Cellular" },
@@ -39,8 +42,9 @@ export function SettingsDialog({
   onClose,
   radioFrequency,
   onRadioFrequencyChange,
+  onRunPrecheck,
 }: SettingsDialogProps) {
-  const [tab, setTab] = useState<SettingsTabKey>("satellite");
+  const [tab, setTab] = useState<SettingsTabKey>("system");
   const [frequency, setFrequency] = useState(String(radioFrequency));
 
   const applyFrequency = () => {
