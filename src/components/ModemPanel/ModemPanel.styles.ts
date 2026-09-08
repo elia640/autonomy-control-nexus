@@ -95,7 +95,7 @@ export const ChannelList = styled("div")(({ theme }) => ({
 
 export const ChannelRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "auto 48px 78px 1fr 58px",
+  gridTemplateColumns: "auto 76px 74px 1fr 54px",
   alignItems: "center",
   gap: theme.spacing(1.5),
   fontSize: "0.6875rem",
