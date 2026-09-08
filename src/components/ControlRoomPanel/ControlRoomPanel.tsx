@@ -27,11 +27,7 @@ import {
   FooterRow,
   FooterSpacer,
   PanelFooter,
-  PanelHeader,
   PanelStack,
-  PrecheckBar,
-  PrecheckLabel,
-  RunButton,
   SettingsButton,
 } from "./ControlRoomPanel.styles";
 
@@ -182,6 +178,7 @@ export function ControlRoomPanel({
         onClose={() => setSettingsOpen(false)}
         radioFrequency={radioFrequency}
         onRadioFrequencyChange={setRadioFrequency}
+        onRunPrecheck={onRunPrecheck}
       />
     </SidePanel>
   );
