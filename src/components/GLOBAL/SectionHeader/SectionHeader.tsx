@@ -12,7 +12,7 @@ export interface SectionHeaderProps {
 export function SectionHeader({ title, action, emphasis }: SectionHeaderProps) {
   return (
     <SectionHeaderBar>
-      <SectionHeaderTitle emphasis={emphasis}>{title}</SectionHeaderTitle>
+      <SectionHeaderTitle emphasis={emphasis ?? false}>{title}</SectionHeaderTitle>
       {action && <SectionHeaderAction>{action}</SectionHeaderAction>}
     </SectionHeaderBar>
   );
