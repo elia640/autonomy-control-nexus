@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import {
   DialogFooterRow,
   DialogHeader,
@@ -24,11 +25,14 @@ export interface SettingsDialogProps {
   /** Current radio frequency in MHz. */
   radioFrequency: number;
   onRadioFrequencyChange: (frequencyMhz: number) => void;
+  /** Starts the system precheck sequence. */
+  onRunPrecheck?: (() => void) | undefined;
 }
 
-type SettingsTabKey = "satellite" | "radio" | "cellular";
+type SettingsTabKey = "system" | "satellite" | "radio" | "cellular";
 
 const TABS: { key: SettingsTabKey; label: string }[] = [
+  { key: "system", label: "System" },
   { key: "satellite", label: "Satellite" },
   { key: "radio", label: "Radio" },
   { key: "cellular", label: "Cellular" },
@@ -39,8 +43,9 @@ export function SettingsDialog({
   onClose,
   radioFrequency,
   onRadioFrequencyChange,
+  onRunPrecheck,
 }: SettingsDialogProps) {
-  const [tab, setTab] = useState<SettingsTabKey>("satellite");
+  const [tab, setTab] = useState<SettingsTabKey>("system");
   const [frequency, setFrequency] = useState(String(radioFrequency));
 
   const applyFrequency = () => {
@@ -68,6 +73,23 @@ export function SettingsDialog({
           <SettingsTab key={item.key} value={item.key} label={item.label} />
         ))}
       </SettingsTabs>
+
+      {tab === "system" && (
+        <TabBody>
+          <FieldGroup>
+            <FieldLabel>Precheck</FieldLabel>
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<PlayArrowIcon />}
+              onClick={() => onRunPrecheck?.()}
+            >
+              Run
+            </Button>
+            <FieldHint>Runs the full communication precheck sequence.</FieldHint>
+          </FieldGroup>
+        </TabBody>
+      )}
 
       {tab === "satellite" && (
         <TabBody>

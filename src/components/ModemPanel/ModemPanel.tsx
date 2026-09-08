@@ -7,6 +7,7 @@ import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { RebootButton } from "@/components/GLOBAL/RebootButton";
 import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
+import { SignalBars } from "@/components/GLOBAL/SignalBars";
 import { rateStatus } from "@/lib/linkStatus";
 import type { ChannelState, ModemAsset } from "@/types/network";
 import {
@@ -126,7 +127,7 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
                           ? "NOT CONNECTED"
                           : STATE_LABEL[ch.state]}
                     </StateChip>
-                    <QualityMeter
+                    <SignalBars
                       value={ch.quality}
                       disabled={!on}
                       ariaLabel={`${ch.label} quality`}

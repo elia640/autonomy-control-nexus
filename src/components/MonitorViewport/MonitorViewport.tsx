@@ -63,7 +63,7 @@ export function MonitorViewport({
             aria-pressed={linksOn}
             onClick={() => onLinksOnChange(!linksOn)}
           >
-            Mesh Link {linksOn ? "On" : "Off"}
+            Mesh Links
           </LinksButton>
         )}
 
