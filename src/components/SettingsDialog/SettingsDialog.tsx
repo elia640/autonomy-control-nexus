@@ -4,6 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import {
   DialogFooterRow,
   DialogHeader,
@@ -72,6 +73,23 @@ export function SettingsDialog({
           <SettingsTab key={item.key} value={item.key} label={item.label} />
         ))}
       </SettingsTabs>
+
+      {tab === "system" && (
+        <TabBody>
+          <FieldGroup>
+            <FieldLabel>Precheck</FieldLabel>
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<PlayArrowIcon />}
+              onClick={() => onRunPrecheck?.()}
+            >
+              Run
+            </Button>
+            <FieldHint>Runs the full communication precheck sequence.</FieldHint>
+          </FieldGroup>
+        </TabBody>
+      )}
 
       {tab === "satellite" && (
         <TabBody>
