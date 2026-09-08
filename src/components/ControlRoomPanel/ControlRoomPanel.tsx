@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import HubIcon from "@mui/icons-material/Hub";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { SectionHeader } from "@/components/GLOBAL/SectionHeader";
@@ -88,21 +87,6 @@ export function ControlRoomPanel({
     <SidePanel
       side="right"
       width={340}
-      header={
-        <PanelHeader>
-          <PrecheckBar>
-            <PrecheckLabel>PRECHECK</PrecheckLabel>
-            <RunButton
-              variant="contained"
-              size="small"
-              startIcon={<PlayArrowIcon />}
-              onClick={onRunPrecheck}
-            >
-              Run
-            </RunButton>
-          </PrecheckBar>
-        </PanelHeader>
-      }
       footer={
         <PanelFooter>
           <FooterRow>
