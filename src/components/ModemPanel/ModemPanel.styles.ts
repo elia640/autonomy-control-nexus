@@ -110,8 +110,10 @@ export const ChannelGroup = styled("div")(({ theme }) => ({
 
 /** Clickable channel name that reveals the RF readouts underneath. */
 export const ChannelNameButton = styled("button")(({ theme }) => ({
-  display: "inline-flex",
+  display: "grid",
+  gridTemplateColumns: "1fr auto",
   alignItems: "center",
+  width: "100%",
   gap: theme.spacing(0.5),
   border: "none",
   padding: 0,
