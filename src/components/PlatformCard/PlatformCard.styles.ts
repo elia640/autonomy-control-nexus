@@ -18,7 +18,7 @@ export const CardRoot = styled("div", {
   clickable?: boolean;
   dense?: boolean;
 }>(({ theme, variant, status, selected, clickable, dense }) => ({
-  width: variant === "overlay" ? (dense ? 84 : 96) : 220,
+  width: variant === "overlay" ? (dense ? 92 : 104) : 220,
   cursor: clickable ? "pointer" : "default",
   boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
   borderRadius: theme.shape.borderRadius,
