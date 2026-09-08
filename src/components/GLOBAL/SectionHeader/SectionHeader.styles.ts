@@ -12,14 +12,16 @@ export const SectionHeaderBar = styled("div")(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
-export const SectionHeaderTitle = styled(Typography)(({ theme }) => ({
-  fontSize: "0.75rem",
+export const SectionHeaderTitle = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "emphasis",
+})<{ emphasis?: boolean }>(({ theme, emphasis }) => ({
+  fontSize: emphasis ? "0.875rem" : "0.75rem",
   fontWeight: 800,
-  letterSpacing: "0.2em",
+  letterSpacing: emphasis ? "0.24em" : "0.2em",
   textAlign: "center",
   textTransform: "uppercase",
-  color: theme.palette.text.primary,
-})) as typeof Typography;
+  color: emphasis ? theme.palette.primary.light : theme.palette.text.primary,
+}));
 
 export const SectionHeaderAction = styled("div")(({ theme }) => ({
   position: "absolute",

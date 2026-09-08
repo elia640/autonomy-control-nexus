@@ -109,7 +109,7 @@ export function ControlRoomPanel({
         </PanelFooter>
       }
     >
-      <SectionHeader title={title} />
+      <SectionHeader title={title} emphasis />
 
       <PanelStack>
         <ModemPanel
