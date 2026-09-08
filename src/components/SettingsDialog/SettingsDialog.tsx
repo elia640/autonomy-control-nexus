@@ -26,7 +26,7 @@ export interface SettingsDialogProps {
   radioFrequency: number;
   onRadioFrequencyChange: (frequencyMhz: number) => void;
   /** Starts the system precheck sequence. */
-  onRunPrecheck?: () => void;
+  onRunPrecheck?: (() => void) | undefined;
 }
 
 type SettingsTabKey = "system" | "satellite" | "radio" | "cellular";
