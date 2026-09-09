@@ -32,7 +32,7 @@ export const AssetMetrics = styled("div")(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(4),
   marginTop: theme.spacing(1.5),
-  fontSize: "0.625rem",
+  fontSize: "0.6875rem",
   color: theme.palette.text.secondary,
   "& > span": { display: "inline-flex", alignItems: "center", gap: theme.spacing(1) },
   "& .MuiSvgIcon-root": { fontSize: "0.8rem" },

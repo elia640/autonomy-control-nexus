@@ -45,7 +45,7 @@ export const LayerColumn = styled("div")(({ theme }) => ({
 export const LayerCaption = styled("div")(({ theme }) => ({
   marginBottom: theme.spacing(2),
   textAlign: "center",
-  fontSize: "0.5rem",
+  fontSize: "0.6875rem",
   fontWeight: 700,
   letterSpacing: "0.22em",
   color: theme.palette.text.secondary,
@@ -67,7 +67,7 @@ export const Cluster = styled("div", {
 export const ClusterTitle = styled("div", {
   shouldForwardProp: (prop) => prop !== "accent",
 })<{ accent: string }>(({ accent }) => ({
-  fontSize: "0.5rem",
+  fontSize: "0.6875rem",
   fontWeight: 700,
   letterSpacing: "0.18em",
   color: accent,
@@ -101,7 +101,7 @@ export const HopNode = styled("div", {
   border: `1px solid ${alpha(accent, 0.8)}`,
   backgroundColor: alpha(accent, 0.1),
   padding: theme.spacing(1.5, 2),
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   fontWeight: 700,
   letterSpacing: "0.16em",
   color: accent,
@@ -117,7 +117,7 @@ export const HopRow = styled("div")(({ theme }) => ({
 }));
 
 export const HopCaption = styled("span")(({ theme }) => ({
-  fontSize: "0.45rem",
+  fontSize: "0.6875rem",
   fontWeight: 400,
   letterSpacing: "0.12em",
   color: theme.palette.text.secondary,
@@ -151,7 +151,7 @@ export const CommandRow = styled("div")(({ theme }) => ({
 }));
 
 export const CommandCaption = styled("span")(({ theme }) => ({
-  fontSize: "0.5rem",
+  fontSize: "0.6875rem",
   fontWeight: 400,
   letterSpacing: "0.16em",
   color: theme.palette.text.secondary,
@@ -167,7 +167,7 @@ export const ModemModule = styled("div")(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.primary.main, 0.8)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.14),
   padding: theme.spacing(1, 1.5),
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.14em",
   color: theme.palette.primary.light,
   "& .MuiSvgIcon-root": { fontSize: "0.85rem" },
@@ -175,7 +175,7 @@ export const ModemModule = styled("div")(({ theme }) => ({
 
 export const ModemMeta = styled("span")(({ theme }) => ({
   marginLeft: "auto",
-  fontSize: "0.45rem",
+  fontSize: "0.6875rem",
   fontWeight: 400,
   letterSpacing: "0.1em",
   color: theme.palette.text.secondary,
@@ -189,7 +189,7 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.primary.main, 0.7)}`,
   backgroundColor: alpha(theme.palette.background.paper, 0.7),
   padding: theme.spacing(1, 2),
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.18em",
   color: theme.palette.primary.main,
   "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
@@ -203,7 +203,7 @@ export const EdgeLabel = styled("span", {
   border: `1px solid ${alpha(labelColor, 0.7)}`,
   backgroundColor: alpha(labelColor, 0.12),
   padding: "1px 6px",
-  fontSize: "0.45rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.12em",
   color: labelColor,
 }));
@@ -219,7 +219,7 @@ export const Legend = styled("div")(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: alpha(theme.palette.background.paper, 0.85),
   padding: theme.spacing(0.75, 1.5),
-  fontSize: "0.45rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.12em",
   color: theme.palette.text.secondary,
 }));

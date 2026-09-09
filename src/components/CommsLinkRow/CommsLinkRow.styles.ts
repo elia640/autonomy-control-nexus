@@ -27,7 +27,7 @@ export const LinkRowRate = styled("span", {
   width: 62,
   flexShrink: 0,
   textAlign: "right",
-  fontSize: "0.625rem",
+  fontSize: "0.6875rem",
   color:
     status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
   fontWeight: status && status !== "good" ? 600 : 400,

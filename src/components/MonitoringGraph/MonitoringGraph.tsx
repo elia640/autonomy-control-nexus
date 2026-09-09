@@ -96,7 +96,7 @@ export function MonitoringGraph({ samples, withLatency }: MonitoringGraphProps) 
               contentStyle={{
                 background: theme.palette.background.paper,
                 border: `1px solid ${theme.palette.divider}`,
-                fontSize: 10,
+                fontSize: 11,
               }}
             />
             {series

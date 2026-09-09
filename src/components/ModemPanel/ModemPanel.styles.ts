@@ -157,7 +157,7 @@ export const MetricCell = styled("span")({
 });
 
 export const MetricName = styled("span")(({ theme }) => ({
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   letterSpacing: "0.06em",
   color: theme.palette.text.secondary,
 }));
@@ -191,7 +191,7 @@ export const StateChip = styled("span", {
     display: "inline-flex",
     justifyContent: "center",
     padding: theme.spacing(0.5, 1),
-    fontSize: "0.5rem",
+    fontSize: "0.6875rem",
     fontWeight: 700,
     letterSpacing: "0.06em",
     color,

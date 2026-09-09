@@ -44,7 +44,7 @@ export const SettingsTabs = styled(Tabs)(({ theme }) => ({
 export const SettingsTab = styled(Tab)(({ theme }) => ({
   minHeight: 0,
   padding: theme.spacing(2, 3),
-  fontSize: "0.625rem",
+  fontSize: "0.6875rem",
   fontWeight: 600,
   letterSpacing: "0.18em",
   color: theme.palette.text.secondary,
@@ -72,7 +72,7 @@ export const FieldGroup = styled("div")(({ theme }) => ({
 }));
 
 export const FieldLabel = styled("span")(({ theme }) => ({
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   fontWeight: 600,
   letterSpacing: "0.18em",
   textTransform: "uppercase",
@@ -80,7 +80,7 @@ export const FieldLabel = styled("span")(({ theme }) => ({
 }));
 
 export const FieldHint = styled("span")(({ theme }) => ({
-  fontSize: "0.5625rem",
+  fontSize: "0.6875rem",
   color: theme.palette.text.secondary,
 }));
 

@@ -40,6 +40,6 @@ export const ItemDetail = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   gap: theme.spacing(1),
-  fontSize: "0.625rem",
+  fontSize: "0.6875rem",
   color: theme.palette.text.secondary,
 }));

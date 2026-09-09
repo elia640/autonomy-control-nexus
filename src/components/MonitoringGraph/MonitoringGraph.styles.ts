@@ -15,7 +15,7 @@ export const ChartLegend = styled("div")(({ theme }) => ({
 }));
 
 export const chartAxisStyles = (theme: Theme) => ({
-  tick: { fill: theme.palette.text.secondary, fontSize: 9 },
+  tick: { fill: theme.palette.text.secondary, fontSize: 11 },
   line: { stroke: theme.palette.divider },
-  label: { fill: theme.palette.text.secondary, fontSize: 9 },
+  label: { fill: theme.palette.text.secondary, fontSize: 11 },
 });
