@@ -29,9 +29,9 @@ export const LayerGrid = styled("div")(({ theme }) => ({
   position: "relative",
   display: "grid",
   gridTemplateColumns: "auto 150px auto",
-  alignItems: "stretch",
+  alignItems: "center",
   justifyContent: "start",
-  gap: theme.spacing(0, 9),
+  gap: theme.spacing(0, 6),
   minHeight: "100%",
   width: "max-content",
 }));
@@ -40,7 +40,7 @@ export const LayerColumn = styled("div")(({ theme }) => ({
   position: "relative",
   display: "flex",
   flexDirection: "column",
-  alignItems: "stretch",
+  alignItems: "center",
   justifyContent: "center",
   gap: theme.spacing(4),
 }));
@@ -122,7 +122,7 @@ export const HopCaption = styled("span")(({ theme }) => ({
 export const CommandNode = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  alignItems: "stretch",
+  alignItems: "center",
   gap: theme.spacing(1.5),
   borderRadius: theme.shape.borderRadius,
   border: `2px solid ${theme.palette.primary.main}`,
@@ -243,7 +243,6 @@ export const LegendSwatch = styled("span", {
 }));
 
 /** The relay sits low in the canvas, next to the platforms it serves. */
-export const RelayColumn = styled(LayerColumn)(({ theme }) => ({
-  justifyContent: "flex-end",
-  paddingBottom: theme.spacing(6),
-}));
+export const RelayColumn = styled(LayerColumn)({
+  marginTop: 150,
+});
