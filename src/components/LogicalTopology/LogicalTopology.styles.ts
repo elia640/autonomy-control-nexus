@@ -33,12 +33,12 @@ export const LayerStack = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "space-between",
-  gap: theme.spacing(6),
+  justifyContent: "center",
+  gap: theme.spacing(9),
   flex: 1,
   minHeight: "100%",
   width: "100%",
-  padding: theme.spacing(3, 1, 12),
+  padding: theme.spacing(3, 1, 10),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
@@ -63,7 +63,7 @@ export const PlatformRow = styled(LayerRow)(({ theme }) => ({
 
 export const LayerCaption = styled("div")(({ theme }) => ({
   position: "absolute",
-  top: theme.spacing(-2.5),
+  top: theme.spacing(-4),
   left: 0,
   right: 0,
   textAlign: "center",
@@ -82,19 +82,9 @@ export const NodeSlot = styled("div", {
   display: "flex",
   flexDirection: "column",
   alignItems: "stretch",
-  /** Cards keep a common baseline and grow upwards. */
   justifyContent: "flex-end",
-  minHeight: 108,
   opacity: dimmed ? 0.3 : 1,
   transition: "opacity 160ms ease",
-  "& > div": { display: "flex", alignItems: "flex-end" },
-  "& > div > *": {
-    minHeight: 92,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    width: "100%",
-  },
 }));
 
 /** Caption above each platform card describing how it reaches the control room. */
