@@ -13,6 +13,8 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
 export const TopologyContent = styled("div")({
   position: "relative",
   display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   flex: "1 0 auto",
   width: "100%",
 });
