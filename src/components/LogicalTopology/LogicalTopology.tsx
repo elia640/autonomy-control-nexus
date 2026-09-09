@@ -293,11 +293,6 @@ export function LogicalTopology({
               <CommandRow>
                 <HubIcon /> CONTROL ROOM
               </CommandRow>
-              <CommandCaption>
-                <SatelliteNode as="span">
-                  <SatelliteIcon /> TELS-1 SATELLITE
-                </SatelliteNode>
-              </CommandCaption>
               <RouterModule ref={setNodeRef(ROUTER_ID)}>
                 <RouterIcon /> {CONTROL_ROOM_ROUTER}
                 <ModemMeta>{routes.length} PORTS</ModemMeta>
@@ -325,18 +320,6 @@ export function LogicalTopology({
                 onMouseLeave={() => setHovered(null)}
               >
                 <div ref={setNodeRef(route.unit.id)}>
-                  <RouteTag
-                    labelColor={
-                      linksOn
-                        ? route.peer === null
-                          ? routerColor
-                          : nodeColor
-                        : theme.palette.divider
-                    }
-                  >
-                    {primaryKind(route.unit)} →{" "}
-                    {route.peer ? route.peer.label : NETWORK_NODE}
-                  </RouteTag>
                   <PlatformCard
                     unit={route.unit}
                     variant="topology"

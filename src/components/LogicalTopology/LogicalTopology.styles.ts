@@ -151,7 +151,7 @@ export const CommandNode = styled("div")(({ theme }) => ({
   outlineOffset: 3,
   boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
   backgroundColor: theme.palette.panel.header,
-  padding: theme.spacing(2, 3, 0),
+  padding: theme.spacing(2, 3),
   cursor: "pointer",
   fontSize: "0.875rem",
   fontWeight: 700,
