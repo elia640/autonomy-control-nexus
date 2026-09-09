@@ -95,11 +95,12 @@ export const ChannelList = styled("div")(({ theme }) => ({
 
 export const ChannelRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "auto 76px 74px 1fr 54px",
+  gridTemplateColumns: "auto minmax(34px, 1fr) auto 56px 56px",
   alignItems: "center",
-  gap: theme.spacing(1.5),
+  gap: theme.spacing(1),
   fontSize: "0.8125rem",
   color: theme.palette.text.secondary,
+  "& > *": { minWidth: 0 },
 }));
 
 export const ChannelGroup = styled("div")(({ theme }) => ({
@@ -122,8 +123,12 @@ export const ChannelNameButton = styled("button")(({ theme }) => ({
   textAlign: "left",
   font: "inherit",
   fontWeight: 700,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.04em",
   color: theme.palette.text.primary,
+  minWidth: 0,
+  "& > span, &": { overflow: "hidden" },
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
   "& .MuiSvgIcon-root": {
     fontSize: "1.05rem",
     color: theme.palette.primary.main,
@@ -143,7 +148,7 @@ export const MetricsRow = styled("div")(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
   gap: theme.spacing(1),
-  marginLeft: theme.spacing(6),
+  marginLeft: theme.spacing(4),
   padding: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.divider, 0.8)}`,
@@ -171,8 +176,12 @@ export const MetricValue = styled("span")(({ theme }) => ({
 
 export const ChannelName = styled("span")(({ theme }) => ({
   fontWeight: 700,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.04em",
   color: theme.palette.text.primary,
+  minWidth: 0,
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
 }));
 
 const STATE_COLOR: Record<ChannelState, "good" | "poor" | "muted"> = {
@@ -190,10 +199,12 @@ export const StateChip = styled("span", {
   return {
     display: "inline-flex",
     justifyContent: "center",
-    padding: theme.spacing(0.5, 1),
+    justifySelf: "end",
+    alignItems: "center",
+    padding: theme.spacing(0.25, 0.75),
     fontSize: "0.6875rem",
     fontWeight: 700,
-    letterSpacing: "0.06em",
+    letterSpacing: "0.02em",
     color,
     border: `1px solid ${alpha(color, 0.5)}`,
     borderRadius: theme.shape.borderRadius,
@@ -203,7 +214,9 @@ export const StateChip = styled("span", {
 
 export const RateCell = styled("span")({
   textAlign: "right",
+  whiteSpace: "nowrap",
   fontVariantNumeric: "tabular-nums",
+  justifySelf: "end",
 });
 
 /** Health chips sit under the quality bar, aligned with it. */
