@@ -212,30 +212,38 @@ export const CompactMetaRow = styled("div")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-/** Count of open alerts: translucent so it reads as an overlay, not a sticker. */
+/** Fault count: high-contrast pulsing badge with a warning glyph. */
 export const AlertBadge = styled("span", {
   shouldForwardProp: (prop) => prop !== "floating",
 })<{ floating?: boolean }>(({ theme, floating }) => ({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  minWidth: 17,
-  height: 17,
-  padding: "0 4px",
+  gap: 2,
+  minWidth: 22,
+  height: 18,
+  padding: "0 5px",
   borderRadius: 999,
-  backgroundColor: "transparent",
-  border: `1px solid ${theme.palette.status.poor}`,
-  color: theme.palette.status.poor,
+  backgroundColor: theme.palette.status.poor,
+  border: `1px solid ${theme.palette.common.white}`,
+  color: theme.palette.common.white,
   fontSize: "0.6875rem",
-  fontWeight: 700,
+  fontWeight: 800,
   lineHeight: 1,
   fontVariantNumeric: "tabular-nums",
+  boxShadow: `0 0 0 2px ${alpha(theme.palette.status.poor, 0.35)}`,
+  animation: "platformFaultPulse 1.6s ease-in-out infinite",
+  "& .MuiSvgIcon-root": { fontSize: "0.8125rem" },
+  "@keyframes platformFaultPulse": {
+    "0%, 100%": { boxShadow: `0 0 0 2px ${alpha(theme.palette.status.poor, 0.35)}` },
+    "50%": { boxShadow: `0 0 0 5px ${alpha(theme.palette.status.poor, 0.05)}` },
+  },
   /** Map markers show the count just above the card, beside the vehicle icon. */
   ...(floating
     ? {
         position: "absolute",
-        top: -9,
-        right: -6,
+        top: -10,
+        right: -8,
         zIndex: 2,
       }
     : {}),
