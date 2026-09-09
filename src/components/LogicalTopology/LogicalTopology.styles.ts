@@ -35,16 +35,17 @@ export const LayerStack = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "center",
-  gap: theme.spacing(9),
+  justifyContent: "space-between",
+  gap: theme.spacing(6),
   flex: "0 1 auto",
-  minHeight: "100%",
-  /** Occupies half of the central canvas, centred horizontally. */
-  width: "50%",
-  minWidth: 560,
+  /** Covers about half the canvas area, centred in both axes. */
+  width: "72%",
+  minWidth: 620,
   maxWidth: "100%",
-  margin: "0 auto",
-  padding: theme.spacing(3, 1, 10),
+  height: "72%",
+  minHeight: 420,
+  margin: "auto",
+  padding: theme.spacing(2, 1, 4),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
