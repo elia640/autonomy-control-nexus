@@ -179,6 +179,7 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
               );
             })}
           </ChannelList>
+          </DimWrap>
           <RebootRow>
             <RebootButton
               label={`${modem.name} reboot`}
