@@ -12,7 +12,8 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
 export const TopologyContent = styled("div")({
   position: "relative",
   minHeight: "100%",
-  width: "100%",
+  minWidth: "100%",
+  width: "max-content",
 });
 
 export const EdgeSvg = styled("svg")({
