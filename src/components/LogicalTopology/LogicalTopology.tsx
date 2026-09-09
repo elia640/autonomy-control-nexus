@@ -317,18 +317,18 @@ export function LogicalTopology({
             <CommandNode
               role="button"
               tabIndex={0}
-              onClick={() => setDrawerOpen(true)}
+              onClick={openControlRoom}
               onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") setDrawerOpen(true);
+                if (event.key === "Enter" || event.key === " ") openControlRoom();
               }}
-              aria-label="Open control room parameters"
+              aria-label="Show control room parameters in the side panel"
             >
               <CommandRow>
                 <HubIcon /> CONTROL ROOM
               </CommandRow>
               <CommandCaption>INTERNAL MODEM MODULES</CommandCaption>
               <ModemModule ref={setNodeRef(MODEM_ID)}>
-                <MemoryIcon /> J8
+                <MemoryIcon /> {CONTROL_ROOM_MODEM}
                 <ModemMeta>ACTIVE</ModemMeta>
               </ModemModule>
             </CommandNode>
@@ -353,8 +353,6 @@ export function LogicalTopology({
           </LegendItem>
         </Legend>
       </TopologyContent>
-
-      <ControlRoomDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} modemName="J8" />
     </TopologyRoot>
   );
 }
