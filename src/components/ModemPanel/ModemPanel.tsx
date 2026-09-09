@@ -72,6 +72,7 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
 
   return (
     <PanelRoot>
+      <DimWrap dimmed={rebooting}>
       <HeaderRow>
         <CollapseButton
           expanded={expanded}
