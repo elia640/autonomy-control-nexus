@@ -130,11 +130,20 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
                     ) : (
                       <ChannelName>{ch.label}</ChannelName>
                     )}
-                    <StateChip state={on ? ch.state : powerable_ ? "disconnected" : ch.state}>
+                    <StateChip
+                      state={on ? ch.state : powerable_ ? "disconnected" : ch.state}
+                      title={
+                        on
+                          ? STATE_TITLE[ch.state]
+                          : powerable_
+                            ? STATE_TITLE.disconnected
+                            : STATE_TITLE[ch.state]
+                      }
+                    >
                       {on
                         ? STATE_LABEL[ch.state]
                         : powerable_
-                          ? "NOT CONNECTED"
+                          ? STATE_LABEL.disconnected
                           : STATE_LABEL[ch.state]}
                     </StateChip>
                     <SignalBars
