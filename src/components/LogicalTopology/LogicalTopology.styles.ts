@@ -175,21 +175,22 @@ export const CommandCaption = styled("span")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-/** Router unit inside the control room; every platform line terminates here. */
+/** Router unit inside the control room; every platform line terminates here.
+ *  Kept narrow so further routers can sit alongside it later. */
 export const RouterModule = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   gap: theme.spacing(1),
-  width: "56%",
-  minWidth: 300,
+  width: "auto",
+  minWidth: 220,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.9)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.18),
-  padding: theme.spacing(1.25, 2),
-  /** Sits on the bottom edge of the control room, like the sketch. */
-  marginBottom: -1,
-  fontSize: "0.8125rem",
+  padding: theme.spacing(0.75, 1.5),
+  /** Free-standing rectangle, detached from the control room edge. */
+  marginBottom: theme.spacing(2),
+  fontSize: "0.75rem",
   fontWeight: 700,
   letterSpacing: "0.12em",
   color: theme.palette.primary.light,

@@ -9,7 +9,7 @@ import {
   TopRightBar,
   TraySlot,
   ViewportRoot,
-  ViewportTitle,
+  
 } from "./MonitorViewport.styles";
 
 export interface MonitorViewportProps {
