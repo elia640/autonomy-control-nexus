@@ -10,6 +10,7 @@ import { CameraWindow } from "@/components/CameraWindow";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
+import { QualityBar } from "@/components/GLOBAL/QualityBar";
 import { SignalBars } from "@/components/GLOBAL/SignalBars";
 
 import { parseRate, rateStatus } from "@/lib/linkStatus";
@@ -138,7 +139,12 @@ export function PlatformCard({
             </KindBadges>
           </CompactHeader>
           <CompactBody>
-            <SignalBars value={unit.quality} bars={4} ariaLabel={`${unit.label} link quality`} />
+            {/* Logical view uses the filling bar shared with the side panels. */}
+            {variant === "topology" ? (
+              <QualityBar value={unit.quality} ariaLabel={`${unit.label} link quality`} />
+            ) : (
+              <SignalBars value={unit.quality} bars={4} ariaLabel={`${unit.label} link quality`} />
+            )}
             {camera && (
               <CameraIconButton
                 onClick={(event) => {
