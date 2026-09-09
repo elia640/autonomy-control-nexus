@@ -296,14 +296,6 @@ export function TacticalMap({
           </Tooltip>
         </AnchoredPoint>
 
-        <AnchoredPoint
-          style={{ left: `${SATELLITE_POSITION.x}%`, top: `${SATELLITE_POSITION.y}%` }}
-        >
-          <NodeBadge shape="square" borderColor={theme.palette.primary.main}>
-            <SatelliteIcon />
-          </NodeBadge>
-          <NodeLabel>TELS-1</NodeLabel>
-        </AnchoredPoint>
 
         {platforms.map((unit) => {
           
