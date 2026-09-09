@@ -44,11 +44,6 @@ export function RadioPanel({
           label={radio.name}
           lastActive={lastActive}
         />
-        <CollapseButton
-          expanded={expanded}
-          onToggle={() => onExpandedChange(!expanded)}
-          label={`${radio.name} details`}
-        />
         <AssetIcon>
           <CellTowerIcon />
         </AssetIcon>
