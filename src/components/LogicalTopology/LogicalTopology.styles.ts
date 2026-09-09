@@ -58,14 +58,13 @@ export const LayerRow = styled("div")(({ theme }) => ({
   width: "100%",
 }));
 
-/** Bottom row of platforms; wraps instead of overflowing the canvas. */
+/** Bottom row of platforms; all units stay on a single spaced row. */
 export const PlatformRow = styled(LayerRow)(({ theme }) => ({
-  flexWrap: "wrap",
-  justifyContent: "space-evenly",
+  flexWrap: "nowrap",
+  justifyContent: "space-between",
   alignItems: "flex-end",
-  maxWidth: "100%",
-  rowGap: theme.spacing(3),
-  columnGap: theme.spacing(1.5),
+  width: "100%",
+  columnGap: theme.spacing(3),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({
