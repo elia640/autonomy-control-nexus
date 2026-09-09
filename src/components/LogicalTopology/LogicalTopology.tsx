@@ -8,7 +8,7 @@ import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import { ControlRoomDrawer } from "@/components/ControlRoomDrawer";
 import { PlatformCard } from "@/components/PlatformCard";
 import { platforms, relays } from "@/data/network";
-import type { LinkKind, PlatformUnit } from "@/types/network";
+import type { LinkKind, LinkStatus, PlatformUnit } from "@/types/network";
 import {
   Cluster,
   ClusterMembers,
