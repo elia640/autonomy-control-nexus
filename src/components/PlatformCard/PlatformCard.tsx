@@ -120,9 +120,13 @@ export function PlatformCard({
         clickable={!!onSelect}
         {...(onSelect ? { role: "button", onClick: onSelect } : {})}
       >
+        {alerts > 0 && (
+          <AlertBadge floating title={`${alerts} open alerts`}>
+            {alerts}
+          </AlertBadge>
+        )}
         <CompactHeader title={unit.label}>
           {!hideTitle && <CardTitle>{shortLabel(unit.label)}</CardTitle>}
-          {alerts > 0 && <AlertBadge title={`${alerts} open alerts`}>{alerts}</AlertBadge>}
           <KindBadges>
             {activeKinds.map((kind) => (
               <KindBadge key={kind} title={kind}>
