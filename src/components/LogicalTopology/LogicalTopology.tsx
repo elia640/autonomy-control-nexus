@@ -343,10 +343,10 @@ export function LogicalTopology({
 
         <Legend>
           <LegendItem>
-            <LegendSwatch swatchColor={routerColor} /> DIRECT → ROUTER
+            <LegendSwatch swatchColor={theme.palette.text.secondary} /> DIRECT → ROUTER
           </LegendItem>
           <LegendItem>
-            <LegendSwatch swatchColor={relayColor} dashed /> VIA RELAY
+            <LegendSwatch swatchColor={theme.palette.text.secondary} dashed /> VIA RELAY
           </LegendItem>
           <LegendItem>
             <LegendSwatch swatchColor={theme.palette.status.good} /> ACTIVE
