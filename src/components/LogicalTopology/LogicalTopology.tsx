@@ -87,6 +87,7 @@ export function LogicalTopology({
   linksOn,
   selectedVehicleId = null,
   onSelectVehicle,
+  onOpenControlRoom,
 }: LogicalTopologyProps) {
   const theme = useTheme();
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -94,7 +95,12 @@ export function LogicalTopology({
   const [edges, setEdges] = useState<Edge[]>([]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hovered, setHovered] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  /** The side panel shows the control room whenever no platform is selected. */
+  const openControlRoom = () => {
+    onSelectVehicle?.(null);
+    onOpenControlRoom?.();
+  };
 
   const relay = relays[0] ?? null;
   const relayGroup = useMemo(() => platforms.filter(usesRelay), []);
