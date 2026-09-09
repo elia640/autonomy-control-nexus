@@ -2,11 +2,11 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useTheme } from "@mui/material/styles";
 import HubIcon from "@mui/icons-material/Hub";
 import RouterIcon from "@mui/icons-material/Router";
-import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
+import LanIcon from "@mui/icons-material/DeviceHub";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 
 import { PlatformCard } from "@/components/PlatformCard";
-import { platforms, relays } from "@/data/network";
+import { platforms } from "@/data/network";
 import type { LinkKind, PlatformUnit } from "@/types/network";
 import {
   CommandCaption,
@@ -54,16 +54,17 @@ interface Edge {
   labelY: number;
 }
 
-/** How a platform reaches the control room router. */
+/** How a platform reaches the network node. */
 interface Route {
   unit: PlatformUnit;
-  /** Node id of the intermediate hop, or null when the link is direct. */
-  hopId: string | null;
-  hopLabel: string;
+  /** Peer platform used as a relay, or null when the node is reached directly. */
+  peer: PlatformUnit | null;
 }
 
 const ROUTER_ID = "cr-router";
+const NODE_ID = "net-node";
 const CONTROL_ROOM_ROUTER = "ROUTER CONVOY 23";
+const NETWORK_NODE = "NETWORK NODE NN-1";
 
 const kindsOf = (unit: PlatformUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 
@@ -92,30 +93,24 @@ export function LogicalTopology({
     onOpenControlRoom?.();
   };
 
-  const relay = relays[0] ?? null;
-
   /**
-   * Every platform gets a route: direct to the router, through the relay unit,
-   * or through a peer platform that does have direct visibility.
+   * Every platform reaches the network node. Platforms without direct
+   * visibility hop through a peer platform that does have it.
    */
   const routes = useMemo<Route[]>(
     () =>
       platforms.map((unit) => {
-        if (hasDirectVisibility(unit)) return { unit, hopId: null, hopLabel: "DIRECT" };
-        if (relay && relay.connectedTo.includes(unit.id))
-          return { unit, hopId: relay.id, hopLabel: relay.label };
+        if (hasDirectVisibility(unit)) return { unit, peer: null };
         const peer = platforms.find((p) => p.id !== unit.id && hasDirectVisibility(p));
-        return peer
-          ? { unit, hopId: peer.id, hopLabel: peer.label }
-          : { unit, hopId: null, hopLabel: "DIRECT" };
+        return { unit, peer: peer ?? null };
       }),
-    [relay],
+    [],
   );
 
-  const relayRoutes = useMemo(() => routes.filter((r) => r.hopId !== null), [routes]);
+  const peerRoutes = useMemo(() => routes.filter((r) => r.peer !== null), [routes]);
 
   const routerColor = theme.palette.primary.main;
-  const relayColor = theme.palette.warning.main;
+  const nodeColor = theme.palette.info?.main ?? theme.palette.primary.light;
 
   /** Which platform route is emphasised right now. */
   const activeRoute = hovered ?? selectedVehicleId;
