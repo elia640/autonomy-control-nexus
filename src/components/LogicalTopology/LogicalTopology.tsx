@@ -40,6 +40,8 @@ export interface LogicalTopologyProps {
   linksOn: boolean;
   selectedVehicleId?: string | null;
   onSelectVehicle?: (id: string | null) => void;
+  /** Clicking the control room swaps the right-hand panel to its parameters. */
+  onOpenControlRoom?: () => void;
 }
 
 interface Edge {
@@ -49,10 +51,15 @@ interface Edge {
   path: string;
   color: string;
   dashed: boolean;
+  /** Download rate rendered beside the line. */
+  label: string;
+  labelX: number;
+  labelY: number;
 }
 
-const MODEM_ID = "cr-j8";
+const MODEM_ID = "cr-modem";
 const ROUTER_ID = "net-router";
+const CONTROL_ROOM_MODEM = "CONVOY 23";
 
 const primaryKind = (unit: PlatformUnit): LinkKind => (unit.activeLinks ?? [unit.link])[0]!;
 
@@ -62,6 +69,19 @@ const usesRelay = (unit: PlatformUnit): boolean => {
   const kinds = unit.activeLinks ?? [unit.link];
   return kinds.includes("RADIO") && relay.connectedTo.includes(unit.id);
 };
+
+const STATUS_ORDER: LinkStatus[] = ["good", "marginal", "poor"];
+
+/** The hop→modem link carries its own state: the worst of the platforms it serves. */
+const worstStatus = (members: PlatformUnit[]): LinkStatus =>
+  members.reduce<LinkStatus>(
+    (worst, unit) =>
+      STATUS_ORDER.indexOf(unit.status) > STATUS_ORDER.indexOf(worst) ? unit.status : worst,
+    "good",
+  );
+
+const sumRate = (members: PlatformUnit[]): string =>
+  members.reduce((total, unit) => total + Number.parseFloat(unit.mbps), 0).toFixed(1);
 
 export function LogicalTopology({
   linksOn,
