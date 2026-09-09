@@ -9,7 +9,7 @@ import NavigationIcon from "@mui/icons-material/Navigation";
 import HubIcon from "@mui/icons-material/Hub";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
-import CellIcon from "@mui/icons-material/SignalCellularAlt";
+
 import TruckIcon from "@mui/icons-material/LocalShipping";
 import mapImage from "@/assets/map-satellite.jpg";
 import { CoordinateDialog } from "@/components/CoordinateDialog";
@@ -28,8 +28,6 @@ import type { LinkKind, LinkStatus, PlatformUnit, RelayUnit } from "@/types/netw
 import { formatCoordinates } from "./mapGeometry";
 import {
   AnchoredPoint,
-  DualLinkChip,
-  DualLinkRow,
   InfoChip,
   LegendBox,
   LegendRow,
@@ -67,11 +65,6 @@ export interface TacticalMapProps {
 const kindsOf = (unit: PlatformUnit | RelayUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 const hasRadio = (unit: PlatformUnit | RelayUnit): boolean => kindsOf(unit).includes("RADIO");
 
-const KIND_ICON: Record<LinkKind, typeof RadioIcon> = {
-  CELLULAR: CellIcon,
-  SATCOM: SatelliteIcon,
-  RADIO: RadioIcon,
-};
 
 export function TacticalMap({
   linksOn,
@@ -313,7 +306,7 @@ export function TacticalMap({
         </AnchoredPoint>
 
         {platforms.map((unit) => {
-          const kinds = kindsOf(unit);
+          
           const offset = stackOffsets[unit.id] ?? { dx: 0, dy: 0, stacked: false };
           const raised = hoveredId === unit.id || selectedVehicleId === unit.id;
           return (
@@ -333,18 +326,6 @@ export function TacticalMap({
                 <NodeBadge shape="square" borderColor={theme.palette.primary.main}>
                   <TruckIcon />
                 </NodeBadge>
-                {kinds.length > 1 && (
-                  <DualLinkRow aria-label={`${unit.label} simultaneous links`}>
-                    {kinds.map((kind) => {
-                      const Icon = KIND_ICON[kind];
-                      return (
-                        <DualLinkChip key={kind} chipColor={color(unit.status)}>
-                          <Icon /> {kind.slice(0, 3)}
-                        </DualLinkChip>
-                      );
-                    })}
-                  </DualLinkRow>
-                )}
                 <PlatformCard
                   unit={unit}
                   variant="overlay"

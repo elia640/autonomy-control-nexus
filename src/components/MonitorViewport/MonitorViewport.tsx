@@ -21,6 +21,8 @@ export interface MonitorViewportProps {
   onSelectVehicle?: (id: string | null) => void;
   selectedRelayId?: string | null;
   onSelectRelay?: (id: string | null) => void;
+  /** Logical view: clicking the control room swaps the right panel to it. */
+  onOpenControlRoom?: () => void;
 }
 
 export function MonitorViewport({
@@ -32,6 +34,7 @@ export function MonitorViewport({
   onSelectVehicle,
   selectedRelayId = null,
   onSelectRelay,
+  onOpenControlRoom,
 }: MonitorViewportProps) {
   return (
     <ViewportRoot>
@@ -48,6 +51,7 @@ export function MonitorViewport({
           linksOn={linksOn}
           selectedVehicleId={selectedVehicleId}
           {...(onSelectVehicle ? { onSelectVehicle } : {})}
+          {...(onOpenControlRoom ? { onOpenControlRoom } : {})}
         />
       )}
 

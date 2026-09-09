@@ -5,10 +5,10 @@ import RouterIcon from "@mui/icons-material/Router";
 import MemoryIcon from "@mui/icons-material/Memory";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
-import { ControlRoomDrawer } from "@/components/ControlRoomDrawer";
+
 import { PlatformCard } from "@/components/PlatformCard";
 import { platforms, relays } from "@/data/network";
-import type { LinkKind, PlatformUnit } from "@/types/network";
+import type { LinkKind, LinkStatus, PlatformUnit } from "@/types/network";
 import {
   Cluster,
   ClusterMembers,
@@ -40,6 +40,8 @@ export interface LogicalTopologyProps {
   linksOn: boolean;
   selectedVehicleId?: string | null;
   onSelectVehicle?: (id: string | null) => void;
+  /** Clicking the control room swaps the right-hand panel to its parameters. */
+  onOpenControlRoom?: () => void;
 }
 
 interface Edge {
@@ -49,10 +51,15 @@ interface Edge {
   path: string;
   color: string;
   dashed: boolean;
+  /** Download rate rendered beside the line. */
+  label: string;
+  labelX: number;
+  labelY: number;
 }
 
-const MODEM_ID = "cr-j8";
+const MODEM_ID = "cr-modem";
 const ROUTER_ID = "net-router";
+const CONTROL_ROOM_MODEM = "CONVOY 23";
 
 const primaryKind = (unit: PlatformUnit): LinkKind => (unit.activeLinks ?? [unit.link])[0]!;
 
@@ -63,10 +70,24 @@ const usesRelay = (unit: PlatformUnit): boolean => {
   return kinds.includes("RADIO") && relay.connectedTo.includes(unit.id);
 };
 
+const STATUS_ORDER: LinkStatus[] = ["good", "marginal", "poor"];
+
+/** The hop→modem link carries its own state: the worst of the platforms it serves. */
+const worstStatus = (members: PlatformUnit[]): LinkStatus =>
+  members.reduce<LinkStatus>(
+    (worst, unit) =>
+      STATUS_ORDER.indexOf(unit.status) > STATUS_ORDER.indexOf(worst) ? unit.status : worst,
+    "good",
+  );
+
+const sumRate = (members: PlatformUnit[]): string =>
+  members.reduce((total, unit) => total + Number.parseFloat(unit.mbps), 0).toFixed(1);
+
 export function LogicalTopology({
   linksOn,
   selectedVehicleId = null,
   onSelectVehicle,
+  onOpenControlRoom,
 }: LogicalTopologyProps) {
   const theme = useTheme();
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -74,7 +95,12 @@ export function LogicalTopology({
   const [edges, setEdges] = useState<Edge[]>([]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hovered, setHovered] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  /** The side panel shows the control room whenever no platform is selected. */
+  const openControlRoom = () => {
+    onSelectVehicle?.(null);
+    onOpenControlRoom?.();
+  };
 
   const relay = relays[0] ?? null;
   const relayGroup = useMemo(() => platforms.filter(usesRelay), []);
@@ -113,39 +139,51 @@ export function LogicalTopology({
     if (!modem) return;
 
     const next: Edge[] = [];
-    const elbow = (from: { right: number; middle: number }, to: { left: number; middle: number }) => {
+    const elbow = (
+      from: { right: number; middle: number },
+      to: { left: number; middle: number },
+    ) => {
       const midX = from.right + (to.left - from.right) / 2;
-      return `M ${from.right} ${from.middle} H ${midX} V ${to.middle} H ${to.left}`;
+      return {
+        path: `M ${from.right} ${from.middle} H ${midX} V ${to.middle} H ${to.left}`,
+        labelX: from.right + (to.left - from.right) * 0.3,
+        labelY: from.middle - 5,
+      };
     };
 
-    const hops: { id: string; members: PlatformUnit[]; color: string; dashed: boolean }[] = [
-      { id: ROUTER_ID, members: routerGroup, color: routerColor, dashed: false },
-      ...(relay ? [{ id: relay.id, members: relayGroup, color: relayColor, dashed: true }] : []),
+    const hops: { id: string; members: PlatformUnit[]; dashed: boolean }[] = [
+      { id: ROUTER_ID, members: routerGroup, dashed: false },
+      ...(relay ? [{ id: relay.id, members: relayGroup, dashed: true }] : []),
     ];
 
     for (const hop of hops) {
       const hopBox = box(hop.id);
       if (!hopBox) continue;
-      const color = linksOn ? hop.color : theme.palette.divider;
 
       for (const unit of hop.members) {
         const unitBox = box(unit.id);
         if (!unitBox) continue;
+        const geometry = elbow(unitBox, hopBox);
         next.push({
           id: `${unit.id}->${hop.id}`,
           owners: [unit.id],
-          path: elbow(unitBox, hopBox),
+          ...geometry,
           color: linksOn ? theme.palette.status[unit.status] : theme.palette.divider,
           dashed: hop.dashed,
+          label: `↓ ${unit.mbps} Mbps`,
         });
       }
 
+      const trunk = elbow(hopBox, modem);
       next.push({
         id: `${hop.id}->${MODEM_ID}`,
         owners: hop.members.map((m) => m.id),
-        path: elbow(hopBox, modem),
-        color,
+        ...trunk,
+        color: linksOn
+          ? theme.palette.status[worstStatus(hop.members)]
+          : theme.palette.divider,
         dashed: hop.dashed,
+        label: `↓ ${sumRate(hop.members)} Mbps`,
       });
     }
 
@@ -219,16 +257,30 @@ export function LogicalTopology({
           {edges.map((edge) => {
             const active = activeRoute === null || edge.owners.includes(activeRoute);
             return (
-              <path
-                key={edge.id}
-                d={edge.path}
-                fill="none"
-                stroke={edge.color}
-                strokeWidth={active && activeRoute !== null ? 2.4 : 1.6}
-                strokeDasharray={edge.dashed ? "5 4" : undefined}
-                strokeLinejoin="round"
-                opacity={active ? 0.95 : 0.18}
-              />
+              <g key={edge.id} opacity={active ? 0.95 : 0.18}>
+                <path
+                  d={edge.path}
+                  fill="none"
+                  stroke={edge.color}
+                  strokeWidth={active && activeRoute !== null ? 2.4 : 1.6}
+                  strokeDasharray={edge.dashed ? "5 4" : undefined}
+                  strokeLinejoin="round"
+                />
+                {/* Download rate travelling over this link. */}
+                <text
+                  x={edge.labelX}
+                  y={edge.labelY}
+                  fill={edge.color}
+                  fontSize={11}
+                  fontWeight={600}
+                  textAnchor="middle"
+                  stroke={theme.palette.background.default}
+                  strokeWidth={3}
+                  paintOrder="stroke"
+                >
+                  {edge.label}
+                </text>
+              </g>
             );
           })}
         </EdgeSvg>
@@ -271,18 +323,18 @@ export function LogicalTopology({
             <CommandNode
               role="button"
               tabIndex={0}
-              onClick={() => setDrawerOpen(true)}
+              onClick={openControlRoom}
               onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") setDrawerOpen(true);
+                if (event.key === "Enter" || event.key === " ") openControlRoom();
               }}
-              aria-label="Open control room parameters"
+              aria-label="Show control room parameters in the side panel"
             >
               <CommandRow>
                 <HubIcon /> CONTROL ROOM
               </CommandRow>
               <CommandCaption>INTERNAL MODEM MODULES</CommandCaption>
               <ModemModule ref={setNodeRef(MODEM_ID)}>
-                <MemoryIcon /> J8
+                <MemoryIcon /> {CONTROL_ROOM_MODEM}
                 <ModemMeta>ACTIVE</ModemMeta>
               </ModemModule>
             </CommandNode>
@@ -291,10 +343,10 @@ export function LogicalTopology({
 
         <Legend>
           <LegendItem>
-            <LegendSwatch swatchColor={routerColor} /> DIRECT → ROUTER
+            <LegendSwatch swatchColor={theme.palette.text.secondary} /> DIRECT → ROUTER
           </LegendItem>
           <LegendItem>
-            <LegendSwatch swatchColor={relayColor} dashed /> VIA RELAY
+            <LegendSwatch swatchColor={theme.palette.text.secondary} dashed /> VIA RELAY
           </LegendItem>
           <LegendItem>
             <LegendSwatch swatchColor={theme.palette.status.good} /> ACTIVE
@@ -307,8 +359,6 @@ export function LogicalTopology({
           </LegendItem>
         </Legend>
       </TopologyContent>
-
-      <ControlRoomDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} modemName="J8" />
     </TopologyRoot>
   );
 }

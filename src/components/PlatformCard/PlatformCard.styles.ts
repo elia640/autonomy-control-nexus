@@ -212,7 +212,7 @@ export const CompactMetaRow = styled("div")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-/** Red count of open alerts for the unit, mirroring the global tray badge. */
+/** Count of open alerts: translucent so it reads as an overlay, not a sticker. */
 export const AlertBadge = styled("span", {
   shouldForwardProp: (prop) => prop !== "floating",
 })<{ floating?: boolean }>(({ theme, floating }) => ({
@@ -223,11 +223,15 @@ export const AlertBadge = styled("span", {
   height: 17,
   padding: "0 4px",
   borderRadius: 999,
-  backgroundColor: theme.palette.status.poor,
-  color: theme.palette.common.white,
+  backgroundColor: alpha(theme.palette.status.poor, 0.22),
+  border: `1px solid ${alpha(theme.palette.status.poor, 0.65)}`,
+  boxShadow: `0 0 6px ${alpha(theme.palette.status.poor, 0.35)}`,
+  backdropFilter: "blur(3px)",
+  color: theme.palette.status.poor,
   fontSize: "0.6875rem",
   fontWeight: 700,
   lineHeight: 1,
+  fontVariantNumeric: "tabular-nums",
   /** Map markers show the count just above the card, beside the vehicle icon. */
   ...(floating
     ? {
@@ -235,7 +239,6 @@ export const AlertBadge = styled("span", {
         top: -9,
         right: -6,
         zIndex: 2,
-        border: `1px solid ${theme.palette.background.default}`,
       }
     : {}),
 }));

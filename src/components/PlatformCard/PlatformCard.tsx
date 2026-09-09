@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from "react";
+import Tooltip from "@mui/material/Tooltip";
 import CellIcon from "@mui/icons-material/SignalCellularAlt";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -112,48 +113,54 @@ export function PlatformCard({
 
   if (compact) {
     return (
-      <CardRoot
-        variant={variant}
-        status={unit.status}
-        selected={selected}
-        dense
-        clickable={!!onSelect}
-        {...(onSelect ? { role: "button", onClick: onSelect } : {})}
-      >
-        {alerts > 0 && (
-          <AlertBadge floating title={`${alerts} open alerts`}>
-            {alerts}
-          </AlertBadge>
-        )}
-        <CompactHeader title={unit.label}>
-          {!hideTitle && <CardTitle>{shortLabel(unit.label)}</CardTitle>}
-          <KindBadges>
-            {activeKinds.map((kind) => (
-              <KindBadge key={kind} title={kind}>
-                {KIND_ICON[kind]} {kind.slice(0, 3)}
-              </KindBadge>
-            ))}
-          </KindBadges>
-        </CompactHeader>
-        <CompactBody>
-          <SignalBars value={unit.quality} bars={4} ariaLabel={`${unit.label} link quality`} />
-          {camera && (
-            <CameraIconButton
-              onClick={(event) => {
-                event.stopPropagation();
-                setCameraOpen(true);
-              }}
-              aria-label={`${unit.label} camera`}
-              title="Camera"
-            >
-              <VideocamIcon />
-            </CameraIconButton>
+      <Tooltip title={unit.label} arrow placement="top" enterDelay={200}>
+        <CardRoot
+          variant={variant}
+          status={unit.status}
+          selected={selected}
+          dense
+          clickable={!!onSelect}
+          {...(onSelect ? { role: "button", onClick: onSelect } : {})}
+        >
+          {alerts > 0 && (
+            <AlertBadge floating title={`${alerts} open alerts`}>
+              {alerts}
+            </AlertBadge>
           )}
-        </CompactBody>
-        {camera && (
-          <CameraWindow title={unit.label} open={cameraOpen} onClose={() => setCameraOpen(false)} />
-        )}
-      </CardRoot>
+          <CompactHeader>
+            {!hideTitle && <CardTitle>{shortLabel(unit.label)}</CardTitle>}
+            <KindBadges>
+              {activeKinds.map((kind) => (
+                <KindBadge key={kind} title={kind}>
+                  {KIND_ICON[kind]} {kind.slice(0, 3)}
+                </KindBadge>
+              ))}
+            </KindBadges>
+          </CompactHeader>
+          <CompactBody>
+            <SignalBars value={unit.quality} bars={4} ariaLabel={`${unit.label} link quality`} />
+            {camera && (
+              <CameraIconButton
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setCameraOpen(true);
+                }}
+                aria-label={`${unit.label} camera`}
+                title="Camera"
+              >
+                <VideocamIcon />
+              </CameraIconButton>
+            )}
+          </CompactBody>
+          {camera && (
+            <CameraWindow
+              title={unit.label}
+              open={cameraOpen}
+              onClose={() => setCameraOpen(false)}
+            />
+          )}
+        </CardRoot>
+      </Tooltip>
     );
   }
 
