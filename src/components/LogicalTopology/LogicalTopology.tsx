@@ -191,6 +191,8 @@ export function LogicalTopology({
       const unitBox = box(route.unit.id);
       if (!unitBox) return;
       const routerPortIndex = routerOrder.indexOf(route.unit.id);
+      /** Each line owns its own vertical lane so runs never sit on top of each other. */
+      const directLane = 0.74 + routerPortIndex * 0.05;
       const routerY = port(router, routerPortIndex, routerOrder.length);
       const color = colorFor(route.unit);
       const rate = `↓ ${route.unit.mbps} Mbps`;
@@ -205,7 +207,7 @@ export function LogicalTopology({
             color,
             false,
             rate,
-            0.88,
+            directLane,
           ),
         );
         return;
@@ -238,7 +240,7 @@ export function LogicalTopology({
           color,
           true,
           rate,
-          0.3 + hopIndex * 0.12,
+          0.25 + hopIndex * 0.18,
         ),
       );
     });

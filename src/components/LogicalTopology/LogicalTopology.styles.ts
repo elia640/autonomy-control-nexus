@@ -29,9 +29,9 @@ export const LayerGrid = styled("div")(({ theme }) => ({
   position: "relative",
   display: "grid",
   gridTemplateColumns: "auto 150px auto",
-  alignItems: "center",
+  alignItems: "stretch",
   justifyContent: "start",
-  gap: theme.spacing(0, 6),
+  gap: theme.spacing(0, 9),
   minHeight: "100%",
   width: "max-content",
 }));
