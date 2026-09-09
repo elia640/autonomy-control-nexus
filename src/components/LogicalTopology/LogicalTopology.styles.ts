@@ -4,16 +4,17 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   position: "absolute",
   inset: 0,
   overflow: "auto",
+  display: "flex",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(10, 2, 7),
+  padding: theme.spacing(2),
 }));
 
 /** Positioning context for the measured connection layer. */
 export const TopologyContent = styled("div")({
   position: "relative",
-  height: "100%",
-  minWidth: "100%",
-  width: "max-content",
+  display: "flex",
+  flex: "1 0 auto",
+  width: "100%",
 });
 
 export const EdgeSvg = styled("svg")({
@@ -24,30 +25,39 @@ export const EdgeSvg = styled("svg")({
   overflow: "visible",
 });
 
-/** Three logical layers: platforms, intermediate nodes, control room. */
-export const LayerGrid = styled("div")(({ theme }) => ({
-  position: "relative",
-  display: "grid",
-  gridTemplateColumns: "auto 150px auto",
-  alignItems: "center",
-  justifyContent: "start",
-  gap: theme.spacing(0, 6),
-  minHeight: "100%",
-  width: "max-content",
-}));
-
-export const LayerColumn = styled("div")(({ theme }) => ({
+/** Three stacked rows: control room, relay layer, platforms. */
+export const LayerStack = styled("div")(({ theme }) => ({
   position: "relative",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: theme.spacing(4),
+  gap: theme.spacing(18),
+  minHeight: "min-content",
+  width: "100%",
+  padding: theme.spacing(3, 0, 4),
+}));
+
+export const LayerRow = styled("div")(({ theme }) => ({
+  position: "relative",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "flex-end",
+  justifyContent: "center",
+  gap: theme.spacing(1.5),
+}));
+
+/** Bottom row of platforms; wraps instead of overflowing the canvas. */
+export const PlatformRow = styled(LayerRow)(({ theme }) => ({
+  flexWrap: "wrap",
+  maxWidth: "100%",
+  rowGap: theme.spacing(5),
+  columnGap: theme.spacing(2),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({
   position: "absolute",
-  top: theme.spacing(-4.5),
+  top: theme.spacing(-2.5),
   left: 0,
   right: 0,
   textAlign: "center",
@@ -62,10 +72,10 @@ export const NodeSlot = styled("div", {
   shouldForwardProp: (prop) => prop !== "dimmed",
 })<{ dimmed?: boolean }>(({ dimmed }) => ({
   display: "flex",
-  justifyContent: "stretch",
+  flexDirection: "column",
+  alignItems: "stretch",
   opacity: dimmed ? 0.3 : 1,
   transition: "opacity 160ms ease",
-  "& > div": { width: "100%" },
 }));
 
 /** Caption above each platform card describing how it reaches the control room. */
@@ -80,6 +90,7 @@ export const RouteTag = styled("span", {
   padding: "1px 6px",
   fontSize: "0.75rem",
   letterSpacing: "0.1em",
+  textAlign: "center",
   color: labelColor,
 }));
 
@@ -88,14 +99,16 @@ export const HopNode = styled("div", {
   shouldForwardProp: (prop) => prop !== "accent" && prop !== "dimmed",
 })<{ accent: string; dimmed?: boolean }>(({ theme, accent, dimmed }) => ({
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   alignItems: "center",
-  gap: theme.spacing(0.75),
+  justifyContent: "center",
+  gap: theme.spacing(2),
+  minWidth: 340,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(accent, 0.8)}`,
   backgroundColor: alpha(accent, 0.1),
   boxShadow: `0 0 14px ${alpha(accent, 0.18)}`,
-  padding: theme.spacing(1.5, 1),
+  padding: theme.spacing(2, 3),
   fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.14em",
@@ -118,19 +131,20 @@ export const HopCaption = styled("span")(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-/** Control room frame — deliberately heavier than the platform cards. */
+/** Control room frame — the widest element, sitting at the top of the canvas. */
 export const CommandNode = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   gap: theme.spacing(1.5),
+  minWidth: 520,
   borderRadius: theme.shape.borderRadius,
   border: `2px solid ${theme.palette.primary.main}`,
   outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
   outlineOffset: 3,
   boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
   backgroundColor: theme.palette.panel.header,
-  padding: theme.spacing(2, 1.5),
+  padding: theme.spacing(2, 3, 0),
   cursor: "pointer",
   fontSize: "0.875rem",
   fontWeight: 700,
@@ -158,12 +172,15 @@ export const CommandCaption = styled("span")(({ theme }) => ({
 export const RouterModule = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
+  justifyContent: "center",
   gap: theme.spacing(1),
-  width: "100%",
+  minWidth: 300,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.9)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.18),
-  padding: theme.spacing(1.25, 1.5),
+  padding: theme.spacing(1.25, 2),
+  /** Sits on the bottom edge of the control room, like the sketch. */
+  marginBottom: -1,
   fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.12em",
@@ -171,25 +188,7 @@ export const RouterModule = styled("div")(({ theme }) => ({
   "& .MuiSvgIcon-root": { fontSize: "0.95rem" },
 }));
 
-/** Internal modem module of the control room. */
-export const ModemModule = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(1),
-  width: "100%",
-  borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${alpha(theme.palette.primary.main, 0.6)}`,
-  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-  padding: theme.spacing(1, 1.5),
-  fontSize: "0.8125rem",
-  fontWeight: 400,
-  letterSpacing: "0.12em",
-  color: theme.palette.primary.light,
-  "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
-}));
-
 export const ModemMeta = styled("span")(({ theme }) => ({
-  marginLeft: "auto",
   fontSize: "0.75rem",
   fontWeight: 400,
   letterSpacing: "0.08em",
@@ -204,7 +203,7 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.5)}`,
   backgroundColor: alpha(theme.palette.background.paper, 0.7),
-  padding: theme.spacing(1, 2),
+  padding: theme.spacing(0.75, 2),
   fontSize: "0.8125rem",
   letterSpacing: "0.14em",
   color: theme.palette.primary.main,
@@ -241,8 +240,3 @@ export const LegendSwatch = styled("span", {
   height: 0,
   borderTop: `2px ${dashed ? "dashed" : "solid"} ${swatchColor}`,
 }));
-
-/** The relay sits low in the canvas, next to the platforms it serves. */
-export const RelayColumn = styled(LayerColumn)({
-  marginTop: 150,
-});

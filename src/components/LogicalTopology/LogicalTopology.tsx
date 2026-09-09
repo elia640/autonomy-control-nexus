@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useTheme } from "@mui/material/styles";
 import HubIcon from "@mui/icons-material/Hub";
 import RouterIcon from "@mui/icons-material/Router";
-import MemoryIcon from "@mui/icons-material/Memory";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 
@@ -18,15 +17,14 @@ import {
   HopNode,
   HopRow,
   LayerCaption,
-  LayerColumn,
-  LayerGrid,
+  LayerRow,
+  LayerStack,
   Legend,
-  RelayColumn,
   LegendItem,
   LegendSwatch,
   ModemMeta,
-  ModemModule,
   NodeSlot,
+  PlatformRow,
   RouteTag,
   RouterModule,
   SatelliteNode,
@@ -65,9 +63,7 @@ interface Route {
 }
 
 const ROUTER_ID = "cr-router";
-const MODEM_ID = "cr-modem";
-const CONTROL_ROOM_ROUTER = "ROUTER RTR-1";
-const CONTROL_ROOM_MODEM = "CONVOY 23";
+const CONTROL_ROOM_ROUTER = "ROUTER CONVOY 23";
 
 const kindsOf = (unit: PlatformUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 
@@ -142,47 +138,46 @@ export function LogicalTopology({
       return {
         left: rect.left - base.left,
         right: rect.right - base.left,
+        width: rect.width,
         top: rect.top - base.top,
-        height: rect.height,
-        middle: rect.top - base.top + rect.height / 2,
+        bottom: rect.bottom - base.top,
+        center: rect.left - base.left + rect.width / 2,
       };
     };
 
     const router = box(ROUTER_ID);
+    const hopBox = relay ? box(relay.id) : null;
     if (!router) return;
 
-    /** Spreads several lines across the vertical edge of a node. */
+    /** Spreads several lines across the horizontal edge of a node. */
     const port = (
-      node: { top: number; height: number },
+      node: { left: number; width: number },
       index: number,
       count: number,
-    ): number => node.top + (node.height * (index + 1)) / (count + 1);
+    ): number => node.left + (node.width * (index + 1)) / (count + 1);
 
-    const segment = (
+    /** Vertical run with one horizontal jog at the given y. */
+    const vertical = (
       id: string,
       owner: string,
       from: { x: number; y: number },
       to: { x: number; y: number },
+      jogY: number,
       color: string,
       dashed: boolean,
       label: string,
-      lane: number,
-    ): Edge => {
-      const midX = from.x + (to.x - from.x) * lane;
-      return {
-        id,
-        owner,
-        path: `M ${from.x} ${from.y} H ${midX} V ${to.y} H ${to.x}`,
-        color,
-        dashed,
-        label,
-        labelX: from.x + (midX - from.x) / 2,
-        labelY: from.y - 6,
-      };
-    };
+    ): Edge => ({
+      id,
+      owner,
+      path: `M ${from.x} ${from.y} V ${jogY} H ${to.x} V ${to.y}`,
+      color,
+      dashed,
+      label,
+      labelX: to.x,
+      labelY: (jogY + to.y) / 2 - 4,
+    });
 
     const next: Edge[] = [];
-    /** One router port per incoming platform line — never merged. */
     const routerOrder = routes.map((route) => route.unit.id);
     const colorFor = (unit: PlatformUnit) =>
       linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
@@ -191,62 +186,61 @@ export function LogicalTopology({
       const unitBox = box(route.unit.id);
       if (!unitBox) return;
       const routerPortIndex = routerOrder.indexOf(route.unit.id);
-      /** Each line owns its own vertical lane so runs never sit on top of each other. */
-      const directLane = 0.74 + routerPortIndex * 0.05;
-      const routerY = port(router, routerPortIndex, routerOrder.length);
+      const routerX = port(router, routerPortIndex, routerOrder.length);
       const color = colorFor(route.unit);
       const rate = `↓ ${route.unit.mbps} Mbps`;
 
-      if (route.hopId === null) {
-        next.push(
-          segment(
-            `${route.unit.id}->router`,
-            route.unit.id,
-            { x: unitBox.right, y: unitBox.middle },
-            { x: router.left, y: routerY },
-            color,
-            false,
-            rate,
-            directLane,
-          ),
-        );
+      if (route.hopId === null || !hopBox) {
+        /** Direct lines skirt the relay box by jogging beside it. */
+        const sideX =
+          unitBox.center < hopBox!.center
+            ? Math.min(unitBox.center, hopBox!.left - 28)
+            : Math.max(unitBox.center, hopBox!.right + 28);
+        next.push({
+          id: `${route.unit.id}->router`,
+          owner: route.unit.id,
+          path: `M ${unitBox.center} ${unitBox.top} V ${hopBox!.bottom + 14} H ${sideX} V ${hopBox!.top - 14} H ${routerX} V ${router.bottom}`,
+          color,
+          dashed: false,
+          label: rate,
+          labelX: sideX,
+          labelY: (hopBox!.top + hopBox!.bottom) / 2,
+        });
         return;
       }
 
-      const hopBox = box(route.hopId);
-      if (!hopBox) return;
       const hopIndex = relayRoutes.findIndex((r) => r.unit.id === route.unit.id);
-      const hopY = port(hopBox, hopIndex, relayRoutes.length);
+      const hopInX = port(hopBox, hopIndex, relayRoutes.length);
 
       next.push(
-        segment(
+        vertical(
           `${route.unit.id}->hop`,
           route.unit.id,
-          { x: unitBox.right, y: unitBox.middle },
-          { x: hopBox.left, y: hopY },
+          { x: unitBox.center, y: unitBox.top },
+          { x: hopInX, y: hopBox.bottom },
+          hopBox.bottom + 28,
           color,
           false,
           rate,
-          0.5,
         ),
       );
       /** A dedicated hop→router line per platform, one for one. */
       next.push(
-        segment(
+        vertical(
           `${route.unit.id}-hop->router`,
           route.unit.id,
-          { x: hopBox.right, y: hopY },
-          { x: router.left, y: routerY },
+          { x: hopInX, y: hopBox.top },
+          { x: routerX, y: router.bottom },
+          hopBox.top - 24 - hopIndex * 8,
           color,
           true,
           rate,
-          0.25 + hopIndex * 0.18,
         ),
       );
     });
 
     setEdges(next);
-  }, [linksOn, theme, routes, relayRoutes]);
+  }, [linksOn, theme, routes, relayRoutes, relay]);
 
   useLayoutEffect(() => {
     measure();
@@ -309,8 +303,47 @@ export function LogicalTopology({
           })}
         </EdgeSvg>
 
-        <LayerGrid>
-          <LayerColumn>
+        <LayerStack>
+          <LayerRow>
+            <CommandNode
+              role="button"
+              tabIndex={0}
+              onClick={openControlRoom}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") openControlRoom();
+              }}
+              aria-label="Show control room parameters in the side panel"
+            >
+              <CommandRow>
+                <HubIcon /> CONTROL ROOM
+              </CommandRow>
+              <CommandCaption>
+                <SatelliteNode as="span">
+                  <SatelliteIcon /> TELS-1 SATELLITE
+                </SatelliteNode>
+              </CommandCaption>
+              <RouterModule ref={setNodeRef(ROUTER_ID)}>
+                <RouterIcon /> {CONTROL_ROOM_ROUTER}
+                <ModemMeta>{routes.length} PORTS</ModemMeta>
+              </RouterModule>
+            </CommandNode>
+          </LayerRow>
+
+          <LayerRow>
+            {relay && (
+              <HopNode ref={setNodeRef(relay.id)} accent={relayColor} dimmed={hopDimmed()}>
+                <HopRow>
+                  <RadioIcon /> {relay.label}
+                </HopRow>
+                <HopCaption>{relayRoutes.length} RELAYED PLATFORMS</HopCaption>
+                <HopCaption>
+                  {relay.mbps} Mbps · {relay.lat}
+                </HopCaption>
+              </HopNode>
+            )}
+          </LayerRow>
+
+          <PlatformRow>
             <LayerCaption>PLATFORMS</LayerCaption>
             {routes.map((route) => (
               <NodeSlot
@@ -345,47 +378,8 @@ export function LogicalTopology({
                 </div>
               </NodeSlot>
             ))}
-          </LayerColumn>
-
-          <RelayColumn>
-            <LayerCaption>RELAY LAYER</LayerCaption>
-            {relay && (
-              <HopNode ref={setNodeRef(relay.id)} accent={relayColor} dimmed={hopDimmed()}>
-                <HopRow>
-                  <RadioIcon /> {relay.label}
-                </HopRow>
-                <HopCaption>{relayRoutes.length} RELAYED PLATFORMS</HopCaption>
-                <HopCaption>{relay.mbps} Mbps · {relay.lat}</HopCaption>
-              </HopNode>
-            )}
-          </RelayColumn>
-
-          <LayerColumn>
-            <LayerCaption>CONTROL ROOM</LayerCaption>
-            <SatelliteNode>
-              <SatelliteIcon /> TELS-1 SATELLITE
-            </SatelliteNode>
-            <CommandNode
-              role="button"
-              tabIndex={0}
-              onClick={openControlRoom}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") openControlRoom();
-              }}
-              aria-label="Show control room parameters in the side panel"
-            >
-              <CommandRow>
-                <HubIcon /> CONTROL ROOM
-              </CommandRow>
-              <CommandCaption>ROUTER &amp; MODEM UNITS</CommandCaption>
-              <RouterModuleRef refCallback={setNodeRef(ROUTER_ID)} count={routes.length} />
-              <ModemModule ref={setNodeRef(MODEM_ID)}>
-                <MemoryIcon /> {CONTROL_ROOM_MODEM}
-                <ModemMeta>ACTIVE</ModemMeta>
-              </ModemModule>
-            </CommandNode>
-          </LayerColumn>
-        </LayerGrid>
+          </PlatformRow>
+        </LayerStack>
 
         <Legend>
           <LegendItem>
@@ -406,21 +400,5 @@ export function LogicalTopology({
         </Legend>
       </TopologyContent>
     </TopologyRoot>
-  );
-}
-
-/** Router unit inside the control room; every platform line terminates on it. */
-function RouterModuleRef({
-  refCallback,
-  count,
-}: {
-  refCallback: (element: HTMLElement | null) => void;
-  count: number;
-}) {
-  return (
-    <RouterModule ref={refCallback}>
-      <RouterIcon /> {CONTROL_ROOM_ROUTER}
-      <ModemMeta>{count} PORTS</ModemMeta>
-    </RouterModule>
   );
 }
