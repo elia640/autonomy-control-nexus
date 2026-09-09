@@ -21,6 +21,7 @@ import {
   LayerColumn,
   LayerGrid,
   Legend,
+  RelayColumn,
   LegendItem,
   LegendSwatch,
   ModemMeta,
@@ -204,7 +205,7 @@ export function LogicalTopology({
             color,
             false,
             rate,
-            0.55,
+            0.88,
           ),
         );
         return;
@@ -344,7 +345,7 @@ export function LogicalTopology({
             ))}
           </LayerColumn>
 
-          <LayerColumn>
+          <RelayColumn>
             <LayerCaption>RELAY LAYER</LayerCaption>
             {relay && (
               <HopNode ref={setNodeRef(relay.id)} accent={relayColor} dimmed={hopDimmed()}>
@@ -355,7 +356,7 @@ export function LogicalTopology({
                 <HopCaption>{relay.mbps} Mbps · {relay.lat}</HopCaption>
               </HopNode>
             )}
-          </LayerColumn>
+          </RelayColumn>
 
           <LayerColumn>
             <LayerCaption>CONTROL ROOM</LayerCaption>

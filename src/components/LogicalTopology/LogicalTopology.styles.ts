@@ -28,10 +28,10 @@ export const EdgeSvg = styled("svg")({
 export const LayerGrid = styled("div")(({ theme }) => ({
   position: "relative",
   display: "grid",
-  gridTemplateColumns: "185px 124px 205px",
+  gridTemplateColumns: "auto 150px auto",
   alignItems: "center",
   justifyContent: "start",
-  gap: theme.spacing(0, 5),
+  gap: theme.spacing(0, 6),
   minHeight: "100%",
   width: "max-content",
 }));
@@ -240,4 +240,10 @@ export const LegendSwatch = styled("span", {
   width: 18,
   height: 0,
   borderTop: `2px ${dashed ? "dashed" : "solid"} ${swatchColor}`,
+}));
+
+/** The relay sits low in the canvas, next to the platforms it serves. */
+export const RelayColumn = styled(LayerColumn)(({ theme }) => ({
+  justifyContent: "flex-end",
+  paddingBottom: theme.spacing(6),
 }));
