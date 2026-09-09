@@ -371,17 +371,20 @@ export function TacticalMap({
           <MyLocationIcon /> {coordinates}
         </InfoChip>
 
-        <LegendBox>
-          {(["good", "marginal", "poor"] as LinkStatus[]).map((status) => (
-            <LegendRow key={status}>
-              <LegendSwatch swatchColor={color(status)} dashed />
-              <span>{status} radio link</span>
+        {/* The link legend only makes sense while mesh links are drawn. */}
+        {linksOn && (
+          <LegendBox>
+            {(["good", "marginal", "poor"] as LinkStatus[]).map((status) => (
+              <LegendRow key={status}>
+                <LegendSwatch swatchColor={color(status)} dashed />
+                <span>{status} radio link</span>
+              </LegendRow>
+            ))}
+            <LegendRow>
+              <span>radio connectivity only</span>
             </LegendRow>
-          ))}
-          <LegendRow>
-            <span>radio connectivity only</span>
-          </LegendRow>
-        </LegendBox>
+          </LegendBox>
+        )}
 
         {stationOffscreen && (
           <OffscreenArrow

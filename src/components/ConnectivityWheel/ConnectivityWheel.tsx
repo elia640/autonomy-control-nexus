@@ -84,9 +84,10 @@ export interface ConnectivityWheelProps {
 }
 
 export function ConnectivityWheel({
-  title = "CONNECTIVITY MAP",
+  title = "MESH LINKS MAP",
   defaultExpanded = false,
-  margin = 24,
+  /** Kept clear of the right-hand panel. */
+  margin = 380,
 }: ConnectivityWheelProps) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(defaultExpanded);
