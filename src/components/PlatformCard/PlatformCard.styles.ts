@@ -18,6 +18,7 @@ export const CardRoot = styled("div", {
   clickable?: boolean;
   dense?: boolean;
 }>(({ theme, variant, status, selected, clickable, dense }) => ({
+  position: "relative",
   width: variant === "overlay" ? (dense ? 92 : 104) : 220,
   cursor: clickable ? "pointer" : "default",
   boxShadow: selected ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.9)}` : "none",
@@ -212,18 +213,31 @@ export const CompactMetaRow = styled("div")(({ theme }) => ({
 }));
 
 /** Red count of open alerts for the unit, mirroring the global tray badge. */
-export const AlertBadge = styled("span")(({ theme }) => ({
+export const AlertBadge = styled("span", {
+  shouldForwardProp: (prop) => prop !== "floating",
+})<{ floating?: boolean }>(({ theme, floating }) => ({
   display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  minWidth: 15,
-  height: 15,
+  minWidth: 17,
+  height: 17,
   padding: "0 4px",
   borderRadius: 999,
   backgroundColor: theme.palette.status.poor,
   color: theme.palette.common.white,
-  fontSize: "0.55rem",
+  fontSize: "0.6875rem",
   fontWeight: 700,
+  lineHeight: 1,
+  /** Map markers show the count just above the card, beside the vehicle icon. */
+  ...(floating
+    ? {
+        position: "absolute",
+        top: -9,
+        right: -6,
+        zIndex: 2,
+        border: `1px solid ${theme.palette.background.default}`,
+      }
+    : {}),
 }));
 
 /** SINR / RSRP / RSSI readouts under the satellite modem. */
