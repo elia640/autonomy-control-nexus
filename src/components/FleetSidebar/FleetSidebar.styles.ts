@@ -14,7 +14,7 @@ export const SidebarHeader = styled("header")(({ theme }) => ({
 
 export const SidebarTitle = styled(Typography)(({ theme }) => ({
   flex: 1,
-  fontSize: "0.8125rem",
+  fontSize: "0.875rem",
   fontWeight: 700,
   letterSpacing: "0.2em",
   color: theme.palette.primary.main,
@@ -49,14 +49,14 @@ export const CollapsedRail = styled(ButtonBase)(({ theme }) => ({
 
 export const RailLabel = styled("span")(({ theme }) => ({
   writingMode: "vertical-rl",
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.2em",
   color: theme.palette.primary.main,
 }));
 
 export const ListBody = styled("div")(({ theme }) => ({
   padding: theme.spacing(2, 3),
-  fontSize: "0.625rem",
+  fontSize: "0.75rem",
 }));
 
 export const ListHeadRow = styled("div")(({ theme }) => ({
@@ -64,7 +64,7 @@ export const ListHeadRow = styled("div")(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
   paddingBottom: theme.spacing(1),
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,

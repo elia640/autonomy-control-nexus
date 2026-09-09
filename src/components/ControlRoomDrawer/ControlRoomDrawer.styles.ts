@@ -18,7 +18,7 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   gap: theme.spacing(1),
   marginBottom: theme.spacing(1),
-  fontSize: "0.6875rem",
+  fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.2em",
   color: theme.palette.primary.main,

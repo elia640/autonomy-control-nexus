@@ -33,7 +33,7 @@ export const NameBlock = styled("div")(({ theme }) => ({
 }));
 
 export const PanelName = styled("span")(({ theme }) => ({
-  fontSize: "0.6875rem",
+  fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
@@ -56,7 +56,7 @@ export const RateText = styled("span")(({ theme }) => ({
   gap: theme.spacing(1),
   flexShrink: 0,
   whiteSpace: "nowrap",
-  fontSize: "0.6875rem",
+  fontSize: "0.8125rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
 }));
