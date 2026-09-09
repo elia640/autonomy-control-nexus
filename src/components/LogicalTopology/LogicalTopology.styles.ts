@@ -46,7 +46,7 @@ export const LayerStack = styled("div")(({ theme }) => ({
   minHeight: 460,
   margin: "0 auto",
   /** Bottom padding keeps the platform row clear of the legend. */
-  padding: theme.spacing(2, 2, 10),
+  padding: theme.spacing(2, 2, 13),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
