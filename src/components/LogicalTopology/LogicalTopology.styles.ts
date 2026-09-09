@@ -5,205 +5,7 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   inset: 0,
   overflow: "auto",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(12, 4, 6),
-}));
-
-export const TopologyColumnStack = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  width: "100%",
-});
-
-export const SatelliteNode = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${alpha(theme.palette.primary.main, 0.7)}`,
-  backgroundColor: alpha(theme.palette.background.paper, 0.7),
-  padding: theme.spacing(1.5, 3),
-  fontSize: "0.625rem",
-  letterSpacing: "0.18em",
-  color: theme.palette.primary.main,
-  "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
-}));
-
-/** Command post frame — deliberately heavier than the platform cards. */
-export const CommandNode = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: theme.spacing(1),
-  borderRadius: theme.shape.borderRadius,
-  border: `2px solid ${theme.palette.primary.main}`,
-  outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
-  outlineOffset: 3,
-  boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
-  backgroundColor: theme.palette.panel.header,
-  padding: theme.spacing(3, 6),
-  fontSize: "0.6875rem",
-  fontWeight: 700,
-  letterSpacing: "0.2em",
-  color: theme.palette.primary.main,
-  "& .MuiSvgIcon-root": { fontSize: "1rem" },
-}));
-
-export const Connector = styled("div", {
-  shouldForwardProp: (prop) =>
-    prop !== "lineColor" && prop !== "length" && prop !== "dashed" && prop !== "thick",
-})<{
-  lineColor?: string | undefined;
-  length?: number | undefined;
-  dashed?: boolean | undefined;
-  thick?: boolean | undefined;
-}>(({ theme, lineColor, length = 24, dashed, thick }) => {
-  const color = lineColor ?? theme.palette.divider;
-  return {
-    height: length,
-    width: thick ? 2 : 1,
-    ...(dashed
-      ? {
-          backgroundColor: "transparent",
-          backgroundImage: `repeating-linear-gradient(180deg, ${color} 0 4px, transparent 4px 8px)`,
-        }
-      : { backgroundColor: color }),
-  };
-});
-
-export const HorizontalRule = styled("div")(({ theme }) => ({
-  height: 1,
-  width: "70%",
-  backgroundColor: theme.palette.divider,
-}));
-
-export const SegmentGrid = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "flex-start",
-  justifyContent: "center",
-  gap: theme.spacing(6, 8),
-  marginTop: theme.spacing(4),
-}));
-
-export const SegmentColumn = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-});
-
-export const SegmentTitle = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(1.5),
-  borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.panel.header,
-  padding: theme.spacing(1, 2),
-  fontSize: "0.5625rem",
-  fontWeight: 600,
-  letterSpacing: "0.16em",
-  color: theme.palette.primary.main,
-  "& .MuiSvgIcon-root": { fontSize: "0.8rem" },
-}));
-
-export const SegmentMembers = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "flex-start",
-  gap: theme.spacing(3),
-}));
-
-export const MemberColumn = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-});
-
-export const MeshPanel = styled("div")(({ theme }) => ({
-  width: "100%",
-  maxWidth: 560,
-  marginTop: theme.spacing(8),
-  borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${theme.palette.divider}`,
-  backgroundColor: alpha(theme.palette.background.paper, 0.4),
-  padding: theme.spacing(2),
-}));
-
-export const MeshPanelTitle = styled("div")(({ theme }) => ({
-  marginBottom: theme.spacing(1.5),
-  fontSize: "0.5625rem",
-  fontWeight: 600,
-  textTransform: "uppercase",
-  letterSpacing: "0.18em",
-  color: theme.palette.text.secondary,
-}));
-
-export const MeshPanelRow = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(2),
-  padding: theme.spacing(0.5, 0),
-  fontSize: "0.5625rem",
-  color: theme.palette.text.primary,
-}));
-
-export const MeshNodeLabel = styled("span", {
-  shouldForwardProp: (prop) => prop !== "align",
-})<{ align?: "left" | "right" }>(({ align = "left" }) => ({
-  width: 70,
-  textAlign: align,
-}));
-
-export const MeshLine = styled("span", {
-  shouldForwardProp: (prop) =>
-    prop !== "lineColor" && prop !== "dimmed" && prop !== "dashed",
-})<{ lineColor: string; dimmed?: boolean; dashed?: boolean }>(
-  ({ lineColor, dimmed, dashed }) => ({
-    flex: 1,
-    height: 2,
-    ...(dashed
-      ? {
-          backgroundColor: "transparent",
-          backgroundImage: `repeating-linear-gradient(90deg, ${lineColor} 0 5px, transparent 5px 10px)`,
-        }
-      : { backgroundColor: lineColor }),
-    opacity: dimmed ? 0.4 : 1,
-  }),
-);
-
-export const MeshStatusLabel = styled("span", {
-  shouldForwardProp: (prop) => prop !== "statusColor",
-})<{ statusColor: string }>(({ statusColor }) => ({
-  width: 62,
-  textAlign: "right",
-  textTransform: "uppercase",
-  color: statusColor,
-}));
-
-export const CommandRow = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: theme.spacing(2),
-}));
-
-export const CommandCaption = styled("span")(({ theme }) => ({
-  fontSize: "0.5rem",
-  fontWeight: 400,
-  letterSpacing: "0.16em",
-  color: theme.palette.text.secondary,
-}));
-
-/** Labelled link between a platform and the command post. */
-export const LinkLabel = styled("span", {
-  shouldForwardProp: (prop) => prop !== "labelColor",
-})<{ labelColor: string }>(({ theme, labelColor }) => ({
-  borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${alpha(labelColor, 0.7)}`,
-  backgroundColor: alpha(labelColor, 0.12),
-  padding: "0 4px",
-  fontSize: "0.45rem",
-  letterSpacing: "0.1em",
-  color: labelColor,
+  padding: theme.spacing(10, 4, 6),
 }));
 
 /** Positioning context for the measured connection layer. */
@@ -221,19 +23,182 @@ export const EdgeSvg = styled("svg")({
   overflow: "visible",
 });
 
-export const NodeGrid = styled("div")(({ theme }) => ({
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "flex-start",
+/** Three layers: vehicles, intermediate nodes, command post. */
+export const LayerGrid = styled("div")(({ theme }) => ({
+  position: "relative",
+  display: "grid",
+  gridTemplateColumns: "auto minmax(140px, 220px) auto",
+  alignItems: "center",
   justifyContent: "center",
-  gap: theme.spacing(6, 6),
-  marginTop: theme.spacing(14),
+  gap: theme.spacing(0, 10),
+  minHeight: "100%",
+}));
+
+export const LayerColumn = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: theme.spacing(6),
+}));
+
+export const LayerCaption = styled("div")(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  textAlign: "center",
+  fontSize: "0.5rem",
+  fontWeight: 700,
+  letterSpacing: "0.22em",
+  color: theme.palette.text.secondary,
+}));
+
+/** A group of vehicles that share one pathway to the command post. */
+export const Cluster = styled("div", {
+  shouldForwardProp: (prop) => prop !== "accent",
+})<{ accent: string }>(({ theme, accent }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px dashed ${alpha(accent, 0.5)}`,
+  backgroundColor: alpha(accent, 0.05),
+  padding: theme.spacing(2, 2.5),
+}));
+
+export const ClusterTitle = styled("div", {
+  shouldForwardProp: (prop) => prop !== "accent",
+})<{ accent: string }>(({ accent }) => ({
+  fontSize: "0.5rem",
+  fontWeight: 700,
+  letterSpacing: "0.18em",
+  color: accent,
+}));
+
+export const ClusterMembers = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(2),
+}));
+
+/** Wraps a vehicle card so it can be dimmed when another path is highlighted. */
+export const NodeSlot = styled("div", {
+  shouldForwardProp: (prop) => prop !== "dimmed",
+})<{ dimmed?: boolean }>(({ dimmed }) => ({
+  display: "flex",
+  justifyContent: "center",
+  opacity: dimmed ? 0.35 : 1,
+  transition: "opacity 160ms ease",
+}));
+
+export const HopNode = styled("div", {
+  shouldForwardProp: (prop) => prop !== "accent" && prop !== "dimmed",
+})<{ accent: string; dimmed?: boolean }>(({ theme, accent, dimmed }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: theme.spacing(0.5),
+  minWidth: 132,
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(accent, 0.8)}`,
+  backgroundColor: alpha(accent, 0.1),
+  padding: theme.spacing(1.5, 2),
+  fontSize: "0.5625rem",
+  fontWeight: 700,
+  letterSpacing: "0.16em",
+  color: accent,
+  opacity: dimmed ? 0.35 : 1,
+  transition: "opacity 160ms ease",
+  "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
+}));
+
+export const HopRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+}));
+
+export const HopCaption = styled("span")(({ theme }) => ({
+  fontSize: "0.45rem",
+  fontWeight: 400,
+  letterSpacing: "0.12em",
+  color: theme.palette.text.secondary,
+}));
+
+/** Command post frame — deliberately heavier than the platform cards. */
+export const CommandNode = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: theme.spacing(1.5),
+  borderRadius: theme.shape.borderRadius,
+  border: `2px solid ${theme.palette.primary.main}`,
+  outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
+  outlineOffset: 3,
+  boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
+  backgroundColor: theme.palette.panel.header,
+  padding: theme.spacing(2.5, 3),
+  cursor: "pointer",
+  fontSize: "0.6875rem",
+  fontWeight: 700,
+  letterSpacing: "0.2em",
+  color: theme.palette.primary.main,
+  "& .MuiSvgIcon-root": { fontSize: "1rem" },
+}));
+
+export const CommandRow = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+}));
+
+export const CommandCaption = styled("span")(({ theme }) => ({
+  fontSize: "0.5rem",
+  fontWeight: 400,
+  letterSpacing: "0.16em",
+  color: theme.palette.text.secondary,
+}));
+
+/** Internal modem module of the command post; lines terminate here. */
+export const ModemModule = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(1),
+  width: "100%",
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.8)}`,
+  backgroundColor: alpha(theme.palette.primary.main, 0.14),
+  padding: theme.spacing(1, 1.5),
+  fontSize: "0.5625rem",
+  letterSpacing: "0.14em",
+  color: theme.palette.primary.light,
+  "& .MuiSvgIcon-root": { fontSize: "0.85rem" },
+}));
+
+export const ModemMeta = styled("span")(({ theme }) => ({
+  marginLeft: "auto",
+  fontSize: "0.45rem",
+  fontWeight: 400,
+  letterSpacing: "0.1em",
+  color: theme.palette.text.secondary,
+}));
+
+export const SatelliteNode = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.7)}`,
+  backgroundColor: alpha(theme.palette.background.paper, 0.7),
+  padding: theme.spacing(1, 2),
+  fontSize: "0.5625rem",
+  letterSpacing: "0.18em",
+  color: theme.palette.primary.main,
+  "& .MuiSvgIcon-root": { fontSize: "0.9rem" },
 }));
 
 export const EdgeLabel = styled("span", {
   shouldForwardProp: (prop) => prop !== "labelColor",
 })<{ labelColor: string }>(({ theme, labelColor }) => ({
-  marginBottom: theme.spacing(1.5),
+  marginBottom: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(labelColor, 0.7)}`,
   backgroundColor: alpha(labelColor, 0.12),
@@ -241,4 +206,34 @@ export const EdgeLabel = styled("span", {
   fontSize: "0.45rem",
   letterSpacing: "0.12em",
   color: labelColor,
+}));
+
+/** Legend for line colouring and status. */
+export const Legend = styled("div")(({ theme }) => ({
+  position: "absolute",
+  left: theme.spacing(1),
+  bottom: theme.spacing(1),
+  display: "flex",
+  gap: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.divider}`,
+  backgroundColor: alpha(theme.palette.background.paper, 0.85),
+  padding: theme.spacing(0.75, 1.5),
+  fontSize: "0.45rem",
+  letterSpacing: "0.12em",
+  color: theme.palette.text.secondary,
+}));
+
+export const LegendItem = styled("span")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(0.75),
+}));
+
+export const LegendSwatch = styled("span", {
+  shouldForwardProp: (prop) => prop !== "swatchColor" && prop !== "dashed",
+})<{ swatchColor: string; dashed?: boolean }>(({ swatchColor, dashed }) => ({
+  width: 18,
+  height: 0,
+  borderTop: `2px ${dashed ? "dashed" : "solid"} ${swatchColor}`,
 }));
