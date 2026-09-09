@@ -29,5 +29,5 @@ export const MetricChip = styled("span", {
   letterSpacing: "0.04em",
   whiteSpace: "nowrap",
   color: tone === "good" ? theme.palette.text.secondary : theme.palette.status[tone],
-  "& .MuiSvgIcon-root": { fontSize: "0.65rem" },
+  "& .MuiSvgIcon-root": { fontSize: "0.75rem" },
 }));

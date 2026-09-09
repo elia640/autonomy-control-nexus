@@ -30,7 +30,7 @@ export const TrayItem = styled("div", {
 }));
 
 export const ItemTitle = styled("div")(({ theme }) => ({
-  fontSize: "0.6875rem",
+  fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.08em",
   color: theme.palette.text.primary,
@@ -40,6 +40,6 @@ export const ItemDetail = styled("div")(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   gap: theme.spacing(1),
-  fontSize: "0.625rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.secondary,
 }));

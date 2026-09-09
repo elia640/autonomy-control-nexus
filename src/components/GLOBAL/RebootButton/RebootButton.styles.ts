@@ -10,7 +10,7 @@ export const RebootRoot = styled(Button, {
   marginLeft: "auto",
   minWidth: 104,
   padding: theme.spacing(1, 2),
-  fontSize: "0.625rem",
+  fontSize: "0.75rem",
   fontWeight: 600,
   letterSpacing: "0.16em",
   color: theme.palette.text.secondary,

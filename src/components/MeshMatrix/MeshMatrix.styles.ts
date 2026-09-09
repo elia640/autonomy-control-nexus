@@ -13,7 +13,7 @@ export const MatrixFrame = styled("div")(({ theme }) => ({
 export const MatrixTable = styled("table")({
   width: "100%",
   borderCollapse: "collapse",
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
 });
 
 export const MatrixHeadCell = styled("th", {
@@ -51,7 +51,7 @@ export const FrequencyRow = styled("div")(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.panel.header,
   padding: theme.spacing(1, 1.5),
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.primary,
 }));
 
@@ -66,7 +66,7 @@ export const MatrixLegend = styled("div")(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(2),
   marginTop: theme.spacing(1.5),
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.secondary,
 }));
 

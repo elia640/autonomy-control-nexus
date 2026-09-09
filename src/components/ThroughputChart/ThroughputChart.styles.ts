@@ -20,7 +20,7 @@ export const ChartLegend = styled("div")(({ theme }) => ({
 
 /** Recharts needs plain style objects, so axis styling is described here. */
 export const chartAxisStyles = (axisColor: string, tickColor: string) => ({
-  tick: { fontSize: 9, fill: tickColor },
+  tick: { fontSize: 12, fill: tickColor },
   line: { stroke: axisColor },
-  label: { fontSize: 9, fill: tickColor },
+  label: { fontSize: 12, fill: tickColor },
 });

@@ -8,7 +8,7 @@ export const StatusRoot = styled(Box, {
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(1.5),
-  fontSize: "0.625rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.1em",
   color: theme.palette.status[status],
 }));

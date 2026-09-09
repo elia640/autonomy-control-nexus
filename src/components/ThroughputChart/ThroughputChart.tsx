@@ -72,7 +72,7 @@ export function ThroughputChart({ samples, maxBandwidth }: ThroughputChartProps)
               contentStyle={{
                 background: theme.palette.background.paper,
                 border: `1px solid ${theme.palette.divider}`,
-                fontSize: 10,
+                fontSize: 12,
               }}
             />
             <ReferenceLine
@@ -84,7 +84,7 @@ export function ThroughputChart({ samples, maxBandwidth }: ThroughputChartProps)
               label={{
                 value: "MAX BW",
                 position: "insideTopRight",
-                fontSize: 8,
+                fontSize: 11,
                 fill: theme.palette.primary.main,
               }}
             />

@@ -13,7 +13,7 @@ export const ViewportTitle = styled("div")(({ theme }) => ({
   left: "50%",
   top: theme.spacing(3),
   transform: "translateX(-50%)",
-  fontSize: "0.8125rem",
+  fontSize: "0.875rem",
   fontWeight: 700,
   letterSpacing: "0.2em",
   color: theme.palette.text.primary,
@@ -40,7 +40,7 @@ export const LinksButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",
 })<{ active: boolean }>(({ theme, active }) => ({
   padding: theme.spacing(1, 2),
-  fontSize: "0.625rem",
+  fontSize: "0.75rem",
   border: `1px solid ${active ? theme.palette.primary.main : theme.palette.divider}`,
   backgroundColor: active
     ? theme.palette.primary.main
