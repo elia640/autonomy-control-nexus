@@ -199,6 +199,7 @@ export const StateChip = styled("span", {
   return {
     display: "inline-flex",
     justifyContent: "center",
+    justifySelf: "end",
     alignItems: "center",
     padding: theme.spacing(0.25, 0.75),
     fontSize: "0.6875rem",
