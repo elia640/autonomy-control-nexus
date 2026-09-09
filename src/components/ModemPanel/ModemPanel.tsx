@@ -178,15 +178,16 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
               );
             })}
           </ChannelList>
-          </DimWrap>
-          <RebootRow>
-            <RebootButton
-              label={`${modem.name} reboot`}
-              onRebootingChange={setRebooting}
-              onComplete={() => onReboot?.(modem.id)}
-            />
-          </RebootRow>
-        </>
+      )}
+      </DimWrap>
+      {expanded && (
+        <RebootRow>
+          <RebootButton
+            label={`${modem.name} reboot`}
+            onRebootingChange={setRebooting}
+            onComplete={() => onReboot?.(modem.id)}
+          />
+        </RebootRow>
       )}
     </PanelRoot>
   );
