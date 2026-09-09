@@ -1,5 +1,4 @@
 import CellTowerIcon from "@mui/icons-material/CellTower";
-import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
