@@ -34,7 +34,7 @@ export const LayerStack = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: theme.spacing(4),
+  gap: theme.spacing(9),
   flex: 1,
   minHeight: "100%",
   width: "100%",
