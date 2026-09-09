@@ -148,7 +148,7 @@ export const MetricsRow = styled("div")(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
   gap: theme.spacing(1),
-  marginLeft: theme.spacing(6),
+  marginLeft: theme.spacing(4),
   padding: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.divider, 0.8)}`,
