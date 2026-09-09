@@ -66,6 +66,8 @@ export const PlatformRow = styled(LayerRow)(({ theme }) => ({
   alignItems: "flex-end",
   width: "100%",
   columnGap: theme.spacing(1.5),
+  /** Pulls the platform row up, halving the gap to the HALO server. */
+  marginBottom: theme.spacing(25),
 }));
 
 
