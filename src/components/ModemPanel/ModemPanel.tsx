@@ -99,7 +99,6 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
       </HealthRow>
 
       {expanded && (
-        <>
           <ChannelList>
             {modem.channels.map((ch) => {
               const powerable_ = isPowerable(ch.state);
