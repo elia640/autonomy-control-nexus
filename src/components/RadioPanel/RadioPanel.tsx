@@ -18,8 +18,9 @@ import {
 
 export interface RadioPanelProps {
   radio: RadioAsset;
-  expanded: boolean;
-  onExpandedChange: (expanded: boolean) => void;
+  /** Kept for API compatibility; the radio panel has no expandable menu. */
+  expanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
   enabled: boolean;
   onEnabledChange: (enabled: boolean) => void;
   /** Blocks switching off the last active unit. */
