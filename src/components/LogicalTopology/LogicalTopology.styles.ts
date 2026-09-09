@@ -4,6 +4,7 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   position: "absolute",
   inset: 0,
   overflow: "auto",
+  display: "flex",
   backgroundColor: theme.palette.background.default,
   padding: theme.spacing(2),
 }));
@@ -11,10 +12,10 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
 /** Positioning context for the measured connection layer. */
 export const TopologyContent = styled("div")({
   position: "relative",
-  minHeight: "100%",
+  display: "flex",
+  flex: "1 0 auto",
   minWidth: "100%",
   width: "max-content",
-  margin: "0 auto",
 });
 
 export const EdgeSvg = styled("svg")({
@@ -33,7 +34,8 @@ export const LayerStack = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "space-between",
   gap: theme.spacing(9),
-  minHeight: "100%",
+  flex: 1,
+  minHeight: 640,
   width: "max-content",
   minWidth: "100%",
   padding: theme.spacing(1, 0, 2),
@@ -45,7 +47,7 @@ export const LayerRow = styled("div")(({ theme }) => ({
   flexDirection: "row",
   alignItems: "flex-end",
   justifyContent: "center",
-  gap: theme.spacing(4),
+  gap: theme.spacing(3),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({
