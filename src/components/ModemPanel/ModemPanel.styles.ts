@@ -199,10 +199,11 @@ export const StateChip = styled("span", {
   return {
     display: "inline-flex",
     justifyContent: "center",
-    padding: theme.spacing(0.5, 1),
+    alignItems: "center",
+    padding: theme.spacing(0.25, 0.75),
     fontSize: "0.6875rem",
     fontWeight: 700,
-    letterSpacing: "0.06em",
+    letterSpacing: "0.02em",
     color,
     border: `1px solid ${alpha(color, 0.5)}`,
     borderRadius: theme.shape.borderRadius,
