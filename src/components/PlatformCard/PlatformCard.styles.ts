@@ -30,7 +30,7 @@ export const CardRoot = styled("div", {
       ? alpha(theme.palette.background.default, 0.92)
       : alpha(theme.palette.background.paper, 0.6),
   backdropFilter: variant === "overlay" ? "blur(4px)" : "none",
-  fontSize: variant === "overlay" ? "0.625rem" : "0.6875rem",
+  fontSize: variant === "overlay" ? "0.75rem" : "0.75rem",
   lineHeight: 1.3,
   pointerEvents: "auto",
   marginTop: variant === "overlay" ? theme.spacing(1) : 0,
@@ -74,10 +74,10 @@ export const KindBadge = styled("span")(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.divider, 0.9)}`,
   backgroundColor: alpha(theme.palette.text.secondary, 0.08),
   padding: "0 3px",
-  fontSize: "0.45rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
-  "& .MuiSvgIcon-root": { fontSize: "0.6rem", color: theme.palette.text.secondary },
+  "& .MuiSvgIcon-root": { fontSize: "0.75rem", color: theme.palette.text.secondary },
 }));
 
 export const CardSection = styled("div")(({ theme }) => ({
@@ -135,7 +135,7 @@ export const ModemName = styled("span")(({ theme }) => ({
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  fontSize: "0.45rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.06em",
   color: theme.palette.primary.main,
 }));
@@ -154,13 +154,13 @@ export const LockRow = styled("span")(({ theme }) => ({
   display: "inline-flex",
   alignItems: "center",
   gap: theme.spacing(0.5),
-  "& .MuiSvgIcon-root": { fontSize: "0.65rem" },
+  "& .MuiSvgIcon-root": { fontSize: "0.75rem" },
 }));
 
 export const LockState = styled("span", {
   shouldForwardProp: (prop) => prop !== "locked",
 })<{ locked: boolean }>(({ theme, locked }) => ({
-  fontSize: "0.45rem",
+  fontSize: "0.75rem",
   color: locked ? theme.palette.status.good : theme.palette.status.poor,
 }));
 
@@ -191,7 +191,7 @@ export const AssetValue = styled("span", {
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   color: status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
 }));
 
@@ -206,7 +206,7 @@ export const CompactMetaRow = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   gap: theme.spacing(1),
   padding: theme.spacing(0, 0.75, 0.5),
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   fontVariantNumeric: "tabular-nums",
   color: theme.palette.text.secondary,
 }));
@@ -222,7 +222,7 @@ export const AlertBadge = styled("span")(({ theme }) => ({
   borderRadius: 999,
   backgroundColor: theme.palette.status.poor,
   color: theme.palette.common.white,
-  fontSize: "0.55rem",
+  fontSize: "0.75rem",
   fontWeight: 700,
 }));
 
@@ -231,7 +231,7 @@ export const MetricGrid = styled("div")(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
   gap: theme.spacing(0.5),
-  fontSize: "0.45rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.secondary,
 }));
 
@@ -264,7 +264,7 @@ export const CameraButton = styled(ButtonBase)(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.primary.main, 0.6)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.12),
   color: theme.palette.primary.main,
-  fontSize: "0.5rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.14em",
   "& .MuiSvgIcon-root": { fontSize: "0.7rem" },
   "&:hover": { backgroundColor: alpha(theme.palette.primary.main, 0.22) },

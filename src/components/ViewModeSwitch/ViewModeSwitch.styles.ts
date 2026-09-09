@@ -18,7 +18,7 @@ export const ModeToggleButton = styled(ToggleButton)(({ theme }) => ({
   borderRadius: 0,
   padding: theme.spacing(1.5, 3),
 
-  fontSize: "0.625rem",
+  fontSize: "0.75rem",
   fontWeight: 600,
   letterSpacing: "0.16em",
   color: theme.palette.text.secondary,

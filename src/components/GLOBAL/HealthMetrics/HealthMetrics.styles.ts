@@ -8,7 +8,7 @@ export const MetricsRow = styled("div", {
   flexWrap: "wrap",
   alignItems: "center",
   gap: theme.spacing(dense ? 1 : 2),
-  fontSize: dense ? "0.45rem" : "0.5625rem",
+  fontSize: dense ? "0.75rem" : "0.75rem",
   color: theme.palette.text.secondary,
 }));
 
@@ -29,5 +29,5 @@ export const MetricChip = styled("span", {
   letterSpacing: "0.04em",
   whiteSpace: "nowrap",
   color: tone === "good" ? theme.palette.text.secondary : theme.palette.status[tone],
-  "& .MuiSvgIcon-root": { fontSize: "0.65rem" },
+  "& .MuiSvgIcon-root": { fontSize: "0.75rem" },
 }));

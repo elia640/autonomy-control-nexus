@@ -26,7 +26,7 @@ export const WheelHeader = styled("header")(({ theme }) => ({
   padding: theme.spacing(1, 1.5),
   borderBottom: `1px solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.panel.header,
-  fontSize: "0.5625rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.14em",
   color: theme.palette.primary.main,
 }));
@@ -53,7 +53,7 @@ export const WheelLegend = styled("div")(({ theme }) => ({
   flexWrap: "wrap",
   gap: theme.spacing(2),
   marginTop: theme.spacing(1),
-  fontSize: "0.5rem",
+  fontSize: "0.75rem",
   textTransform: "uppercase",
   letterSpacing: "0.1em",
   color: theme.palette.text.secondary,

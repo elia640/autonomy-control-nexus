@@ -33,7 +33,7 @@ export function MonitoringGraph({ samples, withLatency }: MonitoringGraphProps) 
   });
 
   const series: { key: SeriesKey; label: string; color: string; dashed?: boolean }[] = [
-    { key: "upload", label: "Upload", color: theme.palette.status.good },
+    { key: "upload", label: "Upload", color: theme.palette.success.main },
     { key: "download", label: "Download", color: theme.palette.status.marginal },
     ...(withLatency
       ? [{ key: "latency" as const, label: "Latency", color: theme.palette.secondary.main }]
@@ -96,7 +96,7 @@ export function MonitoringGraph({ samples, withLatency }: MonitoringGraphProps) 
               contentStyle={{
                 background: theme.palette.background.paper,
                 border: `1px solid ${theme.palette.divider}`,
-                fontSize: 10,
+                fontSize: 11,
               }}
             />
             {series
