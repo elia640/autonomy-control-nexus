@@ -126,6 +126,7 @@ export const HopNode = styled("div", {
 export const HopRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
+  whiteSpace: "nowrap",
   gap: theme.spacing(1),
 }));
 

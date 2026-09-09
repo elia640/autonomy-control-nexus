@@ -173,17 +173,18 @@ export function LogicalTopology({
         if (peerBox) {
           const peerIndex = peerRoutes.findIndex((r) => r.unit.id === route.unit.id);
           /** Relayed platform → relaying platform, along the bottom row. */
-          const lateralY = unitBox.top - 18 - peerIndex * 10;
-          const entryX = peerBox.center + 16 + peerIndex * 10;
+          const lateralY =
+            Math.max(unitBox.bottom, peerBox.bottom) + 22 + peerIndex * 12;
+          const entryX = peerBox.center + 18 + peerIndex * 12;
           next.push({
             id: `${route.unit.id}->peer`,
             owner: route.unit.id,
-            path: `M ${unitBox.center} ${unitBox.top} V ${lateralY} H ${entryX} V ${peerBox.top}`,
+            path: `M ${unitBox.center} ${unitBox.bottom} V ${lateralY} H ${entryX} V ${peerBox.bottom}`,
             color,
             dashed: true,
             label: rate,
             labelX: (unitBox.center + entryX) / 2,
-            labelY: lateralY - 5,
+            labelY: lateralY - 6,
           });
           feedX = entryX;
           feedY = peerBox.top;
