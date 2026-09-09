@@ -239,7 +239,7 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
 export const Legend = styled("div")(({ theme }) => ({
   position: "absolute",
   left: theme.spacing(1),
-  top: theme.spacing(1),
+  bottom: theme.spacing(1),
   display: "flex",
   flexWrap: "wrap",
   gap: theme.spacing(2),
