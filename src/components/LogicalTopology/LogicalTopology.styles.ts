@@ -63,7 +63,7 @@ export const PlatformRow = styled(LayerRow)(({ theme }) => ({
 
 export const LayerCaption = styled("div")(({ theme }) => ({
   position: "absolute",
-  top: theme.spacing(-2.5),
+  top: theme.spacing(-4),
   left: 0,
   right: 0,
   textAlign: "center",
