@@ -33,7 +33,7 @@ const satMetrics = (quality: number): SatMetrics => ({
 /** Modem of the control room itself. */
 export const controlRoomModem: ModemAsset = {
   id: "cr-modem",
-  name: "MODEM CONVOY 23",
+  name: "HALO CONVOY 23",
   quality: 78,
   rate: 14.2,
   rateLabel: "UPLOAD (RX)",
