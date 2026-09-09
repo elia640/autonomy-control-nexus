@@ -33,12 +33,12 @@ export const LayerStack = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "space-between",
-  gap: theme.spacing(9),
+  justifyContent: "center",
+  gap: theme.spacing(7),
   flex: 1,
   minHeight: "100%",
   width: "100%",
-  padding: theme.spacing(3, 1, 8),
+  padding: theme.spacing(3, 1, 14),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
