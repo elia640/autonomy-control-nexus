@@ -8,7 +8,7 @@ export const MetricsRow = styled("div", {
   flexWrap: "wrap",
   alignItems: "center",
   gap: theme.spacing(dense ? 1 : 2),
-  fontSize: dense ? "0.45rem" : "0.5625rem",
+  fontSize: dense ? "0.75rem" : "0.8125rem",
   color: theme.palette.text.secondary,
 }));
 
@@ -24,10 +24,11 @@ export const MetricChip = styled("span", {
   }`,
   // Outline-only styling: colour the text and border, never fill the chip.
   backgroundColor: "transparent",
-  fontWeight: tone === "good" ? 400 : 600,
-  padding: "0 3px",
+  fontWeight: tone === "good" ? 500 : 700,
+  padding: "1px 5px",
   letterSpacing: "0.04em",
   whiteSpace: "nowrap",
+  fontVariantNumeric: "tabular-nums",
   color: tone === "good" ? theme.palette.text.secondary : theme.palette.status[tone],
-  "& .MuiSvgIcon-root": { fontSize: "0.75rem" },
+  "& .MuiSvgIcon-root": { fontSize: "1rem" },
 }));

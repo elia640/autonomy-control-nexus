@@ -330,7 +330,7 @@ export function TacticalMap({
                 onMouseEnter={() => setHoveredId(unit.id)}
                 onMouseLeave={() => setHoveredId((prev) => (prev === unit.id ? null : prev))}
               >
-                <NodeBadge shape="square" borderColor={color(unit.status)}>
+                <NodeBadge shape="square" borderColor={theme.palette.primary.main}>
                   <TruckIcon />
                 </NodeBadge>
                 {kinds.length > 1 && (

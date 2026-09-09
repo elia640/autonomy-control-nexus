@@ -17,6 +17,7 @@ import {
   ChannelName,
   ChannelNameButton,
   ChannelRow,
+  DimWrap,
   MetricCell,
   MetricName,
   MetricValue,
@@ -42,7 +43,16 @@ export interface ModemPanelProps {
   onReboot?: (modemId: string) => void;
 }
 
+/** Abbreviated so every channel row fits on a single line. */
 const STATE_LABEL: Record<ChannelState, string> = {
+  connected: "CONN",
+  disconnected: "NO CONN",
+  absent: "NO SIM",
+  unplugged: "UNPLG",
+};
+
+/** Full wording kept as a tooltip for the abbreviated chips. */
+const STATE_TITLE: Record<ChannelState, string> = {
   connected: "CONNECTED",
   disconnected: "NOT CONNECTED",
   absent: "NO SIM",
@@ -63,6 +73,7 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
 
   return (
     <PanelRoot>
+      <DimWrap dimmed={rebooting}>
       <HeaderRow>
         <CollapseButton
           expanded={expanded}
@@ -89,7 +100,6 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
       </HealthRow>
 
       {expanded && (
-        <>
           <ChannelList>
             {modem.channels.map((ch) => {
               const powerable_ = isPowerable(ch.state);
@@ -120,11 +130,20 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
                     ) : (
                       <ChannelName>{ch.label}</ChannelName>
                     )}
-                    <StateChip state={on ? ch.state : powerable_ ? "disconnected" : ch.state}>
+                    <StateChip
+                      state={on ? ch.state : powerable_ ? "disconnected" : ch.state}
+                      title={
+                        on
+                          ? STATE_TITLE[ch.state]
+                          : powerable_
+                            ? STATE_TITLE.disconnected
+                            : STATE_TITLE[ch.state]
+                      }
+                    >
                       {on
                         ? STATE_LABEL[ch.state]
                         : powerable_
-                          ? "NOT CONNECTED"
+                          ? STATE_LABEL.disconnected
                           : STATE_LABEL[ch.state]}
                     </StateChip>
                     <SignalBars
@@ -160,14 +179,16 @@ export function ModemPanel({ modem, expanded, onExpandedChange, onReboot }: Mode
               );
             })}
           </ChannelList>
-          <RebootRow>
-            <RebootButton
-              label={`${modem.name} reboot`}
-              onRebootingChange={setRebooting}
-              onComplete={() => onReboot?.(modem.id)}
-            />
-          </RebootRow>
-        </>
+      )}
+      </DimWrap>
+      {expanded && (
+        <RebootRow>
+          <RebootButton
+            label={`${modem.name} reboot`}
+            onRebootingChange={setRebooting}
+            onComplete={() => onReboot?.(modem.id)}
+          />
+        </RebootRow>
       )}
     </PanelRoot>
   );
