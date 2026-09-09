@@ -32,13 +32,12 @@ export const LayerStack = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "space-between",
-  gap: theme.spacing(9),
-  flex: 1,
-  minHeight: 640,
+  justifyContent: "flex-start",
+  gap: theme.spacing(16),
+  minHeight: "min-content",
   width: "max-content",
   minWidth: "100%",
-  padding: theme.spacing(1, 0, 2),
+  padding: theme.spacing(3, 0, 4),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
@@ -47,7 +46,7 @@ export const LayerRow = styled("div")(({ theme }) => ({
   flexDirection: "row",
   alignItems: "flex-end",
   justifyContent: "center",
-  gap: theme.spacing(3),
+  gap: theme.spacing(1.5),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({
@@ -208,8 +207,8 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
 /** Legend for line colouring and status. */
 export const Legend = styled("div")(({ theme }) => ({
   position: "absolute",
-  left: theme.spacing(1),
-  bottom: theme.spacing(1),
+  right: theme.spacing(1),
+  top: theme.spacing(1),
   display: "flex",
   flexWrap: "wrap",
   gap: theme.spacing(2),
