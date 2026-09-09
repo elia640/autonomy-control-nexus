@@ -1,5 +1,4 @@
 import CellTowerIcon from "@mui/icons-material/CellTower";
-import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
 import { PowerToggle } from "@/components/GLOBAL/PowerToggle";
 import { QualityMeter } from "@/components/GLOBAL/QualityMeter";
@@ -19,8 +18,9 @@ import {
 
 export interface RadioPanelProps {
   radio: RadioAsset;
-  expanded: boolean;
-  onExpandedChange: (expanded: boolean) => void;
+  /** Kept for API compatibility; the radio panel has no expandable menu. */
+  expanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
   enabled: boolean;
   onEnabledChange: (enabled: boolean) => void;
   /** Blocks switching off the last active unit. */
@@ -29,8 +29,6 @@ export interface RadioPanelProps {
 
 export function RadioPanel({
   radio,
-  expanded,
-  onExpandedChange,
   enabled,
   onEnabledChange,
   lastActive = false,
@@ -43,11 +41,6 @@ export function RadioPanel({
           onChange={onEnabledChange}
           label={radio.name}
           lastActive={lastActive}
-        />
-        <CollapseButton
-          expanded={expanded}
-          onToggle={() => onExpandedChange(!expanded)}
-          label={`${radio.name} details`}
         />
         <AssetIcon>
           <CellTowerIcon />

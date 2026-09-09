@@ -8,7 +8,6 @@ import MyLocationIcon from "@mui/icons-material/MyLocation";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import HubIcon from "@mui/icons-material/Hub";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
-import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 
 import TruckIcon from "@mui/icons-material/LocalShipping";
 import mapImage from "@/assets/map-satellite.jpg";
@@ -18,7 +17,6 @@ import { useMapDrag } from "@/hooks/useMapDrag";
 import { useMapViewport } from "@/hooks/useMapViewport";
 import {
   GROUND_STATION_POSITION,
-  SATELLITE_POSITION,
   findPlatform,
   platforms,
   radioLinks,
@@ -296,14 +294,6 @@ export function TacticalMap({
           </Tooltip>
         </AnchoredPoint>
 
-        <AnchoredPoint
-          style={{ left: `${SATELLITE_POSITION.x}%`, top: `${SATELLITE_POSITION.y}%` }}
-        >
-          <NodeBadge shape="square" borderColor={theme.palette.primary.main}>
-            <SatelliteIcon />
-          </NodeBadge>
-          <NodeLabel>TELS-1</NodeLabel>
-        </AnchoredPoint>
 
         {platforms.map((unit) => {
           
