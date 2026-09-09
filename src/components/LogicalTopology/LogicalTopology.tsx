@@ -8,15 +8,11 @@ import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 
 import { PlatformCard } from "@/components/PlatformCard";
 import { platforms, relays } from "@/data/network";
-import type { LinkKind, LinkStatus, PlatformUnit } from "@/types/network";
+import type { LinkKind, PlatformUnit } from "@/types/network";
 import {
-  Cluster,
-  ClusterMembers,
-  ClusterTitle,
   CommandCaption,
   CommandNode,
   CommandRow,
-  EdgeLabel,
   EdgeSvg,
   HopCaption,
   HopNode,
@@ -25,11 +21,14 @@ import {
   LayerColumn,
   LayerGrid,
   Legend,
+  RelayColumn,
   LegendItem,
   LegendSwatch,
   ModemMeta,
   ModemModule,
   NodeSlot,
+  RouteTag,
+  RouterModule,
   SatelliteNode,
   TopologyContent,
   TopologyRoot,
@@ -46,8 +45,8 @@ export interface LogicalTopologyProps {
 
 interface Edge {
   id: string;
-  /** Vehicle whose route this edge belongs to; hop→modem edges list several. */
-  owners: string[];
+  /** Platform whose route this segment belongs to. */
+  owner: string;
   path: string;
   color: string;
   dashed: boolean;
@@ -57,31 +56,26 @@ interface Edge {
   labelY: number;
 }
 
+/** How a platform reaches the control room router. */
+interface Route {
+  unit: PlatformUnit;
+  /** Node id of the intermediate hop, or null when the link is direct. */
+  hopId: string | null;
+  hopLabel: string;
+}
+
+const ROUTER_ID = "cr-router";
 const MODEM_ID = "cr-modem";
-const ROUTER_ID = "net-router";
+const CONTROL_ROOM_ROUTER = "ROUTER RTR-1";
 const CONTROL_ROOM_MODEM = "CONVOY 23";
 
-const primaryKind = (unit: PlatformUnit): LinkKind => (unit.activeLinks ?? [unit.link])[0]!;
+const kindsOf = (unit: PlatformUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 
-const usesRelay = (unit: PlatformUnit): boolean => {
-  const relay = relays[0];
-  if (!relay) return false;
-  const kinds = unit.activeLinks ?? [unit.link];
-  return kinds.includes("RADIO") && relay.connectedTo.includes(unit.id);
-};
+const primaryKind = (unit: PlatformUnit): LinkKind => kindsOf(unit)[0]!;
 
-const STATUS_ORDER: LinkStatus[] = ["good", "marginal", "poor"];
-
-/** The hop→modem link carries its own state: the worst of the platforms it serves. */
-const worstStatus = (members: PlatformUnit[]): LinkStatus =>
-  members.reduce<LinkStatus>(
-    (worst, unit) =>
-      STATUS_ORDER.indexOf(unit.status) > STATUS_ORDER.indexOf(worst) ? unit.status : worst,
-    "good",
-  );
-
-const sumRate = (members: PlatformUnit[]): string =>
-  members.reduce((total, unit) => total + Number.parseFloat(unit.mbps), 0).toFixed(1);
+/** Cellular and satellite reach the control room directly; radio-only does not. */
+const hasDirectVisibility = (unit: PlatformUnit): boolean =>
+  kindsOf(unit).some((kind) => kind === "CELLULAR" || kind === "SATCOM");
 
 export function LogicalTopology({
   linksOn,
@@ -103,13 +97,31 @@ export function LogicalTopology({
   };
 
   const relay = relays[0] ?? null;
-  const relayGroup = useMemo(() => platforms.filter(usesRelay), []);
-  const routerGroup = useMemo(() => platforms.filter((p) => !usesRelay(p)), []);
+
+  /**
+   * Every platform gets a route: direct to the router, through the relay unit,
+   * or through a peer platform that does have direct visibility.
+   */
+  const routes = useMemo<Route[]>(
+    () =>
+      platforms.map((unit) => {
+        if (hasDirectVisibility(unit)) return { unit, hopId: null, hopLabel: "DIRECT" };
+        if (relay && relay.connectedTo.includes(unit.id))
+          return { unit, hopId: relay.id, hopLabel: relay.label };
+        const peer = platforms.find((p) => p.id !== unit.id && hasDirectVisibility(p));
+        return peer
+          ? { unit, hopId: peer.id, hopLabel: peer.label }
+          : { unit, hopId: null, hopLabel: "DIRECT" };
+      }),
+    [relay],
+  );
+
+  const relayRoutes = useMemo(() => routes.filter((r) => r.hopId !== null), [routes]);
 
   const routerColor = theme.palette.primary.main;
   const relayColor = theme.palette.warning.main;
 
-  /** Which vehicle route is emphasised right now. */
+  /** Which platform route is emphasised right now. */
   const activeRoute = hovered ?? selectedVehicleId;
 
   const setNodeRef = (id: string) => (element: HTMLElement | null) => {
@@ -131,64 +143,110 @@ export function LogicalTopology({
         left: rect.left - base.left,
         right: rect.right - base.left,
         top: rect.top - base.top,
+        height: rect.height,
         middle: rect.top - base.top + rect.height / 2,
       };
     };
 
-    const modem = box(MODEM_ID);
-    if (!modem) return;
+    const router = box(ROUTER_ID);
+    if (!router) return;
 
-    const next: Edge[] = [];
-    const elbow = (
-      from: { right: number; middle: number },
-      to: { left: number; middle: number },
-    ) => {
-      const midX = from.right + (to.left - from.right) / 2;
+    /** Spreads several lines across the vertical edge of a node. */
+    const port = (
+      node: { top: number; height: number },
+      index: number,
+      count: number,
+    ): number => node.top + (node.height * (index + 1)) / (count + 1);
+
+    const segment = (
+      id: string,
+      owner: string,
+      from: { x: number; y: number },
+      to: { x: number; y: number },
+      color: string,
+      dashed: boolean,
+      label: string,
+      lane: number,
+    ): Edge => {
+      const midX = from.x + (to.x - from.x) * lane;
       return {
-        path: `M ${from.right} ${from.middle} H ${midX} V ${to.middle} H ${to.left}`,
-        labelX: from.right + (to.left - from.right) * 0.3,
-        labelY: from.middle - 5,
+        id,
+        owner,
+        path: `M ${from.x} ${from.y} H ${midX} V ${to.y} H ${to.x}`,
+        color,
+        dashed,
+        label,
+        labelX: from.x + (midX - from.x) / 2,
+        labelY: from.y - 6,
       };
     };
 
-    const hops: { id: string; members: PlatformUnit[]; dashed: boolean }[] = [
-      { id: ROUTER_ID, members: routerGroup, dashed: false },
-      ...(relay ? [{ id: relay.id, members: relayGroup, dashed: true }] : []),
-    ];
+    const next: Edge[] = [];
+    /** One router port per incoming platform line — never merged. */
+    const routerOrder = routes.map((route) => route.unit.id);
+    const colorFor = (unit: PlatformUnit) =>
+      linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
 
-    for (const hop of hops) {
-      const hopBox = box(hop.id);
-      if (!hopBox) continue;
+    routes.forEach((route) => {
+      const unitBox = box(route.unit.id);
+      if (!unitBox) return;
+      const routerPortIndex = routerOrder.indexOf(route.unit.id);
+      /** Each line owns its own vertical lane so runs never sit on top of each other. */
+      const directLane = 0.74 + routerPortIndex * 0.05;
+      const routerY = port(router, routerPortIndex, routerOrder.length);
+      const color = colorFor(route.unit);
+      const rate = `↓ ${route.unit.mbps} Mbps`;
 
-      for (const unit of hop.members) {
-        const unitBox = box(unit.id);
-        if (!unitBox) continue;
-        const geometry = elbow(unitBox, hopBox);
-        next.push({
-          id: `${unit.id}->${hop.id}`,
-          owners: [unit.id],
-          ...geometry,
-          color: linksOn ? theme.palette.status[unit.status] : theme.palette.divider,
-          dashed: hop.dashed,
-          label: `↓ ${unit.mbps} Mbps`,
-        });
+      if (route.hopId === null) {
+        next.push(
+          segment(
+            `${route.unit.id}->router`,
+            route.unit.id,
+            { x: unitBox.right, y: unitBox.middle },
+            { x: router.left, y: routerY },
+            color,
+            false,
+            rate,
+            directLane,
+          ),
+        );
+        return;
       }
 
-      const trunk = elbow(hopBox, modem);
-      next.push({
-        id: `${hop.id}->${MODEM_ID}`,
-        owners: hop.members.map((m) => m.id),
-        ...trunk,
-        color: linksOn
-          ? theme.palette.status[worstStatus(hop.members)]
-          : theme.palette.divider,
-        dashed: hop.dashed,
-        label: `↓ ${sumRate(hop.members)} Mbps`,
-      });
-    }
+      const hopBox = box(route.hopId);
+      if (!hopBox) return;
+      const hopIndex = relayRoutes.findIndex((r) => r.unit.id === route.unit.id);
+      const hopY = port(hopBox, hopIndex, relayRoutes.length);
+
+      next.push(
+        segment(
+          `${route.unit.id}->hop`,
+          route.unit.id,
+          { x: unitBox.right, y: unitBox.middle },
+          { x: hopBox.left, y: hopY },
+          color,
+          false,
+          rate,
+          0.5,
+        ),
+      );
+      /** A dedicated hop→router line per platform, one for one. */
+      next.push(
+        segment(
+          `${route.unit.id}-hop->router`,
+          route.unit.id,
+          { x: hopBox.right, y: hopY },
+          { x: router.left, y: routerY },
+          color,
+          true,
+          rate,
+          0.25 + hopIndex * 0.18,
+        ),
+      );
+    });
 
     setEdges(next);
-  }, [linksOn, theme, relay, relayGroup, routerGroup, routerColor, relayColor]);
+  }, [linksOn, theme, routes, relayRoutes]);
 
   useLayoutEffect(() => {
     measure();
@@ -207,43 +265,9 @@ export function LogicalTopology({
     };
   }, [measure]);
 
-  const isDimmed = (vehicleId: string) => activeRoute !== null && activeRoute !== vehicleId;
-  const hopDimmed = (members: PlatformUnit[]) =>
-    activeRoute !== null && !members.some((m) => m.id === activeRoute);
-
-  const renderCluster = (
-    title: string,
-    accent: string,
-    members: PlatformUnit[],
-    label: string,
-  ) => (
-    <Cluster accent={accent}>
-      <ClusterTitle accent={accent}>{title}</ClusterTitle>
-      <ClusterMembers>
-        {members.map((unit) => (
-          <NodeSlot
-            key={unit.id}
-            dimmed={isDimmed(unit.id)}
-            onMouseEnter={() => setHovered(unit.id)}
-            onMouseLeave={() => setHovered(null)}
-          >
-            <div ref={setNodeRef(unit.id)}>
-              <EdgeLabel labelColor={linksOn ? accent : theme.palette.divider}>
-                {primaryKind(unit)} → {label}
-              </EdgeLabel>
-              <PlatformCard
-                unit={unit}
-                variant="topology"
-                compact
-                selected={selectedVehicleId === unit.id}
-                onSelect={() => onSelectVehicle?.(selectedVehicleId === unit.id ? null : unit.id)}
-              />
-            </div>
-          </NodeSlot>
-        ))}
-      </ClusterMembers>
-    </Cluster>
-  );
+  const isDimmed = (id: string) => activeRoute !== null && activeRoute !== id;
+  const hopDimmed = () =>
+    activeRoute !== null && !relayRoutes.some((r) => r.unit.id === activeRoute);
 
   return (
     <TopologyRoot>
@@ -255,9 +279,9 @@ export function LogicalTopology({
           aria-hidden="true"
         >
           {edges.map((edge) => {
-            const active = activeRoute === null || edge.owners.includes(activeRoute);
+            const active = activeRoute === null || edge.owner === activeRoute;
             return (
-              <g key={edge.id} opacity={active ? 0.95 : 0.18}>
+              <g key={edge.id} opacity={active ? 0.95 : 0.15}>
                 <path
                   d={edge.path}
                   fill="none"
@@ -288,32 +312,53 @@ export function LogicalTopology({
         <LayerGrid>
           <LayerColumn>
             <LayerCaption>PLATFORMS</LayerCaption>
-            {renderCluster("DIRECT · ROUTER GROUP", routerColor, routerGroup, "ROUTER")}
-            {relay && renderCluster("RELAY GROUP", relayColor, relayGroup, "RELAY")}
+            {routes.map((route) => (
+              <NodeSlot
+                key={route.unit.id}
+                dimmed={isDimmed(route.unit.id)}
+                onMouseEnter={() => setHovered(route.unit.id)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                <div ref={setNodeRef(route.unit.id)}>
+                  <RouteTag
+                    labelColor={
+                      linksOn
+                        ? route.hopId === null
+                          ? routerColor
+                          : relayColor
+                        : theme.palette.divider
+                    }
+                  >
+                    {primaryKind(route.unit)} → {route.hopLabel}
+                  </RouteTag>
+                  <PlatformCard
+                    unit={route.unit}
+                    variant="topology"
+                    compact
+                    selected={selectedVehicleId === route.unit.id}
+                    onSelect={() =>
+                      onSelectVehicle?.(
+                        selectedVehicleId === route.unit.id ? null : route.unit.id,
+                      )
+                    }
+                  />
+                </div>
+              </NodeSlot>
+            ))}
           </LayerColumn>
 
-          <LayerColumn>
-            <LayerCaption>NETWORK NODES</LayerCaption>
-            <HopNode
-              ref={setNodeRef(ROUTER_ID)}
-              accent={routerColor}
-              dimmed={hopDimmed(routerGroup)}
-            >
-              <HopRow>
-                <RouterIcon /> ROUTER
-              </HopRow>
-              <HopCaption>{routerGroup.length} DIRECT PLATFORMS</HopCaption>
-            </HopNode>
-
+          <RelayColumn>
+            <LayerCaption>RELAY LAYER</LayerCaption>
             {relay && (
-              <HopNode ref={setNodeRef(relay.id)} accent={relayColor} dimmed={hopDimmed(relayGroup)}>
+              <HopNode ref={setNodeRef(relay.id)} accent={relayColor} dimmed={hopDimmed()}>
                 <HopRow>
                   <RadioIcon /> {relay.label}
                 </HopRow>
-                <HopCaption>{relayGroup.length} RELAYED PLATFORMS</HopCaption>
+                <HopCaption>{relayRoutes.length} RELAYED PLATFORMS</HopCaption>
+                <HopCaption>{relay.mbps} Mbps · {relay.lat}</HopCaption>
               </HopNode>
             )}
-          </LayerColumn>
+          </RelayColumn>
 
           <LayerColumn>
             <LayerCaption>CONTROL ROOM</LayerCaption>
@@ -332,7 +377,8 @@ export function LogicalTopology({
               <CommandRow>
                 <HubIcon /> CONTROL ROOM
               </CommandRow>
-              <CommandCaption>INTERNAL MODEM MODULES</CommandCaption>
+              <CommandCaption>ROUTER &amp; MODEM UNITS</CommandCaption>
+              <RouterModuleRef refCallback={setNodeRef(ROUTER_ID)} count={routes.length} />
               <ModemModule ref={setNodeRef(MODEM_ID)}>
                 <MemoryIcon /> {CONTROL_ROOM_MODEM}
                 <ModemMeta>ACTIVE</ModemMeta>
@@ -343,22 +389,38 @@ export function LogicalTopology({
 
         <Legend>
           <LegendItem>
-            <LegendSwatch swatchColor={theme.palette.text.secondary} /> DIRECT → ROUTER
+            <LegendSwatch swatchColor={theme.palette.text.secondary} /> DIRECT LINK
           </LegendItem>
           <LegendItem>
             <LegendSwatch swatchColor={theme.palette.text.secondary} dashed /> VIA RELAY
           </LegendItem>
           <LegendItem>
-            <LegendSwatch swatchColor={theme.palette.status.good} /> ACTIVE
+            <LegendSwatch swatchColor={theme.palette.status.good} /> GOOD
           </LegendItem>
           <LegendItem>
-            <LegendSwatch swatchColor={theme.palette.status.marginal} /> WARNING
+            <LegendSwatch swatchColor={theme.palette.status.marginal} /> FAIR
           </LegendItem>
           <LegendItem>
-            <LegendSwatch swatchColor={theme.palette.status.poor} /> DEGRADED
+            <LegendSwatch swatchColor={theme.palette.status.poor} /> POOR
           </LegendItem>
         </Legend>
       </TopologyContent>
     </TopologyRoot>
+  );
+}
+
+/** Router unit inside the control room; every platform line terminates on it. */
+function RouterModuleRef({
+  refCallback,
+  count,
+}: {
+  refCallback: (element: HTMLElement | null) => void;
+  count: number;
+}) {
+  return (
+    <RouterModule ref={refCallback}>
+      <RouterIcon /> {CONTROL_ROOM_ROUTER}
+      <ModemMeta>{count} PORTS</ModemMeta>
+    </RouterModule>
   );
 }
