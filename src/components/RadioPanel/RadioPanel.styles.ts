@@ -10,7 +10,8 @@ export const PanelRoot = styled("div")(({ theme }) => ({
 /** Mirrors the modem panel header grid so both panels line up. */
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "auto 20px 20px minmax(0, 1fr)",
+  /** Toggle, asset icon, then the full radio name. */
+  gridTemplateColumns: "auto 20px minmax(0, 1fr)",
   alignItems: "center",
   gap: theme.spacing(2),
   padding: theme.spacing(2, 2.5, 1),
