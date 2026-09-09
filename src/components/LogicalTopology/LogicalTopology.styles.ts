@@ -21,6 +21,8 @@ export const EdgeSvg = styled("svg")({
   position: "absolute",
   left: 0,
   top: 0,
+  /** Above the control room panel so lines reach the router inside it. */
+  zIndex: 1,
   pointerEvents: "none",
   overflow: "visible",
 });
@@ -75,6 +77,8 @@ export const LayerCaption = styled("div")(({ theme }) => ({
 export const NodeSlot = styled("div", {
   shouldForwardProp: (prop) => prop !== "dimmed",
 })<{ dimmed?: boolean }>(({ dimmed }) => ({
+  position: "relative",
+  zIndex: 2,
   display: "flex",
   flexDirection: "column",
   alignItems: "stretch",
@@ -102,6 +106,8 @@ export const RouteTag = styled("span", {
 export const HopNode = styled("div", {
   shouldForwardProp: (prop) => prop !== "accent" && prop !== "dimmed",
 })<{ accent: string; dimmed?: boolean }>(({ theme, accent, dimmed }) => ({
+  position: "relative",
+  zIndex: 2,
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
@@ -139,6 +145,8 @@ export const HopCaption = styled("span")(({ theme }) => ({
 
 /** Control room frame — the widest element, sitting at the top of the canvas. */
 export const CommandNode = styled("div")(({ theme }) => ({
+  position: "relative",
+  zIndex: 0,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -150,7 +158,8 @@ export const CommandNode = styled("div")(({ theme }) => ({
   outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
   outlineOffset: 3,
   boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
-  backgroundColor: theme.palette.panel.header,
+  /** Transparent so platform lines stay visible up to the router inside. */
+  backgroundColor: "transparent",
   padding: theme.spacing(2, 3),
   cursor: "pointer",
   fontSize: "0.875rem",
@@ -178,6 +187,8 @@ export const CommandCaption = styled("span")(({ theme }) => ({
 /** Router unit inside the control room; every platform line terminates here.
  *  Kept narrow so further routers can sit alongside it later. */
 export const RouterModule = styled("div")(({ theme }) => ({
+  position: "relative",
+  zIndex: 2,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
