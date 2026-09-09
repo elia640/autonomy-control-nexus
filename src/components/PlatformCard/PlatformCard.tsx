@@ -6,7 +6,6 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import VideocamIcon from "@mui/icons-material/Videocam";
-import WarningIcon from "@mui/icons-material/WarningAmberRounded";
 import { CameraWindow } from "@/components/CameraWindow";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
@@ -126,7 +125,6 @@ export function PlatformCard({
         >
           {alerts > 0 && (
             <AlertBadge floating title={`${alerts} open faults`} aria-label={`${alerts} open faults`}>
-              <WarningIcon />
               {alerts}
             </AlertBadge>
           )}
@@ -189,7 +187,6 @@ export function PlatformCard({
         {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
         {alerts > 0 && (
           <AlertBadge title={`${alerts} open faults`} aria-label={`${alerts} open faults`}>
-            <WarningIcon />
             {alerts}
           </AlertBadge>
         )}
