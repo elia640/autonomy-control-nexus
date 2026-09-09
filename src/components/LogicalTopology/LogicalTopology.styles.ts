@@ -35,9 +35,13 @@ export const LayerStack = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   gap: theme.spacing(9),
-  flex: 1,
+  flex: "0 1 auto",
   minHeight: "100%",
-  width: "100%",
+  /** Occupies half of the central canvas, centred horizontally. */
+  width: "50%",
+  minWidth: 560,
+  maxWidth: "100%",
+  margin: "0 auto",
   padding: theme.spacing(3, 1, 10),
 }));
 
