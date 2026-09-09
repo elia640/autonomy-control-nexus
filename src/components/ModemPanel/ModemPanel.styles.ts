@@ -176,8 +176,12 @@ export const MetricValue = styled("span")(({ theme }) => ({
 
 export const ChannelName = styled("span")(({ theme }) => ({
   fontWeight: 700,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.04em",
   color: theme.palette.text.primary,
+  minWidth: 0,
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
 }));
 
 const STATE_COLOR: Record<ChannelState, "good" | "poor" | "muted"> = {
