@@ -146,8 +146,8 @@ export function LogicalTopology({
       const midX = from.right + (to.left - from.right) / 2;
       return {
         path: `M ${from.right} ${from.middle} H ${midX} V ${to.middle} H ${to.left}`,
-        labelX: midX,
-        labelY: (from.middle + to.middle) / 2 - 5,
+        labelX: from.right + (to.left - from.right) * 0.3,
+        labelY: from.middle - 5,
       };
     };
 
