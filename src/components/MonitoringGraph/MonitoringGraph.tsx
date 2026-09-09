@@ -33,7 +33,7 @@ export function MonitoringGraph({ samples, withLatency }: MonitoringGraphProps) 
   });
 
   const series: { key: SeriesKey; label: string; color: string; dashed?: boolean }[] = [
-    { key: "upload", label: "Upload", color: theme.palette.status.good },
+    { key: "upload", label: "Upload", color: theme.palette.success.main },
     { key: "download", label: "Download", color: theme.palette.status.marginal },
     ...(withLatency
       ? [{ key: "latency" as const, label: "Latency", color: theme.palette.secondary.main }]
