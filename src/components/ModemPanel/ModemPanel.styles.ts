@@ -213,7 +213,9 @@ export const StateChip = styled("span", {
 
 export const RateCell = styled("span")({
   textAlign: "right",
+  whiteSpace: "nowrap",
   fontVariantNumeric: "tabular-nums",
+  justifySelf: "end",
 });
 
 /** Health chips sit under the quality bar, aligned with it. */
