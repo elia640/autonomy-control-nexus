@@ -34,11 +34,11 @@ export const LayerStack = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: theme.spacing(20),
+  gap: theme.spacing(9),
   flex: 1,
   minHeight: "100%",
   width: "100%",
-  padding: theme.spacing(6, 1, 18),
+  padding: theme.spacing(3, 1, 8),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
@@ -57,8 +57,8 @@ export const PlatformRow = styled(LayerRow)(({ theme }) => ({
   justifyContent: "space-evenly",
   alignItems: "flex-end",
   maxWidth: "100%",
-  rowGap: theme.spacing(5),
-  columnGap: theme.spacing(2),
+  rowGap: theme.spacing(3),
+  columnGap: theme.spacing(1.5),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({

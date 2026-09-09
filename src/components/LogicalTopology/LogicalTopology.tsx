@@ -333,6 +333,7 @@ export function LogicalTopology({
               <NodeSlot
                 key={route.unit.id}
                 dimmed={isDimmed(route.unit.id)}
+                onClick={(event) => event.stopPropagation()}
                 onMouseEnter={() => setHovered(route.unit.id)}
                 onMouseLeave={() => setHovered(null)}
               >
