@@ -14,8 +14,7 @@ export const TopologyContent = styled("div")({
   position: "relative",
   display: "flex",
   flex: "1 0 auto",
-  minWidth: "100%",
-  width: "max-content",
+  width: "100%",
 });
 
 export const EdgeSvg = styled("svg")({
@@ -33,7 +32,7 @@ export const LayerStack = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: theme.spacing(14),
+  gap: theme.spacing(18),
   minHeight: "min-content",
   width: "100%",
   padding: theme.spacing(3, 0, 4),
