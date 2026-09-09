@@ -95,11 +95,12 @@ export const ChannelList = styled("div")(({ theme }) => ({
 
 export const ChannelRow = styled("div")(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "auto 76px 74px 1fr 54px",
+  gridTemplateColumns: "auto minmax(52px, 1fr) auto auto auto",
   alignItems: "center",
-  gap: theme.spacing(1.5),
+  gap: theme.spacing(1),
   fontSize: "0.8125rem",
   color: theme.palette.text.secondary,
+  "& > *": { minWidth: 0 },
 }));
 
 export const ChannelGroup = styled("div")(({ theme }) => ({
