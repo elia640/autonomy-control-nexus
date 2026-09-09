@@ -32,11 +32,10 @@ export const LayerStack = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "flex-start",
-  gap: theme.spacing(16),
+  justifyContent: "center",
+  gap: theme.spacing(14),
   minHeight: "min-content",
-  width: "max-content",
-  minWidth: "100%",
+  width: "100%",
   padding: theme.spacing(3, 0, 4),
 }));
 
@@ -47,6 +46,14 @@ export const LayerRow = styled("div")(({ theme }) => ({
   alignItems: "flex-end",
   justifyContent: "center",
   gap: theme.spacing(1.5),
+}));
+
+/** Bottom row of platforms; wraps instead of overflowing the canvas. */
+export const PlatformRow = styled(LayerRow)(({ theme }) => ({
+  flexWrap: "wrap",
+  maxWidth: "100%",
+  rowGap: theme.spacing(5),
+  columnGap: theme.spacing(2),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({
@@ -207,8 +214,8 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
 /** Legend for line colouring and status. */
 export const Legend = styled("div")(({ theme }) => ({
   position: "absolute",
-  right: theme.spacing(1),
-  top: theme.spacing(1),
+  left: theme.spacing(1),
+  bottom: theme.spacing(1),
   display: "flex",
   flexWrap: "wrap",
   gap: theme.spacing(2),

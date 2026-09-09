@@ -24,6 +24,7 @@ import {
   LegendSwatch,
   ModemMeta,
   NodeSlot,
+  PlatformRow,
   RouteTag,
   RouterModule,
   SatelliteNode,
@@ -342,7 +343,7 @@ export function LogicalTopology({
             )}
           </LayerRow>
 
-          <LayerRow>
+          <PlatformRow>
             <LayerCaption>PLATFORMS</LayerCaption>
             {routes.map((route) => (
               <NodeSlot
@@ -377,7 +378,7 @@ export function LogicalTopology({
                 </div>
               </NodeSlot>
             ))}
-          </LayerRow>
+          </PlatformRow>
         </LayerStack>
 
         <Legend>
