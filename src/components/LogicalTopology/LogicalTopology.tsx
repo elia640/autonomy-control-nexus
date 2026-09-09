@@ -133,39 +133,51 @@ export function LogicalTopology({
     if (!modem) return;
 
     const next: Edge[] = [];
-    const elbow = (from: { right: number; middle: number }, to: { left: number; middle: number }) => {
+    const elbow = (
+      from: { right: number; middle: number },
+      to: { left: number; middle: number },
+    ) => {
       const midX = from.right + (to.left - from.right) / 2;
-      return `M ${from.right} ${from.middle} H ${midX} V ${to.middle} H ${to.left}`;
+      return {
+        path: `M ${from.right} ${from.middle} H ${midX} V ${to.middle} H ${to.left}`,
+        labelX: from.right + (midX - from.right) / 2,
+        labelY: from.middle - 6,
+      };
     };
 
-    const hops: { id: string; members: PlatformUnit[]; color: string; dashed: boolean }[] = [
-      { id: ROUTER_ID, members: routerGroup, color: routerColor, dashed: false },
-      ...(relay ? [{ id: relay.id, members: relayGroup, color: relayColor, dashed: true }] : []),
+    const hops: { id: string; members: PlatformUnit[]; dashed: boolean }[] = [
+      { id: ROUTER_ID, members: routerGroup, dashed: false },
+      ...(relay ? [{ id: relay.id, members: relayGroup, dashed: true }] : []),
     ];
 
     for (const hop of hops) {
       const hopBox = box(hop.id);
       if (!hopBox) continue;
-      const color = linksOn ? hop.color : theme.palette.divider;
 
       for (const unit of hop.members) {
         const unitBox = box(unit.id);
         if (!unitBox) continue;
+        const geometry = elbow(unitBox, hopBox);
         next.push({
           id: `${unit.id}->${hop.id}`,
           owners: [unit.id],
-          path: elbow(unitBox, hopBox),
+          ...geometry,
           color: linksOn ? theme.palette.status[unit.status] : theme.palette.divider,
           dashed: hop.dashed,
+          label: `↓ ${unit.mbps} Mbps`,
         });
       }
 
+      const trunk = elbow(hopBox, modem);
       next.push({
         id: `${hop.id}->${MODEM_ID}`,
         owners: hop.members.map((m) => m.id),
-        path: elbow(hopBox, modem),
-        color,
+        ...trunk,
+        color: linksOn
+          ? theme.palette.status[worstStatus(hop.members)]
+          : theme.palette.divider,
         dashed: hop.dashed,
+        label: `↓ ${sumRate(hop.members)} Mbps`,
       });
     }
 
