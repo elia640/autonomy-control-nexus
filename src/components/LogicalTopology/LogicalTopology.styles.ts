@@ -6,14 +6,14 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   overflow: "auto",
   display: "flex",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(1),
+  padding: theme.spacing(0.5),
 }));
 
 /** Positioning context for the measured connection layer. */
 export const TopologyContent = styled("div")({
   position: "relative",
   display: "flex",
-  alignItems: "center",
+  alignItems: "stretch",
   justifyContent: "center",
   flex: "1 0 auto",
   width: "100%",
@@ -36,16 +36,17 @@ export const LayerStack = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: theme.spacing(6),
-  flex: "0 1 auto",
-  /** Covers about half the canvas area, centred in both axes. */
-  width: "72%",
-  minWidth: 620,
-  maxWidth: "100%",
-  height: "72%",
-  minHeight: 420,
-  margin: "auto",
-  padding: theme.spacing(2, 1, 4),
+  gap: theme.spacing(3),
+  flex: "1 1 auto",
+  /** Fills the central canvas edge to edge. */
+  width: "100%",
+  minWidth: 720,
+  maxWidth: 1680,
+  height: "100%",
+  minHeight: 460,
+  margin: "0 auto",
+  /** Bottom padding keeps the platform row clear of the legend. */
+  padding: theme.spacing(2, 2, 13),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
@@ -61,11 +62,12 @@ export const LayerRow = styled("div")(({ theme }) => ({
 /** Bottom row of platforms; all units stay on a single spaced row. */
 export const PlatformRow = styled(LayerRow)(({ theme }) => ({
   flexWrap: "nowrap",
-  justifyContent: "space-between",
+  justifyContent: "space-evenly",
   alignItems: "flex-end",
   width: "100%",
-  columnGap: theme.spacing(3),
+  columnGap: theme.spacing(1.5),
 }));
+
 
 export const LayerCaption = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -119,21 +121,22 @@ export const HopNode = styled("div", {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  gap: theme.spacing(2),
-  width: "54%",
-  minWidth: 340,
+  gap: theme.spacing(3),
+  width: "50%",
+  minWidth: 420,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(accent, 0.8)}`,
   backgroundColor: alpha(accent, 0.1),
   boxShadow: `0 0 14px ${alpha(accent, 0.18)}`,
-  padding: theme.spacing(2, 3),
-  fontSize: "0.8125rem",
+  padding: theme.spacing(2.5, 4),
+  fontSize: "0.875rem",
   fontWeight: 700,
   letterSpacing: "0.14em",
+  whiteSpace: "nowrap",
   color: accent,
   opacity: dimmed ? 0.3 : 1,
   transition: "opacity 160ms ease",
-  "& .MuiSvgIcon-root": { fontSize: "1rem" },
+  "& .MuiSvgIcon-root": { fontSize: "1.125rem" },
 }));
 
 export const HopRow = styled("div")(({ theme }) => ({
@@ -157,9 +160,9 @@ export const CommandNode = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  gap: theme.spacing(1.5),
-  width: "68%",
-  minWidth: 520,
+  gap: theme.spacing(2),
+  width: "80%",
+  minWidth: 600,
   borderRadius: theme.shape.borderRadius,
   border: `2px solid ${theme.palette.primary.main}`,
   outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
@@ -167,13 +170,14 @@ export const CommandNode = styled("div")(({ theme }) => ({
   boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
   /** Transparent so platform lines stay visible up to the router inside. */
   backgroundColor: "transparent",
-  padding: theme.spacing(2, 3),
+  padding: theme.spacing(2.5, 4),
   cursor: "pointer",
-  fontSize: "0.875rem",
+  fontSize: "1rem",
   fontWeight: 700,
   letterSpacing: "0.18em",
+  whiteSpace: "nowrap",
   color: theme.palette.primary.main,
-  "& .MuiSvgIcon-root": { fontSize: "1rem" },
+  "& .MuiSvgIcon-root": { fontSize: "1.25rem" },
 }));
 
 export const CommandRow = styled("div")(({ theme }) => ({
@@ -201,18 +205,19 @@ export const RouterModule = styled("div")(({ theme }) => ({
   justifyContent: "center",
   gap: theme.spacing(1),
   width: "auto",
-  minWidth: 220,
+  minWidth: 260,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.9)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.18),
-  padding: theme.spacing(0.75, 1.5),
+  padding: theme.spacing(1, 2),
   /** Free-standing rectangle, detached from the control room edge. */
   marginBottom: theme.spacing(2),
-  fontSize: "0.75rem",
+  fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.12em",
+  whiteSpace: "nowrap",
   color: theme.palette.primary.light,
-  "& .MuiSvgIcon-root": { fontSize: "0.95rem" },
+  "& .MuiSvgIcon-root": { fontSize: "1rem" },
 }));
 
 export const ModemMeta = styled("span")(({ theme }) => ({

@@ -129,11 +129,14 @@ export function PlatformCard({
             </AlertBadge>
           )}
           <CompactHeader>
-            {!hideTitle && <CardTitle>{shortLabel(unit.label)}</CardTitle>}
+            {/* Topology cards are wide enough for the full name and range names. */}
+            {!hideTitle && (
+              <CardTitle>{variant === "topology" ? unit.label : shortLabel(unit.label)}</CardTitle>
+            )}
             <KindBadges>
               {activeKinds.map((kind) => (
                 <KindBadge key={kind} title={kind}>
-                  {KIND_ICON[kind]} {kind.slice(0, 3)}
+                  {KIND_ICON[kind]} {variant === "topology" ? kind : kind.slice(0, 3)}
                 </KindBadge>
               ))}
             </KindBadges>
