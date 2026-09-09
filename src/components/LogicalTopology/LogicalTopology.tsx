@@ -251,16 +251,30 @@ export function LogicalTopology({
           {edges.map((edge) => {
             const active = activeRoute === null || edge.owners.includes(activeRoute);
             return (
-              <path
-                key={edge.id}
-                d={edge.path}
-                fill="none"
-                stroke={edge.color}
-                strokeWidth={active && activeRoute !== null ? 2.4 : 1.6}
-                strokeDasharray={edge.dashed ? "5 4" : undefined}
-                strokeLinejoin="round"
-                opacity={active ? 0.95 : 0.18}
-              />
+              <g key={edge.id} opacity={active ? 0.95 : 0.18}>
+                <path
+                  d={edge.path}
+                  fill="none"
+                  stroke={edge.color}
+                  strokeWidth={active && activeRoute !== null ? 2.4 : 1.6}
+                  strokeDasharray={edge.dashed ? "5 4" : undefined}
+                  strokeLinejoin="round"
+                />
+                {/* Download rate travelling over this link. */}
+                <text
+                  x={edge.labelX}
+                  y={edge.labelY}
+                  fill={edge.color}
+                  fontSize={11}
+                  fontWeight={600}
+                  textAnchor="middle"
+                  stroke={theme.palette.background.default}
+                  strokeWidth={3}
+                  paintOrder="stroke"
+                >
+                  {edge.label}
+                </text>
+              </g>
             );
           })}
         </EdgeSvg>
