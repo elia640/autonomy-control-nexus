@@ -18,7 +18,7 @@ export const WindowHeader = styled("header")(({ theme }) => ({
   padding: theme.spacing(1.5, 2),
   borderBottom: `1px solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.panel.header,
-  fontSize: "0.75rem",
+  fontSize: "0.5625rem",
   fontWeight: 700,
   letterSpacing: "0.16em",
   color: theme.palette.primary.main,

@@ -31,7 +31,7 @@ export function ThroughputChart({ samples, maxBandwidth }: ThroughputChartProps)
   });
 
   const series: { key: SeriesKey; label: string; color: string }[] = [
-    { key: "upload", label: "Upload", color: theme.palette.success.main },
+    { key: "upload", label: "Upload", color: theme.palette.status.good },
     { key: "download", label: "Download", color: theme.palette.status.marginal },
     { key: "bandwidth", label: "Bandwidth", color: theme.palette.primary.main },
   ];
@@ -72,7 +72,7 @@ export function ThroughputChart({ samples, maxBandwidth }: ThroughputChartProps)
               contentStyle={{
                 background: theme.palette.background.paper,
                 border: `1px solid ${theme.palette.divider}`,
-                fontSize: 11,
+                fontSize: 10,
               }}
             />
             <ReferenceLine
@@ -84,7 +84,7 @@ export function ThroughputChart({ samples, maxBandwidth }: ThroughputChartProps)
               label={{
                 value: "MAX BW",
                 position: "insideTopRight",
-                fontSize: 11,
+                fontSize: 8,
                 fill: theme.palette.primary.main,
               }}
             />

@@ -17,7 +17,7 @@ export const MeterScore = styled("span", {
 })<{ tone: LinkStatus }>(({ theme, tone }) => {
   const color = theme.palette.status[tone];
   return {
-    fontSize: "0.75rem",
+    fontSize: "0.625rem",
     fontWeight: 700,
     fontVariantNumeric: "tabular-nums",
     minWidth: 38,

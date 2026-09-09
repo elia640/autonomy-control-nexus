@@ -30,7 +30,7 @@ export const Bar = styled("span", {
 export const BarsValue = styled("span", {
   shouldForwardProp: (prop) => prop !== "tone",
 })<{ tone: string }>(({ tone }) => ({
-  fontSize: "0.75rem",
+  fontSize: "0.625rem",
   fontWeight: 700,
   letterSpacing: "0.02em",
   fontVariantNumeric: "tabular-nums",

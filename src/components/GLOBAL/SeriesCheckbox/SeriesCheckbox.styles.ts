@@ -9,7 +9,7 @@ export const SeriesFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
     display: "inline-flex",
     alignItems: "center",
     gap: theme.spacing(1.5),
-    fontSize: "0.75rem",
+    fontSize: "0.625rem",
     letterSpacing: "0.08em",
     color: theme.palette.text.secondary,
   },

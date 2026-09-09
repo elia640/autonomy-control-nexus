@@ -46,7 +46,7 @@ export const tacticalTheme = createTheme({
       disabled: "rgba(255,255,255,0.3)",
       disabledBackground: "rgba(255,255,255,0.12)",
     },
-    status: { good: "#90CAF9", marginal: "#FFA726", poor: "#F44336" },
+    status: { good: "#66BB6A", marginal: "#FFA726", poor: "#F44336" },
     panel: { surface: "#121212", header: "#212121", drawer: "#292929" },
     interactive: { main: "#2477E8", glow: "rgba(47,128,237,0.4)" },
   },

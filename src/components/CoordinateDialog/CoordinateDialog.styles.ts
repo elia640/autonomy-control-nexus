@@ -8,6 +8,6 @@ export const FieldRow = styled("div")(({ theme }) => ({
 
 export const Hint = styled("p")(({ theme }) => ({
   margin: 0,
-  fontSize: "0.75rem",
+  fontSize: "0.6875rem",
   color: theme.palette.text.secondary,
 }));

@@ -44,7 +44,7 @@ export const SettingsTabs = styled(Tabs)(({ theme }) => ({
 export const SettingsTab = styled(Tab)(({ theme }) => ({
   minHeight: 0,
   padding: theme.spacing(2, 3),
-  fontSize: "0.75rem",
+  fontSize: "0.625rem",
   fontWeight: 600,
   letterSpacing: "0.18em",
   color: theme.palette.text.secondary,
@@ -72,7 +72,7 @@ export const FieldGroup = styled("div")(({ theme }) => ({
 }));
 
 export const FieldLabel = styled("span")(({ theme }) => ({
-  fontSize: "0.75rem",
+  fontSize: "0.5625rem",
   fontWeight: 600,
   letterSpacing: "0.18em",
   textTransform: "uppercase",
@@ -80,13 +80,13 @@ export const FieldLabel = styled("span")(({ theme }) => ({
 }));
 
 export const FieldHint = styled("span")(({ theme }) => ({
-  fontSize: "0.75rem",
+  fontSize: "0.5625rem",
   color: theme.palette.text.secondary,
 }));
 
 export const SettingsField = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-root": {
-    fontSize: "0.75rem",
+    fontSize: "0.6875rem",
     color: theme.palette.text.primary,
     backgroundColor: alpha(theme.palette.background.paper, 0.8),
   },
