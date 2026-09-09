@@ -27,6 +27,7 @@ import {
   ModemModule,
   NodeSlot,
   RouteTag,
+  RouterModule,
   SatelliteNode,
   TopologyContent,
   TopologyRoot,
