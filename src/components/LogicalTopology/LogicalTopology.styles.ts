@@ -158,7 +158,8 @@ export const CommandNode = styled("div")(({ theme }) => ({
   outline: `1px solid ${alpha(theme.palette.primary.main, 0.35)}`,
   outlineOffset: 3,
   boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
-  backgroundColor: theme.palette.panel.header,
+  /** Transparent so platform lines stay visible up to the router inside. */
+  backgroundColor: "transparent",
   padding: theme.spacing(2, 3),
   cursor: "pointer",
   fontSize: "0.875rem",
