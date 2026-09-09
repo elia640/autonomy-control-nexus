@@ -17,6 +17,7 @@ import {
   ChannelName,
   ChannelNameButton,
   ChannelRow,
+  DimWrap,
   MetricCell,
   MetricName,
   MetricValue,
