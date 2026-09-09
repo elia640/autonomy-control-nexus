@@ -61,6 +61,10 @@ function MonitorPage() {
         }}
         selectedRelayId={selectedRelayId}
         onSelectRelay={setSelectedRelayId}
+        onOpenControlRoom={() => {
+          setSelectedVehicleId(null);
+          setSelectedRelayId(null);
+        }}
       />
       <ControlRoomPanel
         mode={mode}

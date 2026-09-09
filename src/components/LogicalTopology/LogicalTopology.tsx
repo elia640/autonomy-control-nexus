@@ -5,7 +5,7 @@ import RouterIcon from "@mui/icons-material/Router";
 import MemoryIcon from "@mui/icons-material/Memory";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
-import { ControlRoomDrawer } from "@/components/ControlRoomDrawer";
+
 import { PlatformCard } from "@/components/PlatformCard";
 import { platforms, relays } from "@/data/network";
 import type { LinkKind, LinkStatus, PlatformUnit } from "@/types/network";
