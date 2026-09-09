@@ -15,7 +15,7 @@ export const AssetHeaderRow = styled("div")(({ theme }) => ({
 }));
 
 export const AssetName = styled("span")(({ theme }) => ({
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   fontWeight: 600,
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
@@ -32,7 +32,7 @@ export const AssetMetrics = styled("div")(({ theme }) => ({
   alignItems: "center",
   gap: theme.spacing(4),
   marginTop: theme.spacing(1.5),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.secondary,
   "& > span": { display: "inline-flex", alignItems: "center", gap: theme.spacing(1) },
   "& .MuiSvgIcon-root": { fontSize: "0.8rem" },

@@ -46,7 +46,7 @@ export const MeshChip = styled("div", {
   color: chipColor,
   backgroundColor: alpha(theme.palette.background.default, 0.85),
   padding: theme.spacing(0.25, 1),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.12em",
   backdropFilter: "blur(4px)",
 }));
@@ -85,7 +85,7 @@ export const NodeLabel = styled("div")(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: alpha(theme.palette.background.default, 0.8),
   padding: theme.spacing(0.5, 1.5),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.14em",
   color: theme.palette.primary.main,
 }));
@@ -105,7 +105,7 @@ export const InfoChip = styled("div")(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: alpha(theme.palette.background.default, 0.7),
   padding: theme.spacing(1, 1.5),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.16em",
   color: theme.palette.text.secondary,
   "& .MuiSvgIcon-root": { fontSize: "0.8rem", color: theme.palette.primary.main },
@@ -122,7 +122,7 @@ export const LegendBox = styled("div")(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: alpha(theme.palette.background.default, 0.8),
   padding: theme.spacing(1.5, 2),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.secondary,
 }));
 
@@ -148,7 +148,7 @@ export const ScaleBox = styled("div")(({ theme }) => ({
   right: theme.spacing(3),
   bottom: theme.spacing(3),
   textAlign: "right",
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.14em",
   color: theme.palette.text.secondary,
 }));
@@ -190,10 +190,10 @@ export const DualLinkChip = styled("span", {
   border: `1px solid ${chipColor}`,
   backgroundColor: alpha(theme.palette.background.default, 0.85),
   padding: "0 3px",
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.08em",
   color: chipColor,
-  "& .MuiSvgIcon-root": { fontSize: "0.6875rem" },
+  "& .MuiSvgIcon-root": { fontSize: "0.75rem" },
 }));
 
 /** Transformed surface holding the imagery and every overlay node. */
@@ -250,7 +250,7 @@ export const OffscreenArrow = styled("div", {
   border: `1px solid ${theme.palette.primary.main}`,
   backgroundColor: alpha(theme.palette.background.paper, 0.9),
   color: theme.palette.primary.main,
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.12em",
   pointerEvents: "none",
   "& .MuiSvgIcon-root": {

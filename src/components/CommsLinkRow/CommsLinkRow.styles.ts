@@ -10,7 +10,7 @@ export const LinkRowRoot = styled("div")(({ theme }) => ({
 export const LinkRowLabel = styled("span")(({ theme }) => ({
   width: 56,
   flexShrink: 0,
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.primary,
 }));
@@ -27,7 +27,7 @@ export const LinkRowRate = styled("span", {
   width: 62,
   flexShrink: 0,
   textAlign: "right",
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   color:
     status && status !== "good" ? theme.palette.status[status] : theme.palette.text.secondary,
   fontWeight: status && status !== "good" ? 600 : 400,

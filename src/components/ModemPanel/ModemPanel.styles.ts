@@ -35,7 +35,7 @@ export const NameBlock = styled("div")(({ theme }) => ({
 }));
 
 export const PanelName = styled("span")(({ theme }) => ({
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   fontWeight: 700,
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
@@ -59,7 +59,7 @@ export const RateText = styled("span")(({ theme }) => ({
   gap: theme.spacing(1),
   flexShrink: 0,
   whiteSpace: "nowrap",
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.08em",
   color: theme.palette.text.secondary,
 }));
@@ -98,7 +98,7 @@ export const ChannelRow = styled("div")(({ theme }) => ({
   gridTemplateColumns: "auto 76px 74px 1fr 54px",
   alignItems: "center",
   gap: theme.spacing(1.5),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   color: theme.palette.text.secondary,
 }));
 
@@ -157,13 +157,13 @@ export const MetricCell = styled("span")({
 });
 
 export const MetricName = styled("span")(({ theme }) => ({
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.06em",
   color: theme.palette.text.secondary,
 }));
 
 export const MetricValue = styled("span")(({ theme }) => ({
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   fontWeight: 700,
   fontVariantNumeric: "tabular-nums",
   color: theme.palette.text.primary,
@@ -191,7 +191,7 @@ export const StateChip = styled("span", {
     display: "inline-flex",
     justifyContent: "center",
     padding: theme.spacing(0.5, 1),
-    fontSize: "0.6875rem",
+    fontSize: "0.75rem",
     fontWeight: 700,
     letterSpacing: "0.06em",
     color,

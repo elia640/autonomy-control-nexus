@@ -40,7 +40,7 @@ export const LinksButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",
 })<{ active: boolean }>(({ theme, active }) => ({
   padding: theme.spacing(1, 2),
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   border: `1px solid ${active ? theme.palette.primary.main : theme.palette.divider}`,
   backgroundColor: active
     ? theme.palette.primary.main

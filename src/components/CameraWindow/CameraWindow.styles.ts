@@ -30,7 +30,7 @@ export const WindowHeader = styled("header")(({ theme }) => ({
   padding: theme.spacing(1.5, 2),
   backgroundColor: theme.palette.panel.header,
   borderBottom: `1px solid ${theme.palette.divider}`,
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.16em",
   color: theme.palette.primary.main,
 }));
@@ -45,7 +45,7 @@ export const QualityButton = styled(ButtonBase)(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.primary.main, 0.7)}`,
   backgroundColor: alpha(theme.palette.primary.main, 0.15),
   color: theme.palette.primary.main,
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.12em",
 }));
 
@@ -69,7 +69,7 @@ export const FeedFooter = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   padding: theme.spacing(1.5, 2),
   borderTop: `1px solid ${theme.palette.divider}`,
-  fontSize: "0.6875rem",
+  fontSize: "0.75rem",
   letterSpacing: "0.12em",
   color: theme.palette.text.secondary,
 }));
