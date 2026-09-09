@@ -42,7 +42,16 @@ export interface ModemPanelProps {
   onReboot?: (modemId: string) => void;
 }
 
+/** Abbreviated so every channel row fits on a single line. */
 const STATE_LABEL: Record<ChannelState, string> = {
+  connected: "CONN",
+  disconnected: "NO CONN",
+  absent: "NO SIM",
+  unplugged: "UNPLG",
+};
+
+/** Full wording kept as a tooltip for the abbreviated chips. */
+const STATE_TITLE: Record<ChannelState, string> = {
   connected: "CONNECTED",
   disconnected: "NOT CONNECTED",
   absent: "NO SIM",

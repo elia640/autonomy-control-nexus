@@ -8,6 +8,16 @@ export const PanelRoot = styled("div")(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.paper, 0.7),
 }));
 
+/** Greys out and locks every readout/control while a reboot cycle runs. */
+export const DimWrap = styled("div", {
+  shouldForwardProp: (prop) => prop !== "dimmed",
+})<{ dimmed: boolean }>(({ theme, dimmed }) => ({
+  opacity: dimmed ? 0.35 : 1,
+  filter: dimmed ? "grayscale(1)" : "none",
+  pointerEvents: dimmed ? "none" : "auto",
+  transition: theme.transitions.create(["opacity", "filter"]),
+}));
+
 export const HeaderRow = styled("div")(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "20px 20px minmax(0, 1fr)",
