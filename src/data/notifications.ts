@@ -27,13 +27,13 @@ export const notifications: AlertNotification[] = [
   {
     id: "n3",
     title: "RELAY · TEMPERATURE WARNING",
-    detail: "Modem at 71°C",
+    detail: "Halo at 71°C",
     time: "11:41",
     severity: "marginal",
   },
   {
     id: "n4",
-    title: "MODEM CONVOY 23 · CPU LOAD",
+    title: "HALO CONVOY 23 · CPU LOAD",
     detail: "Sustained load above 80%",
     time: "11:22",
     severity: "marginal",

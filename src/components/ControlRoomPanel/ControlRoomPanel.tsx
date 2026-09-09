@@ -127,7 +127,7 @@ export function ControlRoomPanel({
         />
       </PanelStack>
 
-      <SectionHeader title={vehicle ? "Modem Monitoring" : "Control Room Monitoring"} />
+      <SectionHeader title={vehicle ? "Halo Monitoring" : "Control Room Monitoring"} />
       <MonitoringGraph
         samples={samples}
         maxBandwidth={MAX_BANDWIDTH_MBPS}
@@ -136,7 +136,7 @@ export function ControlRoomPanel({
 
       {vehicle === null && (
         <>
-          <CompareCaption>COMPARE MODEM MONITORING</CompareCaption>
+          <CompareCaption>COMPARE HALO MONITORING</CompareCaption>
           <CompareRow>
             {compareOptions.map((option) => (
               <SeriesCheckbox

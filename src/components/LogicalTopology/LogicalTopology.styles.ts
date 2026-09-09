@@ -6,7 +6,7 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   overflow: "auto",
   display: "flex",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(2),
+  padding: theme.spacing(1),
 }));
 
 /** Positioning context for the measured connection layer. */
@@ -34,11 +34,11 @@ export const LayerStack = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: theme.spacing(20),
+  gap: theme.spacing(6),
   flex: 1,
   minHeight: "100%",
   width: "100%",
-  padding: theme.spacing(6, 1, 18),
+  padding: theme.spacing(3, 1, 12),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
@@ -57,8 +57,8 @@ export const PlatformRow = styled(LayerRow)(({ theme }) => ({
   justifyContent: "space-evenly",
   alignItems: "flex-end",
   maxWidth: "100%",
-  rowGap: theme.spacing(5),
-  columnGap: theme.spacing(2),
+  rowGap: theme.spacing(3),
+  columnGap: theme.spacing(1.5),
 }));
 
 export const LayerCaption = styled("div")(({ theme }) => ({
@@ -82,8 +82,19 @@ export const NodeSlot = styled("div", {
   display: "flex",
   flexDirection: "column",
   alignItems: "stretch",
+  /** Cards keep a common baseline and grow upwards. */
+  justifyContent: "flex-end",
+  minHeight: 108,
   opacity: dimmed ? 0.3 : 1,
   transition: "opacity 160ms ease",
+  "& > div": { display: "flex", alignItems: "flex-end" },
+  "& > div > *": {
+    minHeight: 92,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: "100%",
+  },
 }));
 
 /** Caption above each platform card describing how it reaches the control room. */
@@ -234,7 +245,7 @@ export const SatelliteNode = styled("div")(({ theme }) => ({
 export const Legend = styled("div")(({ theme }) => ({
   position: "absolute",
   left: theme.spacing(1),
-  bottom: theme.spacing(1),
+  top: theme.spacing(1),
   display: "flex",
   flexWrap: "wrap",
   gap: theme.spacing(2),

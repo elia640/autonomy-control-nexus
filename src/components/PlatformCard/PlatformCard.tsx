@@ -6,6 +6,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 import VideocamIcon from "@mui/icons-material/Videocam";
+import WarningIcon from "@mui/icons-material/WarningAmberRounded";
 import { CameraWindow } from "@/components/CameraWindow";
 import { CollapseButton } from "@/components/GLOBAL/CollapseButton";
 import { HealthMetrics } from "@/components/GLOBAL/HealthMetrics";
@@ -124,7 +125,8 @@ export function PlatformCard({
           {...(onSelect ? { role: "button", onClick: onSelect } : {})}
         >
           {alerts > 0 && (
-            <AlertBadge floating title={`${alerts} open alerts`}>
+            <AlertBadge floating title={`${alerts} open faults`} aria-label={`${alerts} open faults`}>
+              <WarningIcon />
               {alerts}
             </AlertBadge>
           )}
@@ -141,7 +143,11 @@ export function PlatformCard({
           <CompactBody>
             {/* Logical view uses the filling bar shared with the side panels. */}
             {variant === "topology" ? (
-              <QualityBar value={unit.quality} ariaLabel={`${unit.label} link quality`} />
+              <QualityBar
+                value={unit.quality}
+                showValue
+                ariaLabel={`${unit.label} link quality`}
+              />
             ) : (
               <SignalBars value={unit.quality} bars={4} ariaLabel={`${unit.label} link quality`} />
             )}
@@ -181,7 +187,12 @@ export function PlatformCard({
           />
         )}
         {!hideTitle && <CardTitle>{unit.label}</CardTitle>}
-        {alerts > 0 && <AlertBadge title={`${alerts} open alerts`}>{alerts}</AlertBadge>}
+        {alerts > 0 && (
+          <AlertBadge title={`${alerts} open faults`} aria-label={`${alerts} open faults`}>
+            <WarningIcon />
+            {alerts}
+          </AlertBadge>
+        )}
         {/* Shown collapsed and expanded; neutral grey so only the bar carries colour. */}
         <KindBadges>
           {activeKinds.map((kind) => (
