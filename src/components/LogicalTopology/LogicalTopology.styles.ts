@@ -5,13 +5,13 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   inset: 0,
   overflow: "auto",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(9, 4, 8),
+  padding: theme.spacing(10, 2, 7),
 }));
 
 /** Positioning context for the measured connection layer. */
 export const TopologyContent = styled("div")({
   position: "relative",
-  minHeight: "100%",
+  height: "100%",
   minWidth: "100%",
   width: "max-content",
 });
@@ -28,10 +28,10 @@ export const EdgeSvg = styled("svg")({
 export const LayerGrid = styled("div")(({ theme }) => ({
   position: "relative",
   display: "grid",
-  gridTemplateColumns: "200px 150px 230px",
+  gridTemplateColumns: "185px 124px 205px",
   alignItems: "center",
   justifyContent: "start",
-  gap: theme.spacing(0, 7),
+  gap: theme.spacing(0, 5),
   minHeight: "100%",
   width: "max-content",
 }));
@@ -95,7 +95,7 @@ export const HopNode = styled("div", {
   border: `1px solid ${alpha(accent, 0.8)}`,
   backgroundColor: alpha(accent, 0.1),
   boxShadow: `0 0 14px ${alpha(accent, 0.18)}`,
-  padding: theme.spacing(2, 2),
+  padding: theme.spacing(1.5, 1),
   fontSize: "0.8125rem",
   fontWeight: 700,
   letterSpacing: "0.14em",
@@ -130,7 +130,7 @@ export const CommandNode = styled("div")(({ theme }) => ({
   outlineOffset: 3,
   boxShadow: `0 0 18px ${alpha(theme.palette.primary.main, 0.35)}`,
   backgroundColor: theme.palette.panel.header,
-  padding: theme.spacing(2.5, 2.5),
+  padding: theme.spacing(2, 1.5),
   cursor: "pointer",
   fontSize: "0.875rem",
   fontWeight: 700,
