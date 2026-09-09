@@ -3,13 +3,11 @@ import { useTheme } from "@mui/material/styles";
 import HubIcon from "@mui/icons-material/Hub";
 import RouterIcon from "@mui/icons-material/Router";
 import LanIcon from "@mui/icons-material/DeviceHub";
-import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 
 import { PlatformCard } from "@/components/PlatformCard";
 import { platforms } from "@/data/network";
 import type { LinkKind, PlatformUnit } from "@/types/network";
 import {
-  CommandCaption,
   CommandNode,
   CommandRow,
   EdgeSvg,
@@ -25,9 +23,7 @@ import {
   ModemMeta,
   NodeSlot,
   PlatformRow,
-  RouteTag,
   RouterModule,
-  SatelliteNode,
   TopologyContent,
   TopologyRoot,
 } from "./LogicalTopology.styles";
@@ -68,8 +64,6 @@ const NETWORK_NODE = "NETWORK NODE NN-1";
 
 const kindsOf = (unit: PlatformUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 
-const primaryKind = (unit: PlatformUnit): LinkKind => kindsOf(unit)[0]!;
-
 /** Cellular and satellite reach the control room directly; radio-only does not. */
 const hasDirectVisibility = (unit: PlatformUnit): boolean =>
   kindsOf(unit).some((kind) => kind === "CELLULAR" || kind === "SATCOM");
@@ -109,7 +103,6 @@ export function LogicalTopology({
 
   const peerRoutes = useMemo(() => routes.filter((r) => r.peer !== null), [routes]);
 
-  const routerColor = theme.palette.primary.main;
   const nodeColor = theme.palette.info?.main ?? theme.palette.primary.light;
 
   /** Which platform route is emphasised right now. */
@@ -293,11 +286,6 @@ export function LogicalTopology({
               <CommandRow>
                 <HubIcon /> CONTROL ROOM
               </CommandRow>
-              <CommandCaption>
-                <SatelliteNode as="span">
-                  <SatelliteIcon /> TELS-1 SATELLITE
-                </SatelliteNode>
-              </CommandCaption>
               <RouterModule ref={setNodeRef(ROUTER_ID)}>
                 <RouterIcon /> {CONTROL_ROOM_ROUTER}
                 <ModemMeta>{routes.length} PORTS</ModemMeta>
@@ -325,18 +313,6 @@ export function LogicalTopology({
                 onMouseLeave={() => setHovered(null)}
               >
                 <div ref={setNodeRef(route.unit.id)}>
-                  <RouteTag
-                    labelColor={
-                      linksOn
-                        ? route.peer === null
-                          ? routerColor
-                          : nodeColor
-                        : theme.palette.divider
-                    }
-                  >
-                    {primaryKind(route.unit)} →{" "}
-                    {route.peer ? route.peer.label : NETWORK_NODE}
-                  </RouteTag>
                   <PlatformCard
                     unit={route.unit}
                     variant="topology"

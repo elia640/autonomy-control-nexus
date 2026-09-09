@@ -53,7 +53,7 @@ function MonitorPage() {
         mode={mode}
         linksOn={linksOn}
         onLinksOnChange={setLinksOn}
-        title="CIVIL NETWORK MONITORING SYSTEM"
+        
         selectedVehicleId={selectedVehicleId}
         onSelectVehicle={(id) => {
           setSelectedVehicleId(id);
