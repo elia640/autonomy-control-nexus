@@ -29,8 +29,6 @@ export interface RadioPanelProps {
 
 export function RadioPanel({
   radio,
-  expanded,
-  onExpandedChange,
   enabled,
   onEnabledChange,
   lastActive = false,
