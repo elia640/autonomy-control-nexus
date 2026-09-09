@@ -123,8 +123,12 @@ export const ChannelNameButton = styled("button")(({ theme }) => ({
   textAlign: "left",
   font: "inherit",
   fontWeight: 700,
-  letterSpacing: "0.06em",
+  letterSpacing: "0.04em",
   color: theme.palette.text.primary,
+  minWidth: 0,
+  "& > span, &": { overflow: "hidden" },
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
   "& .MuiSvgIcon-root": {
     fontSize: "1.05rem",
     color: theme.palette.primary.main,
