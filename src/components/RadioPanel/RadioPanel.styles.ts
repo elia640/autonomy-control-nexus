@@ -38,9 +38,9 @@ export const PanelName = styled("span")(({ theme }) => ({
   fontWeight: 700,
   letterSpacing: "0.1em",
   color: theme.palette.text.primary,
-  whiteSpace: "nowrap",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
+  /** Always shows the full name; wraps instead of truncating. */
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
 }));
 
 export const MeterRow = styled("div")(({ theme }) => ({
