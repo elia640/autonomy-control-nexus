@@ -28,11 +28,12 @@ export const EdgeSvg = styled("svg")({
 export const LayerGrid = styled("div")(({ theme }) => ({
   position: "relative",
   display: "grid",
-  gridTemplateColumns: "minmax(200px, 260px) minmax(160px, 200px) minmax(220px, 280px)",
+  gridTemplateColumns: "200px 150px 230px",
   alignItems: "center",
-  justifyContent: "center",
-  gap: theme.spacing(0, 14),
+  justifyContent: "start",
+  gap: theme.spacing(0, 7),
   minHeight: "100%",
+  width: "max-content",
 }));
 
 export const LayerColumn = styled("div")(({ theme }) => ({
