@@ -6,7 +6,7 @@ export const TopologyRoot = styled("div")(({ theme }) => ({
   overflow: "auto",
   display: "flex",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(2),
+  padding: theme.spacing(1),
 }));
 
 /** Positioning context for the measured connection layer. */
@@ -82,8 +82,19 @@ export const NodeSlot = styled("div", {
   display: "flex",
   flexDirection: "column",
   alignItems: "stretch",
+  /** Cards keep a common baseline and grow upwards. */
+  justifyContent: "flex-end",
+  minHeight: 108,
   opacity: dimmed ? 0.3 : 1,
   transition: "opacity 160ms ease",
+  "& > div": { display: "flex", alignItems: "flex-end" },
+  "& > div > *": {
+    minHeight: 92,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: "100%",
+  },
 }));
 
 /** Caption above each platform card describing how it reaches the control room. */
