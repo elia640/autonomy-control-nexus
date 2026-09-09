@@ -32,10 +32,11 @@ export const LayerStack = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: theme.spacing(18),
+  gap: theme.spacing(16),
+  flex: 1,
   minHeight: "min-content",
   width: "100%",
-  padding: theme.spacing(3, 0, 4),
+  padding: theme.spacing(4, 1, 16),
 }));
 
 export const LayerRow = styled("div")(({ theme }) => ({
@@ -45,11 +46,14 @@ export const LayerRow = styled("div")(({ theme }) => ({
   alignItems: "flex-end",
   justifyContent: "center",
   gap: theme.spacing(1.5),
+  width: "100%",
 }));
 
 /** Bottom row of platforms; wraps instead of overflowing the canvas. */
 export const PlatformRow = styled(LayerRow)(({ theme }) => ({
   flexWrap: "wrap",
+  justifyContent: "space-evenly",
+  alignItems: "flex-end",
   maxWidth: "100%",
   rowGap: theme.spacing(5),
   columnGap: theme.spacing(2),
@@ -103,6 +107,7 @@ export const HopNode = styled("div", {
   alignItems: "center",
   justifyContent: "center",
   gap: theme.spacing(2),
+  width: "54%",
   minWidth: 340,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(accent, 0.8)}`,
@@ -121,6 +126,7 @@ export const HopNode = styled("div", {
 export const HopRow = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
+  whiteSpace: "nowrap",
   gap: theme.spacing(1),
 }));
 
@@ -137,6 +143,7 @@ export const CommandNode = styled("div")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   gap: theme.spacing(1.5),
+  width: "68%",
   minWidth: 520,
   borderRadius: theme.shape.borderRadius,
   border: `2px solid ${theme.palette.primary.main}`,
@@ -174,6 +181,7 @@ export const RouterModule = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   gap: theme.spacing(1),
+  width: "56%",
   minWidth: 300,
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.9)}`,

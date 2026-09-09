@@ -2,11 +2,11 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useTheme } from "@mui/material/styles";
 import HubIcon from "@mui/icons-material/Hub";
 import RouterIcon from "@mui/icons-material/Router";
-import RadioIcon from "@mui/icons-material/SettingsInputAntenna";
+import LanIcon from "@mui/icons-material/DeviceHub";
 import SatelliteIcon from "@mui/icons-material/SatelliteAlt";
 
 import { PlatformCard } from "@/components/PlatformCard";
-import { platforms, relays } from "@/data/network";
+import { platforms } from "@/data/network";
 import type { LinkKind, PlatformUnit } from "@/types/network";
 import {
   CommandCaption,
@@ -54,16 +54,17 @@ interface Edge {
   labelY: number;
 }
 
-/** How a platform reaches the control room router. */
+/** How a platform reaches the network node. */
 interface Route {
   unit: PlatformUnit;
-  /** Node id of the intermediate hop, or null when the link is direct. */
-  hopId: string | null;
-  hopLabel: string;
+  /** Peer platform used as a relay, or null when the node is reached directly. */
+  peer: PlatformUnit | null;
 }
 
 const ROUTER_ID = "cr-router";
+const NODE_ID = "net-node";
 const CONTROL_ROOM_ROUTER = "ROUTER CONVOY 23";
+const NETWORK_NODE = "NETWORK NODE NN-1";
 
 const kindsOf = (unit: PlatformUnit): LinkKind[] => unit.activeLinks ?? [unit.link];
 
@@ -92,30 +93,24 @@ export function LogicalTopology({
     onOpenControlRoom?.();
   };
 
-  const relay = relays[0] ?? null;
-
   /**
-   * Every platform gets a route: direct to the router, through the relay unit,
-   * or through a peer platform that does have direct visibility.
+   * Every platform reaches the network node. Platforms without direct
+   * visibility hop through a peer platform that does have it.
    */
   const routes = useMemo<Route[]>(
     () =>
       platforms.map((unit) => {
-        if (hasDirectVisibility(unit)) return { unit, hopId: null, hopLabel: "DIRECT" };
-        if (relay && relay.connectedTo.includes(unit.id))
-          return { unit, hopId: relay.id, hopLabel: relay.label };
+        if (hasDirectVisibility(unit)) return { unit, peer: null };
         const peer = platforms.find((p) => p.id !== unit.id && hasDirectVisibility(p));
-        return peer
-          ? { unit, hopId: peer.id, hopLabel: peer.label }
-          : { unit, hopId: null, hopLabel: "DIRECT" };
+        return { unit, peer: peer ?? null };
       }),
-    [relay],
+    [],
   );
 
-  const relayRoutes = useMemo(() => routes.filter((r) => r.hopId !== null), [routes]);
+  const peerRoutes = useMemo(() => routes.filter((r) => r.peer !== null), [routes]);
 
   const routerColor = theme.palette.primary.main;
-  const relayColor = theme.palette.warning.main;
+  const nodeColor = theme.palette.info?.main ?? theme.palette.primary.light;
 
   /** Which platform route is emphasised right now. */
   const activeRoute = hovered ?? selectedVehicleId;
@@ -146,101 +141,83 @@ export function LogicalTopology({
     };
 
     const router = box(ROUTER_ID);
-    const hopBox = relay ? box(relay.id) : null;
-    if (!router) return;
+    const node = box(NODE_ID);
+    if (!router || !node) return;
 
     /** Spreads several lines across the horizontal edge of a node. */
     const port = (
-      node: { left: number; width: number },
+      shape: { left: number; width: number },
       index: number,
       count: number,
-    ): number => node.left + (node.width * (index + 1)) / (count + 1);
-
-    /** Vertical run with one horizontal jog at the given y. */
-    const vertical = (
-      id: string,
-      owner: string,
-      from: { x: number; y: number },
-      to: { x: number; y: number },
-      jogY: number,
-      color: string,
-      dashed: boolean,
-      label: string,
-    ): Edge => ({
-      id,
-      owner,
-      path: `M ${from.x} ${from.y} V ${jogY} H ${to.x} V ${to.y}`,
-      color,
-      dashed,
-      label,
-      labelX: to.x,
-      labelY: (jogY + to.y) / 2 - 4,
-    });
+    ): number => shape.left + (shape.width * (index + 1)) / (count + 1);
 
     const next: Edge[] = [];
-    const routerOrder = routes.map((route) => route.unit.id);
+    const order = routes.map((route) => route.unit.id);
     const colorFor = (unit: PlatformUnit) =>
       linksOn ? theme.palette.status[unit.status] : theme.palette.divider;
 
-    routes.forEach((route) => {
+    routes.forEach((route, index) => {
       const unitBox = box(route.unit.id);
       if (!unitBox) return;
-      const routerPortIndex = routerOrder.indexOf(route.unit.id);
-      const routerX = port(router, routerPortIndex, routerOrder.length);
       const color = colorFor(route.unit);
       const rate = `↓ ${route.unit.mbps} Mbps`;
+      const nodeInX = port(node, index, order.length);
+      const routerX = port(router, index, order.length);
 
-      if (route.hopId === null || !hopBox) {
-        /** Direct lines skirt the relay box by jogging beside it. */
-        const sideX =
-          unitBox.center < hopBox!.center
-            ? Math.min(unitBox.center, hopBox!.left - 28)
-            : Math.max(unitBox.center, hopBox!.right + 28);
-        next.push({
-          id: `${route.unit.id}->router`,
-          owner: route.unit.id,
-          path: `M ${unitBox.center} ${unitBox.top} V ${hopBox!.bottom + 14} H ${sideX} V ${hopBox!.top - 14} H ${routerX} V ${router.bottom}`,
-          color,
-          dashed: false,
-          label: rate,
-          labelX: sideX,
-          labelY: (hopBox!.top + hopBox!.bottom) / 2,
-        });
-        return;
+      /** Feeding point into the network node: the platform itself or its peer. */
+      let feedX = unitBox.center;
+      let feedY = unitBox.top;
+
+      if (route.peer) {
+        const peerBox = box(route.peer.id);
+        if (peerBox) {
+          const peerIndex = peerRoutes.findIndex((r) => r.unit.id === route.unit.id);
+          /** Relayed platform → relaying platform, along the bottom row. */
+          const lateralY =
+            Math.max(unitBox.bottom, peerBox.bottom) + 22 + peerIndex * 12;
+          const entryX = peerBox.center + 18 + peerIndex * 12;
+          next.push({
+            id: `${route.unit.id}->peer`,
+            owner: route.unit.id,
+            path: `M ${unitBox.center} ${unitBox.bottom} V ${lateralY} H ${entryX} V ${peerBox.bottom}`,
+            color,
+            dashed: true,
+            label: rate,
+            labelX: (unitBox.center + entryX) / 2,
+            labelY: lateralY - 6,
+          });
+          feedX = entryX;
+          feedY = peerBox.top;
+        }
       }
 
-      const hopIndex = relayRoutes.findIndex((r) => r.unit.id === route.unit.id);
-      const hopInX = port(hopBox, hopIndex, relayRoutes.length);
+      /** Relaying platform (or the platform itself) → network node. */
+      next.push({
+        id: `${route.unit.id}->node`,
+        owner: route.unit.id,
+        path: `M ${feedX} ${feedY} V ${node.bottom + 26 + index * 6} H ${nodeInX} V ${node.bottom}`,
+        color,
+        dashed: false,
+        label: rate,
+        labelX: nodeInX,
+        labelY: node.bottom + 20 + index * 6,
+      });
 
-      next.push(
-        vertical(
-          `${route.unit.id}->hop`,
-          route.unit.id,
-          { x: unitBox.center, y: unitBox.top },
-          { x: hopInX, y: hopBox.bottom },
-          hopBox.bottom + 28,
-          color,
-          false,
-          rate,
-        ),
-      );
-      /** A dedicated hop→router line per platform, one for one. */
-      next.push(
-        vertical(
-          `${route.unit.id}-hop->router`,
-          route.unit.id,
-          { x: hopInX, y: hopBox.top },
-          { x: routerX, y: router.bottom },
-          hopBox.top - 24 - hopIndex * 8,
-          color,
-          true,
-          rate,
-        ),
-      );
+      /** One dedicated network node → router line per platform. */
+      next.push({
+        id: `${route.unit.id}->router`,
+        owner: route.unit.id,
+        path: `M ${nodeInX} ${node.top} V ${node.top - 26 - index * 6} H ${routerX} V ${router.bottom}`,
+        color,
+        dashed: false,
+        label: rate,
+        labelX: routerX,
+        labelY: node.top - 32 - index * 6,
+      });
     });
 
     setEdges(next);
-  }, [linksOn, theme, routes, relayRoutes, relay]);
+  }, [linksOn, theme, routes, peerRoutes]);
 
   useLayoutEffect(() => {
     measure();
@@ -260,8 +237,7 @@ export function LogicalTopology({
   }, [measure]);
 
   const isDimmed = (id: string) => activeRoute !== null && activeRoute !== id;
-  const hopDimmed = () =>
-    activeRoute !== null && !relayRoutes.some((r) => r.unit.id === activeRoute);
+  const nodeDimmed = () => false;
 
   return (
     <TopologyRoot>
@@ -330,17 +306,13 @@ export function LogicalTopology({
           </LayerRow>
 
           <LayerRow>
-            {relay && (
-              <HopNode ref={setNodeRef(relay.id)} accent={relayColor} dimmed={hopDimmed()}>
-                <HopRow>
-                  <RadioIcon /> {relay.label}
-                </HopRow>
-                <HopCaption>{relayRoutes.length} RELAYED PLATFORMS</HopCaption>
-                <HopCaption>
-                  {relay.mbps} Mbps · {relay.lat}
-                </HopCaption>
-              </HopNode>
-            )}
+            <HopNode ref={setNodeRef(NODE_ID)} accent={nodeColor} dimmed={nodeDimmed()}>
+              <HopRow>
+                <LanIcon /> {NETWORK_NODE}
+              </HopRow>
+              <HopCaption>{routes.length} CONNECTED PLATFORMS</HopCaption>
+              <HopCaption>{peerRoutes.length} VIA PEER RELAY</HopCaption>
+            </HopNode>
           </LayerRow>
 
           <PlatformRow>
@@ -356,13 +328,14 @@ export function LogicalTopology({
                   <RouteTag
                     labelColor={
                       linksOn
-                        ? route.hopId === null
+                        ? route.peer === null
                           ? routerColor
-                          : relayColor
+                          : nodeColor
                         : theme.palette.divider
                     }
                   >
-                    {primaryKind(route.unit)} → {route.hopLabel}
+                    {primaryKind(route.unit)} →{" "}
+                    {route.peer ? route.peer.label : NETWORK_NODE}
                   </RouteTag>
                   <PlatformCard
                     unit={route.unit}
@@ -386,7 +359,8 @@ export function LogicalTopology({
             <LegendSwatch swatchColor={theme.palette.text.secondary} /> DIRECT LINK
           </LegendItem>
           <LegendItem>
-            <LegendSwatch swatchColor={theme.palette.text.secondary} dashed /> VIA RELAY
+            <LegendSwatch swatchColor={theme.palette.text.secondary} dashed /> VIA PEER
+            PLATFORM
           </LegendItem>
           <LegendItem>
             <LegendSwatch swatchColor={theme.palette.status.good} /> GOOD
